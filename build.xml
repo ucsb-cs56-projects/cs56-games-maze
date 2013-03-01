@@ -1,0 +1,217 @@
+<project default="compile">
+
+  <!-- build.xml for MazeGame, S12, CS56
+       name: Jakob Staahl -->
+
+  <property name="projectName" value="MazeGame" />   
+  <property name="mainClass" value="edu.ucsb.cs56.S12.jstaahl.issue769.MazeGui" />
+  <property environment="env"/> <!-- load the environment variables --> 
+  <property name="projectPath" value="cs56/S12/issues/0000769" />
+  <property name="webRoot" value="${env.HOME}/public_html" />
+  <property name="webBaseURL" value="http://www.cs.ucsb.edu/~${env.USER}" />
+  <property name="jwsDest" value="${webRoot}/${projectPath}/jws" />
+  <property name="jwsURL" value="${webBaseURL}/${projectPath}/jws" />
+  <property name="javadocDest" value="${webRoot}/${projectPath}/javadoc" /> 
+  <property name="javadocURL" value="${webBaseURL}/${projectPath}/javadoc" /> 
+
+  <target name="compile" description="compile my code">
+    <mkdir dir="build" />
+    <javac srcdir="src" destdir="build" includeantruntime="false" debug="true" debuglevel="lines,vars,source" >
+      <classpath>
+	<pathelement location="build"/>
+	<pathelement location="/cs/faculty/pconrad/public_html/cs56/lib/junit-4.8.2.jar"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="run" depends="compile" description="run the mainClass of this program">
+    <echo> run the program using any of the following, replacing the parentheticals with integer values:
+java -cp build ${mainClass}
+              or
+java -cp build ${mainClass} (genChainLength) (genChainLengthFlux)
+     where (genChainLength) is the number of cells each branch carves in the grid before
+     spawning a new branch and (genChainLengthFlux) is the +/- random range for genChainLength
+              or
+java -cp build ${mainClass} (genChainLength) (genChainLengthFlux) (numRows) (numCols) (cellWidth)
+     where cellWidth is in pixels
+              or
+java -cp build ${mainClass} (genChainLength) (genChainLengthFlux) (numRows) (numCols) (cellWidth) (startRow) (startCol) (endRow) (endCol)
+     where startRow and startCol are the row and column coordinates for the cell to use as the starting point for the grid solver
+     and endRow and endCol are the row and column coordinates for the cell to use as the ending point for the grid solver
+
+if any of the first three usages are used, default values for the arguments are used if necessary and are as follows:
+genChainLength: 50
+genChainLengthFlux: 50
+numRows: 60
+numCols: 60
+cellWidth: 10 
+startRow: 0
+startCol: 0
+endRow: (numRows-1)
+endCol: (numCols-1)
+    </echo>
+    <java classname="${mainClass}" classpath="build" fork="true" />
+  </target>
+
+  <target name="clean" description="delete unnecessary files and directories">
+    <delete dir="build" quiet="true" />
+    <delete dir="javadoc" quiet="true" />
+    <delete dir="dist" quiet="true" />
+    <delete dir="download" quiet="true" />
+    <delete dir="temp" quiet="true" />   
+  </target>
+
+  <target name="javadoc" depends="compile" description="create the javadoc">
+
+    <delete dir="javadoc" quiet="true" />
+    <javadoc  destdir="javadoc" author="true" version="true" use="true" >
+      <fileset dir="src" includes="**/*.java"/>
+      <classpath>
+	<pathelement location="/cs/faculty/pconrad/public_html/cs56/lib/junit-4.8.2.jar"/>
+      </classpath>
+    </javadoc>
+    
+    <!-- delete the old javadoc -->
+    <delete quiet="true" dir="${javadocDest}" />
+    
+    <!-- copy everything you just made to the javadoc destination, and then make it readable -->
+    
+    <copy todir="${javadocDest}" >
+      <fileset dir="javadoc"/>
+    </copy>
+    
+    <!-- Note: this only does the chmod command on the
+	 javadoc subdirectory and its contents.  You MIGHT have to
+	 MANUALLY do the chmod on the parent directories.  However,
+	 you should only need to do that once. -->
+    
+    <chmod dir="${javadocDest}" perm="755"  type="dir" includes="**" />
+    <chmod dir="${javadocDest}" perm="755"  type="file" includes="**/*" />
+    <echo>Javadoc deployed to ${javadocURL}</echo>
+
+  </target>    
+
+  <target name="test" depends="compile" description="run the JUnit tests">
+
+    <junit haltonerror="no" haltonfailure="no">
+      <classpath>
+	<pathelement location="/cs/faculty/pconrad/public_html/cs56/lib/junit-4.8.2.jar"/>
+	<pathelement location="build"/>
+      </classpath>
+      
+      <batchtest fork="yes">
+	<fileset dir="src">
+	  <!-- this will pick up every class with a name ending in Test -->
+	  <include name="**/*Test.java"/>
+	</fileset>
+      </batchtest>
+      
+      <formatter type="plain" usefile="false" /> 
+      
+    </junit>
+  </target>
+
+  <target name="jar" depends="compile" description="create the jar">
+    <mkdir dir="dist" />
+    <jar destfile="dist/${projectName}.jar" basedir="build">
+      <manifest>
+	<attribute name="Main-Class" value="${mainClass}" />
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="publish" depends="jar,javadoc,download,jws,linenumbers" description="publish everything to the web">
+    <mkdir dir="${webRoot}/${projectPath}" />
+
+   <delete dir="${webRoot}/${projectPath}/browse" />
+   <mkdir dir="${webRoot}/${projectPath}/browse" />
+
+   <delete dir="${webRoot}/${projectPath}/download" />
+   <mkdir dir="${webRoot}/${projectPath}/download" />
+
+   <copy file="html/index.html" todir="${webRoot}/${projectPath}"/>
+
+   <copy todir="${webRoot}/${projectPath}/download" >
+     <fileset dir="download"/>
+     <fileset dir="dist" />
+   </copy>
+
+   <copy file="build.xml" todir="${webRoot}/${projectPath}/browse"/>
+   <copy todir="${webRoot}/${projectPath}/browse/src" >
+     <fileset dir="src"/>
+   </copy>
+   <copy file="numberedsource.txt" todir="${webRoot}/${projectPath}/browse"/>
+
+   <chmod dir="${webRoot}/${projectPath}"
+          perm="755" type="both" includes="**/*"/>
+
+   <echo>Project published to ${webBaseURL}/${projectPath}</echo>
+  </target>
+
+  <target name="download" depends="" description="create the download files">
+    
+    <!-- delete everything under the "temp" and "download" subdirectories
+	 In Ant, **/* means "all files under any number of directory levels" -->     
+    <delete quiet="true">
+      <fileset dir="temp" includes="**/*" />
+      <fileset dir="download" includes="**/*" />
+    </delete>
+    
+    <!-- create the directories we'll need to stage the zip file and tarballs -->
+    <mkdir dir="download" />
+    <mkdir dir="temp" />
+    <mkdir dir="temp/${projectName}" />
+    
+    <!-- copy everything from the current directory that we want to put in the zip file/tarball into the
+	 temp subdirectory.   Exclude things we do NOT want to include in the tarball/zip file -->
+    <copy todir="temp/${projectName}">
+      <fileset dir="."
+	       excludes="build/**, javadoc/**, **/*~, temp/**, dist/**, download/**"/>
+    </copy>
+    
+    <!-- create the tar file from the temp directory -->
+    <tar destfile="temp/${projectName}.tar"
+	 basedir="temp"
+	 includes="${projectName}/**"
+	 />
+    
+    <!-- compress the tar file into a tarball (using "gzip") -->
+    <gzip zipfile="download/${projectName}.tgz"
+	  src="temp/${projectName}.tar" />
+    
+    <!-- create a zip file -->
+    <zip destfile="download/${projectName}.zip"
+	 basedir="temp"
+	 includes="${projectName}/**"
+	 />
+    
+    <!-- Now we have the tarball and zip file in the download
+	 subdirectory, so we are finished with the temp directory -->
+    <delete quiet="true">
+      <fileset dir="temp" includes="**/*"/>
+    </delete>
+    
+  </target>
+
+  <target name="jws" depends="compile,jar" description="create the java web start">
+
+   <delete dir="${webRoot}/${projectPath}/jws" />
+   <mkdir dir="${webRoot}/${projectPath}/jws" />
+
+   <copy todir="${jwsDest}" file="dist/${projectName}.jar" />
+   <copy todir="${jwsDest}" >
+       <fileset dir="jws" includes="*.html"/>
+       <fileset dir="jws" includes="*.jnlp"/>
+       <fileset dir="jws" includes=".htaccess"/>
+   </copy>
+   <echo>Java web start at ${jwsURL}</echo>
+ </target>
+
+<target name="linenumbers" description="Creates a file containing all source files with line numbers">
+   <exec executable="bash">
+     <arg value="-c"/>
+     <arg value='tree -ifQ src | grep \.java\"$ | xargs pr -n > numberedsource.txt'/>
+   </exec>
+</target>
+
+</project>

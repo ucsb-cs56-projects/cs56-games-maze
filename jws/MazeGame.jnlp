@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="0.2 1.0" codebase="http://www.cs.ucsb.edu/~jstaahl/cs56/S12/issues/0000769/jws" href="MazeGame.jnlp">
+ <information>
+   <title>UCSB CS56 S12 Jakob Staahl MazeGame</title>
+   <vendor>UCSB CS56</vendor>
+   <homepage href="." />
+   <description>A Maze Game</description>
+  <offline-allowed />
+ </information>
+ <resources>
+  <j2se version="1.3+" />
+  <jar href="MazeGame.jar" />
+ </resources>
+ <application-desc main-class="edu.ucsb.cs56.S12.jstaahl.issue769.MazeGui"/>
+</jnlp>
