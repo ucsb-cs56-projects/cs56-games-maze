@@ -1,4 +1,4 @@
-# cs56-maze-game
+# cs56-games-maze
 
 A program that generates at random a solvable rectangular maze. 
 
