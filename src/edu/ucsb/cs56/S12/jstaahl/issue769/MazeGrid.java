@@ -36,6 +36,8 @@ public class MazeGrid {
     public static final byte MARKER2 = 0x20;
     /** The bit representing marker3 */
     public static final byte MARKER3 = 0x40;
+    /** The bit representing marker4 */
+    public static final byte MARKER4 = (byte)0x80;
 
     private byte[][] grid;
     private int rows;

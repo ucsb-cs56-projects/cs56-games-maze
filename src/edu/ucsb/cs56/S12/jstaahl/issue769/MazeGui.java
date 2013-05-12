@@ -3,6 +3,9 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.ButtonGroup;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JMenuBar;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.*;
@@ -12,9 +15,11 @@ import java.awt.*;
    Class where the MazeGui is constructed.  This is also the main class and contains the main method
 */
 
-public class MazeGui{
+public class MazeGui implements ActionListener{
 
     private JFrame frame;
+    private JMenuBar menuBar;
+    private JMenu menu;
     private MazeTimerBar timerBar;
     private MazeGrid grid;
     private MazeComponent mc;
@@ -22,6 +27,7 @@ public class MazeGui{
     private Timer drawTimer;
     private int genChainLength = 50;
     private int genChainLengthFlux = 50;
+    private int stepGenDistance = 1;
     private int rows = 60;
     private int cols = 60;
     private int cellWidth = 10;
@@ -79,6 +85,30 @@ public class MazeGui{
 	this.timerBar = new MazeTimerBar(this);
 	frame.add(timerBar, BorderLayout.SOUTH);
 
+	//initialize menu bar and menus
+	this.menuBar = new JMenuBar();
+	this.menu = new JMenu("Menu");
+	ButtonGroup group = new ButtonGroup();
+	JRadioButtonMenuItem rbMenuItem = new JRadioButtonMenuItem("Multi Chain Generator");
+	rbMenuItem.setSelected(true);
+	rbMenuItem.setActionCommand("multi_chain_gen");
+	rbMenuItem.addActionListener(this);
+	group.add(rbMenuItem);
+	menu.add(rbMenuItem);
+	rbMenuItem = new JRadioButtonMenuItem("Alt Step Generator");
+	rbMenuItem.setActionCommand("alt_step_gen");
+	rbMenuItem.addActionListener(this);
+	group.add(rbMenuItem);
+	menu.add(rbMenuItem);
+	rbMenuItem = new JRadioButtonMenuItem("New Step Generator");
+	rbMenuItem.setActionCommand("new_step_gen");
+	rbMenuItem.addActionListener(this);
+	group.add(rbMenuItem);
+	menu.add(rbMenuItem);
+	this.menuBar.add(this.menu);
+
+	frame.setJMenuBar(this.menuBar);
+
 	// initialize the MazeGrid, MazeComponent, and MazeGenerator
 	this.grid = new MazeGrid(rows, cols);
 	this.mc = new MazeComponent(grid, cellWidth);
@@ -114,7 +144,17 @@ public class MazeGui{
     public void newMaze() {
 	timerBar.stopTimer();
 	this.grid = new MazeGrid(rows, cols);
-	this.mg = new MultipleChainGenerator(grid, genChainLength, genChainLengthFlux);
+	switch(this.genType){
+	case MazeGui.MULTI_CHAIN_GEN:
+	    this.mg = new MultipleChainGenerator(grid, genChainLength, genChainLengthFlux);
+	    break;
+	case MazeGui.ALT_STEP_GEN:
+	    this.mg = new AltStepGenerator(grid, this.stepGenDistance); 
+	    break;
+	case MazeGui.NEW_STEP_GEN:
+	    this.mg = new NewStepGenerator(grid, this.stepGenDistance);
+	    break;
+	}
 	frame.remove(mc);
 	mc = new MazeComponent(grid, cellWidth);
 	frame.add(mc);
@@ -128,6 +168,18 @@ public class MazeGui{
 	mg.solve(new Cell(startRow, startCol), (byte)0x0,
 	    new Cell(endRow, endCol));
 	mc.repaint();
+    }
+
+    public void actionPerformed(ActionEvent e) {
+	if("multi_chain_gen".equals(e.getActionCommand())){
+	    this.genType = MazeGui.MULTI_CHAIN_GEN;
+	}
+	else if("alt_step_gen".equals(e.getActionCommand())){
+	    this.genType = MazeGui.ALT_STEP_GEN;
+	}
+	else if("new_step_gen".equals(e.getActionCommand())){
+	    this.genType = MazeGui.NEW_STEP_GEN;
+	}
     }
 
 }
