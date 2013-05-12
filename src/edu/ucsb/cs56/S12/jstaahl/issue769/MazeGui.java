@@ -19,6 +19,21 @@ public class MazeGui{
     private MazeGrid grid;
     private MazeComponent mc;
     private MazeGenerator mg;
+    private Timer drawTimer;
+    private int genChainLength = 50;
+    private int genChainLengthFlux = 50;
+    private int rows = 60;
+    private int cols = 60;
+    private int cellWidth = 10;
+    private int startRow = 0;
+    private int startCol = 0;
+    private int endRow = rows-1;
+    private int endCol = cols-1;
+    private int genType = 1;
+    
+    public static final int MULTI_CHAIN_GEN = 1;
+    public static final int ALT_STEP_GEN = 2;
+    public static final int NEW_STEP_GEN = 3;
 
     public static void main(final String[] args){
 	SwingUtilities.invokeLater(new Runnable(){
@@ -29,15 +44,6 @@ public class MazeGui{
     }
 
     public MazeGui(String[] args){
-	int genChainLength = 50;
-	int genChainLengthFlux = 50;
-        int rows = 60;
-	int cols = 60;
-	int cellWidth = 10;
-	int startRow = 0;
-	int startCol = 0;
-	int endRow = rows-1;
-	int endCol = cols-1;
 
 	// check for command line arguments, initialize variables accordingly
 	if (args.length != 0 && args.length != 2 && args.length != 5 && args.length != 9) {
@@ -70,7 +76,7 @@ public class MazeGui{
 	frame.setTitle("Maze Game by Jakob Staahl");
 
 	//initialize timer/controls bar
-	this.timerBar = new MazeTimerBar();
+	this.timerBar = new MazeTimerBar(this);
 	frame.add(timerBar, BorderLayout.SOUTH);
 
 	// initialize the MazeGrid, MazeComponent, and MazeGenerator
@@ -86,7 +92,9 @@ public class MazeGui{
 	// generate the maze in steps (rather than all at once using MazeGenerator.generate())
 	// repaint() in between each step to watch it grow
 	// for performance only draw every 10 steps
-	Timer t = new Timer(1, new ActionListener() {
+	if(drawTimer!=null)
+	    drawTimer.stop();
+	drawTimer = new Timer(1, new ActionListener() {
 		int i=0;
 		public void actionPerformed(ActionEvent e){
 		    ++i;
@@ -95,14 +103,31 @@ public class MazeGui{
 		    else if(i%10==0){
 			((Timer)e.getSource()).stop();
 			timerBar.startTimer();
+			grid.markStartFinish();
+			mc.repaint();
 		    }
 		}
 	    });
-	t.start();
-
-	// display the solution to the maze
-	/*mg.solve(new Cell(startRow, startCol), (byte)0x0,
-		 new Cell(endRow, endCol));
-		 mc.repaint();*/
+	drawTimer.start();
     }
+
+    public void newMaze() {
+	timerBar.stopTimer();
+	this.grid = new MazeGrid(rows, cols);
+	this.mg = new MultipleChainGenerator(grid, genChainLength, genChainLengthFlux);
+	frame.remove(mc);
+	mc = new MazeComponent(grid, cellWidth);
+	frame.add(mc);
+        frame.pack();
+	run();
+    }
+
+    public void solveMaze() {
+	timerBar.stopTimer();
+	// display the solution to the maze
+	mg.solve(new Cell(startRow, startCol), (byte)0x0,
+	    new Cell(endRow, endCol));
+	mc.repaint();
+    }
+
 }

@@ -119,6 +119,7 @@ public class MultipleChainGenerator extends MazeGenerator {
 	// return true if there are still GenChains in chains (a.k.a. chains the
 	// generator can dontinue off of), false otherwise (a.k.a. the generator
 	// has completed carving the maze into the MazeGrid
+	//In that case, mark start and finish
 	return (this.chains.size() > 0);
     }
 

@@ -15,18 +15,31 @@ public class MazeTimerBar extends JPanel{
     private JButton solveButton;
     private long startTime;
     private SimpleDateFormat timerFormat;
+    private Timer t;
+    private MazeGui parentMazeGui;
     
-    
-    public MazeTimerBar(){
+    public MazeTimerBar(MazeGui parent){
 	super();
+	this.parentMazeGui=parent;
+
 	this.timerField = new JTextField("00:00:000");
 	this.add(this.timerField);
 
 	this.newButton = new JButton("New");
 	this.add(this.newButton);
+	this.newButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e){
+		    parentMazeGui.newMaze();
+		}
+	    });
 
 	this.solveButton = new JButton("Solve");
 	this.add(this.solveButton);
+	this.solveButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e){
+		    parentMazeGui.solveMaze();
+		}
+	    });
 
 	this.timerFormat = new SimpleDateFormat("mm:ss:SSS");
     }
@@ -38,13 +51,25 @@ public class MazeTimerBar extends JPanel{
     
     public void startTimer(){
 	startTime = System.currentTimeMillis();
-	Timer t2 = new Timer(1, new ActionListener() {
+	t = new Timer(1, new ActionListener() {
 		public void actionPerformed(ActionEvent e){
 		    //update text field
 		    timerField.setText(timerFormat.format(new Date(System.currentTimeMillis()-startTime)));
 		}
 	    });
-	t2.start();
+	t.start();
+    }
+
+    public long restartTimer(){
+	t.stop();
+	long temp = System.currentTimeMillis()-this.startTime;
+	this.startTimer();
+	return temp;
+    }
+
+    public long stopTimer(){
+	t.stop();
+	return System.currentTimeMillis()-this.startTime;
     }
 
 }

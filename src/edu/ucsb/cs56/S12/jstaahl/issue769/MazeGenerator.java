@@ -50,25 +50,25 @@ public abstract class MazeGenerator {
 	byte inverseDir = this.grid.directionInverse(direction);
 	if (inverseDir != MazeGrid.DIR_LEFT && this.grid.canMove(start, MazeGrid.DIR_LEFT)) {
 	    if (solve(this.grid.getCell(start, MazeGrid.DIR_LEFT), MazeGrid.DIR_LEFT,  end)) {
-		this.grid.markCell(start, MazeGrid.MARKER1);
+		this.grid.markCell(start, MazeGrid.MARKER3);
 		return true;
 	    }
 	}
 	if (inverseDir != MazeGrid.DIR_RIGHT && this.grid.canMove(start, MazeGrid.DIR_RIGHT)) {
 	    if (solve(this.grid.getCell(start, MazeGrid.DIR_RIGHT), MazeGrid.DIR_RIGHT, end)) {
-		this.grid.markCell(start, MazeGrid.MARKER1);
+		this.grid.markCell(start, MazeGrid.MARKER3);
 		return true;
 	    }
 	}
 	if (inverseDir != MazeGrid.DIR_UP && this.grid.canMove(start, MazeGrid.DIR_UP)) {
 	    if (solve(this.grid.getCell(start, MazeGrid.DIR_UP), MazeGrid.DIR_UP, end)) {
-		this.grid.markCell(start, MazeGrid.MARKER1);
+		this.grid.markCell(start, MazeGrid.MARKER3);
 		return true;
 	    }
 	}	    
 	if (inverseDir != MazeGrid.DIR_DOWN && this.grid.canMove(start, MazeGrid.DIR_DOWN)) {
 	    if (solve(this.grid.getCell(start, MazeGrid.DIR_DOWN), MazeGrid.DIR_DOWN, end)) {
-		this.grid.markCell(start, MazeGrid.MARKER1);
+		this.grid.markCell(start, MazeGrid.MARKER3);
 		return true;
 	    }
 	}

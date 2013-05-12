@@ -194,4 +194,9 @@ public class MazeGrid {
     public boolean hasMarker(Cell a, byte marker) {
 	return ((this.grid[a.row][a.col] & marker) > 0);
     }
+
+    public void markStartFinish(){
+	markCell(new Cell(0,0),MazeGrid.MARKER1);
+	markCell(new Cell(this.rows-1,this.cols-1),MazeGrid.MARKER2);
+    }
 }
