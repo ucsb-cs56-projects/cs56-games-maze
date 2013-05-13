@@ -88,7 +88,7 @@ public class MazeGui implements ActionListener{
 	}
 
 	// initialize the JFrame
-	frame = new JFrame();
+	this.frame = new JFrame();
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	frame.setTitle("Maze Game by Jakob Staahl");
 
@@ -131,42 +131,8 @@ public class MazeGui implements ActionListener{
 	//initialize the player
 	this.player = new MazePlayer(this.grid);
 	//set up player keybinds
-	Action playerMoveAction = new AbstractAction(){
-		public void actionPerformed(ActionEvent e){
-		    if(player!=null){
-			switch(e.getActionCommand()){
-			case "w":
-			    player.move(MazeGrid.DIR_UP);
-			    break;
-			case"s":
-			    player.move(MazeGrid.DIR_DOWN);
-			    break;
-			case "a":
-			    player.move(MazeGrid.DIR_LEFT);
-			    break;
-			case "d":
-			    player.move(MazeGrid.DIR_RIGHT);
-			    break;
-			}
-			mc.repaint();
-			if(grid.isAtFinish(player.getPosition()))
-			    wonMaze();
-		    }
-		}
-	    };
-	InputMap inputMap = ((JPanel)frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-
-	inputMap.put(KeyStroke.getKeyStroke("W"),"player_up");
-	inputMap.put(KeyStroke.getKeyStroke("S"),"player_down");
-	inputMap.put(KeyStroke.getKeyStroke("A"),"player_left");
-	inputMap.put(KeyStroke.getKeyStroke("D"),"player_right");
-
-	ActionMap actionmap = ((JPanel)frame.getContentPane()).getActionMap();
-
-	actionmap.put("player_up", playerMoveAction);
-	actionmap.put("player_down", playerMoveAction);
-	actionmap.put("player_left", playerMoveAction);
-	actionmap.put("player_right", playerMoveAction);
+	Action playerMoveAction = new PlayerMoveAction();
+	remapPlayerKeys(playerMoveAction);
 	mc.requestFocus();
     }
     
@@ -174,6 +140,7 @@ public class MazeGui implements ActionListener{
 	// generate the maze in steps (rather than all at once using MazeGenerator.generate())
 	// repaint() in between each step to watch it grow
 	// for performance only draw every 10 steps
+	System.out.println("Running with focus: "+frame.hasFocus());
 	if(drawTimer!=null)
 	    drawTimer.stop();
 	drawTimer = new Timer(1, new ActionListener() {
@@ -192,12 +159,17 @@ public class MazeGui implements ActionListener{
 		}
 	    });
 	drawTimer.start();
+	mc.requestFocus();
     }
 
     public void newMaze() {
 	timerBar.stopTimer();
+	frame.remove(mc);
 	this.grid = new MazeGrid(rows, cols);
-	this.player = new MazePlayer(this.grid);
+	this.mc = new MazeComponent(grid, cellWidth);
+	frame.add(mc);
+        frame.pack();
+	frame.setVisible(true);
 	switch(this.genType){
 	case MazeGui.MULTI_CHAIN_GEN:
 	    this.mg = new MultipleChainGenerator(grid, genChainLength, genChainLengthFlux);
@@ -209,10 +181,9 @@ public class MazeGui implements ActionListener{
 	    this.mg = new NewStepGenerator(grid, this.stepGenDistance);
 	    break;
 	}
-	frame.remove(mc);
-	mc = new MazeComponent(grid, cellWidth);
-	frame.add(mc);
-        frame.pack();
+	this.player = new MazePlayer(this.grid);
+	Action playerMoveAction = new PlayerMoveAction();
+	remapPlayerKeys(playerMoveAction);
 	mc.requestFocus();
 	run();
     }
@@ -237,10 +208,49 @@ public class MazeGui implements ActionListener{
 	}
     }
 
-    public void wonMaze(){
+    private void wonMaze(){
 	timerBar.stopTimer();
-	JOptionPane.showMessageDialog(frame, "Congratulations, you won!\n It took you "+player.getNumMoves()+" moves.", "Victory",JOptionPane.INFORMATION_MESSAGE);
+	//JOptionPane.showMessageDialog(frame, "Congratulations, you won!\n It took you "+player.getNumMoves()+" moves.", "Victory",JOptionPane.INFORMATION_MESSAGE);
 	this.player=null;
     }
 
+    private void remapPlayerKeys(Action a){
+	InputMap inputMap = ((JPanel)this.frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+	inputMap.put(KeyStroke.getKeyStroke("W"),"player_up");
+	inputMap.put(KeyStroke.getKeyStroke("S"),"player_down");
+	inputMap.put(KeyStroke.getKeyStroke("A"),"player_left");
+	inputMap.put(KeyStroke.getKeyStroke("D"),"player_right");
+	ActionMap actionmap = ((JPanel)this.frame.getContentPane()).getActionMap();
+	actionmap.put("player_up",a);
+	actionmap.put("player_down",a);
+	actionmap.put("player_left",a);
+	actionmap.put("player_right",a);
+    }
+
+    class PlayerMoveAction extends AbstractAction{
+	public void actionPerformed(ActionEvent e){
+	    if(player!=null){
+		switch(e.getActionCommand()){
+		case "w":
+		    player.move(MazeGrid.DIR_UP);
+		    break;
+		case"s":
+		    player.move(MazeGrid.DIR_DOWN);
+		    break;
+		case "a":
+		    player.move(MazeGrid.DIR_LEFT);
+		    break;
+		case "d":
+		    player.move(MazeGrid.DIR_RIGHT);
+		    break;
+		}
+		mc.repaint();
+		if(grid.isAtFinish(player.getPosition()))
+		    wonMaze();
+	    }
+	    else{
+		System.err.println("NULL player!");
+	    }
+	}
+    }
 }
