@@ -30,11 +30,8 @@ public class NewStepGenerator extends MazeGenerator {
     }
 
     /**
-       Constructs a NewStepGenerator where each step is a tunnel of distance number
-       of cells (or  less if a tunel of that length cannot be constructed due to an
-       obstruction)
-       @param grid the MazeGrid this NewStepGenerator will run its maze generating
-       algorithm on
+       Constructs a NewStepGenerator where each step is a tunnel of distance number of cells (or  less if a tunel of that length cannot be constructed due to an obstruction)
+       @param grid the MazeGrid this NewStepGenerator will run its maze generating algorithm on
        @param distance the length of the tunnels generated at each step
        @see MazeGrid
     */

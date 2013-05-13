@@ -66,10 +66,13 @@ public class MazeComponent extends JComponent {
 	// paint the proper markers for the Cell in the proper order
 	if (this.grid.hasMarker(a, MazeGrid.MARKER3))
 	    this.paintMarker3(g2, a);
-	if (this.grid.hasMarker(a, MazeGrid.MARKER1))
+	else if (this.grid.hasMarker(a, MazeGrid.MARKER1))
 	    this.paintMarker1(g2, a);
 	else if (this.grid.hasMarker(a, MazeGrid.MARKER2))
 	    this.paintMarker2(g2, a);
+	if(this.grid.hasMarker(a, MazeGrid.MARKER4))
+	    this.paintMarker4(g2, a);
+
 
 	// paint the walls of the Cell
 	byte directions = this.grid.getCellDirections(a);
@@ -109,10 +112,9 @@ public class MazeComponent extends JComponent {
     */
     private void paintMarker1(Graphics2D g2, Cell a) {
 	g2.setColor(Color.RED);
-	g2.fill(new Rectangle2D.Double(this.cellWidth*a.col + (0.4*this.cellWidth)-1,
-				       this.cellWidth*a.row + (0.4*this.cellWidth)-1,
-				       0.4*this.cellWidth,
-				       0.4*this.cellWidth));
+	g2.fill(new Rectangle2D.Float(this.cellWidth*a.col, this.cellWidth*a.row, this.cellWidth, this.cellWidth));
+
+	//g2.fill(new Rectangle2D.Double(this.cellWidth*a.col + (0.4*this.cellWidth)-1,this.cellWidth*a.row + (0.4*this.cellWidth)-1,0.4*this.cellWidth,0.4*this.cellWidth));
     }
 
     /**
@@ -120,10 +122,9 @@ public class MazeComponent extends JComponent {
     */
     private void paintMarker2(Graphics2D g2, Cell a) {
 	g2.setColor(Color.BLUE);
-	g2.fill(new Rectangle2D.Double(this.cellWidth*a.col + (0.4*this.cellWidth)-1,
-				       this.cellWidth*a.row + (0.4*this.cellWidth)-1,
-				       0.4*this.cellWidth,
-				       0.4*this.cellWidth));
+	g2.fill(new Rectangle2D.Float(this.cellWidth*a.col, this.cellWidth*a.row, this.cellWidth, this.cellWidth));
+
+	//g2.fill(new Rectangle2D.Double(this.cellWidth*a.col + (0.4*this.cellWidth)-1, this.cellWidth*a.row + (0.4*this.cellWidth)-1, 0.4*this.cellWidth,0.4*this.cellWidth));
     }
     /**
        How MazeGrid.MARKER3 should be painted. Change this if you want marker3 to be painted differently.
@@ -136,8 +137,9 @@ public class MazeComponent extends JComponent {
        How MazeGrid.MARKER4 should be painted. Change this if you want marker4 to be painted differently.
     */
     private void paintMarker4(Graphics2D g2, Cell a) {
-	g2.setColor(Color.GRAY);
-	g2.fill(new Rectangle2D.Float(this.cellWidth*a.col, this.cellWidth*a.row, this.cellWidth, this.cellWidth));
+	g2.setColor(Color.BLACK);
+	//g2.fill(new Rectangle2D.Float(this.cellWidth*a.col, this.cellWidth*a.row, this.cellWidth, this.cellWidth));
+	g2.fill(new Rectangle2D.Double(this.cellWidth*a.col + (0.4*this.cellWidth)-1, this.cellWidth*a.row + (0.4*this.cellWidth)-1, 0.4*this.cellWidth,0.4*this.cellWidth));
 
     }
 

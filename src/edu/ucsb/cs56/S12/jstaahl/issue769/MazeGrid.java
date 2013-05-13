@@ -42,6 +42,8 @@ public class MazeGrid {
     private byte[][] grid;
     private int rows;
     private int cols;
+    private Cell player;
+    private Cell finish;
 
     /**
        Constructs a MazeGrid with the given number of rows and cols
@@ -53,6 +55,8 @@ public class MazeGrid {
 	this.rows = rows;
 	this.cols = cols;
 	grid = new byte[this.rows][this.cols];
+	player = new Cell(0,0);
+	finish = new Cell(this.rows-1, this.cols-1);
     }
 
     /**
@@ -188,17 +192,39 @@ public class MazeGrid {
     }
 
     /**
+       Remove this Marker in this cell
+       @param a the Cell of interest
+       @param marker the byte information peratining to the marker we are removing from this cell
+    */
+    public void unmarkCell(Cell a, byte marker) {
+	this.grid[a.row][a.col] = (byte)(this.grid[a.row][a.col] & ~marker);
+    }
+
+    /**
+    For debugging, returns byte value of cell
+    @param a cell of interest
+    @return raw byte value of cell
+    */
+    public byte getCellByte(Cell a){
+	return this.grid[a.row][a.col];
+    }
+
+    /**
        Return true if this Cell a has this marker. Otherwise return false
        @param a the Cell of interest. Assumes this Cell is in this grid
        @param marker the byte information pertaining to the marker we are saving on this cell
        @return true if this Cell a has this marker. otherwise return false
     */
     public boolean hasMarker(Cell a, byte marker) {
-	return ((this.grid[a.row][a.col] & marker) > 0);
+	return ((this.grid[a.row][a.col] & marker) != 0);
     }
 
     public void markStartFinish(){
-	markCell(new Cell(0,0),MazeGrid.MARKER1);
-	markCell(new Cell(this.rows-1,this.cols-1),MazeGrid.MARKER2);
+	markCell(new Cell(0,0),MazeGrid.MARKER2);
+	markCell(new Cell(this.rows-1,this.cols-1),MazeGrid.MARKER1);
+    }
+
+    public boolean isAtFinish(Cell a){
+	return a.equals(this.finish);
     }
 }

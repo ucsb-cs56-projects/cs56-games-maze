@@ -29,7 +29,7 @@ public class GenChain extends ArrayList<Cell> {
 	this.numCarvedCells = 1;
 	this.startingIndex = 0;
 
-	this.grid.markCell(a, MazeGrid.MARKER3);
+	//this.grid.markCell(a, MazeGrid.MARKER3);
     }
 
     /**

@@ -6,8 +6,18 @@ import javax.swing.Timer;
 import javax.swing.ButtonGroup;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JMenuBar;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JOptionPane;
+import javax.swing.InputMap;
+import javax.swing.ActionMap;
+import javax.swing.KeyStroke;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.*;
 
 
@@ -24,12 +34,13 @@ public class MazeGui implements ActionListener{
     private MazeGrid grid;
     private MazeComponent mc;
     private MazeGenerator mg;
+    private MazePlayer player;
     private Timer drawTimer;
     private int genChainLength = 50;
     private int genChainLengthFlux = 50;
     private int stepGenDistance = 1;
-    private int rows = 60;
-    private int cols = 60;
+    private int rows = 10;
+    private int cols = 10;
     private int cellWidth = 10;
     private int startRow = 0;
     private int startCol = 0;
@@ -116,6 +127,47 @@ public class MazeGui implements ActionListener{
 	frame.pack();
 	frame.setVisible(true);
 	this.mg = new MultipleChainGenerator(grid, genChainLength, genChainLengthFlux);
+
+	//initialize the player
+	this.player = new MazePlayer(this.grid);
+	//set up player keybinds
+	Action playerMoveAction = new AbstractAction(){
+		public void actionPerformed(ActionEvent e){
+		    if(player!=null){
+			switch(e.getActionCommand()){
+			case "w":
+			    player.move(MazeGrid.DIR_UP);
+			    break;
+			case"s":
+			    player.move(MazeGrid.DIR_DOWN);
+			    break;
+			case "a":
+			    player.move(MazeGrid.DIR_LEFT);
+			    break;
+			case "d":
+			    player.move(MazeGrid.DIR_RIGHT);
+			    break;
+			}
+			mc.repaint();
+			if(grid.isAtFinish(player.getPosition()))
+			    wonMaze();
+		    }
+		}
+	    };
+	InputMap inputMap = ((JPanel)frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+	inputMap.put(KeyStroke.getKeyStroke("W"),"player_up");
+	inputMap.put(KeyStroke.getKeyStroke("S"),"player_down");
+	inputMap.put(KeyStroke.getKeyStroke("A"),"player_left");
+	inputMap.put(KeyStroke.getKeyStroke("D"),"player_right");
+
+	ActionMap actionmap = ((JPanel)frame.getContentPane()).getActionMap();
+
+	actionmap.put("player_up", playerMoveAction);
+	actionmap.put("player_down", playerMoveAction);
+	actionmap.put("player_left", playerMoveAction);
+	actionmap.put("player_right", playerMoveAction);
+	mc.requestFocus();
     }
     
     public void run() {
@@ -134,6 +186,7 @@ public class MazeGui implements ActionListener{
 			((Timer)e.getSource()).stop();
 			timerBar.startTimer();
 			grid.markStartFinish();
+			player.setVisible(true);
 			mc.repaint();
 		    }
 		}
@@ -144,6 +197,7 @@ public class MazeGui implements ActionListener{
     public void newMaze() {
 	timerBar.stopTimer();
 	this.grid = new MazeGrid(rows, cols);
+	this.player = new MazePlayer(this.grid);
 	switch(this.genType){
 	case MazeGui.MULTI_CHAIN_GEN:
 	    this.mg = new MultipleChainGenerator(grid, genChainLength, genChainLengthFlux);
@@ -159,6 +213,7 @@ public class MazeGui implements ActionListener{
 	mc = new MazeComponent(grid, cellWidth);
 	frame.add(mc);
         frame.pack();
+	mc.requestFocus();
 	run();
     }
 
@@ -180,6 +235,12 @@ public class MazeGui implements ActionListener{
 	else if("new_step_gen".equals(e.getActionCommand())){
 	    this.genType = MazeGui.NEW_STEP_GEN;
 	}
+    }
+
+    public void wonMaze(){
+	timerBar.stopTimer();
+	JOptionPane.showMessageDialog(frame, "Congratulations, you won!\n It took you "+player.getNumMoves()+" moves.", "Victory",JOptionPane.INFORMATION_MESSAGE);
+	this.player=null;
     }
 
 }
