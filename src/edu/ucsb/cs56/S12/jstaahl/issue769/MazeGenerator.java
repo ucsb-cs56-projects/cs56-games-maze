@@ -37,7 +37,7 @@ public abstract class MazeGenerator {
        @param end the ending cell to draw the solution path to
        @param direction important only for the recursive aspect
     */
-    public boolean solve(Cell start, byte direction, Cell end) {
+    public boolean solve(Cell start, short direction, Cell end) {
 	// base case. mark the Cell and return true if we are at the finish
 	if (start.equals(end)) {
 	    this.grid.markCell(start, MazeGrid.MARKER1);
@@ -47,7 +47,7 @@ public abstract class MazeGenerator {
 	// call solve() in each direction around this cell (except
 	// the direction from which this cell came a.k.a. 'direction')
 	// if calling solve() returns true, mark this Cell and return true
-	byte inverseDir = this.grid.directionInverse(direction);
+	short inverseDir = this.grid.directionInverse(direction);
 	if (inverseDir != MazeGrid.DIR_LEFT && this.grid.canMove(start, MazeGrid.DIR_LEFT)) {
 	    if (solve(this.grid.getCell(start, MazeGrid.DIR_LEFT), MazeGrid.DIR_LEFT,  end)) {
 		this.grid.markCell(start, MazeGrid.MARKER3);

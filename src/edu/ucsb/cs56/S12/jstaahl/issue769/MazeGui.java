@@ -1,23 +1,6 @@
 package edu.ucsb.cs56.S12.jstaahl.issue769;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.SwingUtilities;
-import javax.swing.Timer;
-import javax.swing.ButtonGroup;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JMenuBar;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JOptionPane;
-import javax.swing.InputMap;
-import javax.swing.ActionMap;
-import javax.swing.KeyStroke;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
+import javax.swing.*;
+import java.awt.event.*;
 import java.awt.*;
 
 
@@ -36,17 +19,8 @@ public class MazeGui implements ActionListener{
     private MazeGenerator mg;
     private MazePlayer player;
     private Timer drawTimer;
-    private int genChainLength = 50;
-    private int genChainLengthFlux = 50;
-    private int stepGenDistance = 1;
-    private int rows = 10;
-    private int cols = 10;
-    private int cellWidth = 10;
-    private int startRow = 0;
-    private int startCol = 0;
-    private int endRow = rows-1;
-    private int endCol = cols-1;
-    private int genType = 1;
+    private MazeSettings settings;
+    private Action playerMoveAction;
     
     public static final int MULTI_CHAIN_GEN = 1;
     public static final int ALT_STEP_GEN = 2;
@@ -62,6 +36,8 @@ public class MazeGui implements ActionListener{
 
     public MazeGui(String[] args){
 
+	this.settings = new MazeSettings();
+
 	// check for command line arguments, initialize variables accordingly
 	if (args.length != 0 && args.length != 2 && args.length != 5 && args.length != 9) {
 	    System.out.println("Improper number of command line arguments: " + args.length);
@@ -70,21 +46,21 @@ public class MazeGui implements ActionListener{
 	}
 	switch (args.length) { // NOTE: no break statements.. cases flow through
 	case 9:
-	    startRow           = Integer.parseInt(args[5]);
-	    startCol           = Integer.parseInt(args[6]);
-	    endRow             = Integer.parseInt(args[7]);
-	    endCol             = Integer.parseInt(args[8]);
+	    settings.startRow = Integer.parseInt(args[5]);
+	    settings.startCol = Integer.parseInt(args[6]);
+	    settings.endRow = Integer.parseInt(args[7]);
+	    settings.endCol = Integer.parseInt(args[8]);
 	case 5:
-	    rows               = Integer.parseInt(args[2]);
-	    cols               = Integer.parseInt(args[3]);
-	    cellWidth          = Integer.parseInt(args[4]);
+	    settings.rows = Integer.parseInt(args[2]);
+	    settings.cols = Integer.parseInt(args[3]);
+	    settings.cellWidth = Integer.parseInt(args[4]);
 	    // set endRow and endCol to rows-1 and cols-1 respectively, but
 	    // only if they weren't already explicitly defined under (case 9:)
-	    endRow             = args.length != 9 ? rows-1 : endRow;
-	    endCol             = args.length != 9 ? cols-1 : endCol;
+	    settings.endRow = args.length != 9 ? settings.rows-1 : settings.endRow;
+	    settings.endCol = args.length != 9 ? settings.cols-1 : settings.endCol;
 	case 2:
-	    genChainLength     = Integer.parseInt(args[0]);
-	    genChainLengthFlux = Integer.parseInt(args[1]);
+	    settings.genChainLength = Integer.parseInt(args[0]);
+	    settings.genChainLengthFlux = Integer.parseInt(args[1]);
 	}
 
 	// initialize the JFrame
@@ -116,23 +92,37 @@ public class MazeGui implements ActionListener{
 	rbMenuItem.addActionListener(this);
 	group.add(rbMenuItem);
 	menu.add(rbMenuItem);
+	menu.addSeparator();
+	JCheckBoxMenuItem cbMenuItem = new JCheckBoxMenuItem("Progressive Reveal");
+	cbMenuItem.setActionCommand("prog_reveal");
+	cbMenuItem.addActionListener(this);
+	menu.add(cbMenuItem);
+	menu.addSeparator();
+	JMenuItem menuItem = new JMenuItem("Settings");
+	menuItem.setActionCommand("settings");
+	menuItem.addActionListener(this);
+	menu.add(menuItem);
+	
 	this.menuBar.add(this.menu);
 
 	frame.setJMenuBar(this.menuBar);
 
 	// initialize the MazeGrid, MazeComponent, and MazeGenerator
-	this.grid = new MazeGrid(rows, cols);
-	this.mc = new MazeComponent(grid, cellWidth);
+	this.grid = new MazeGrid(settings.rows, settings.cols);
+	this.mc = new MazeComponent(grid, settings.cellWidth);
+	mc.setFocusable(true);
 	frame.add(mc);
 	frame.pack();
 	frame.setVisible(true);
-	this.mg = new MultipleChainGenerator(grid, genChainLength, genChainLengthFlux);
+	this.mg = new MultipleChainGenerator(grid, settings.genChainLength, settings.genChainLengthFlux);
 
 	//initialize the player
 	this.player = new MazePlayer(this.grid);
+	grid.setPlayer(player);
 	//set up player keybinds
-	Action playerMoveAction = new PlayerMoveAction();
-	remapPlayerKeys(playerMoveAction);
+	this.playerMoveAction = new PlayerMoveAction();
+	//mc.requestFocus();
+	remapPlayerKeys(this.playerMoveAction);
 	mc.requestFocus();
     }
     
@@ -140,7 +130,6 @@ public class MazeGui implements ActionListener{
 	// generate the maze in steps (rather than all at once using MazeGenerator.generate())
 	// repaint() in between each step to watch it grow
 	// for performance only draw every 10 steps
-	System.out.println("Running with focus: "+frame.hasFocus());
 	if(drawTimer!=null)
 	    drawTimer.stop();
 	drawTimer = new Timer(1, new ActionListener() {
@@ -150,61 +139,75 @@ public class MazeGui implements ActionListener{
 		    if(mg.step() && i%10==0)
 			frame.repaint();
 		    else if(i%10==0){
+			//done drawing
 			((Timer)e.getSource()).stop();
 			timerBar.startTimer();
 			grid.markStartFinish();
-			player.setVisible(true);
+			if(settings.progReveal)
+			    grid.setProgReveal(player, settings.progRevealRadius);
+			grid.updatePlayerPosition();
 			mc.repaint();
+			//mc.requestFocusInWindow();
 		    }
 		}
 	    });
 	drawTimer.start();
-	mc.requestFocus();
+	//mc.requestFocus();
     }
 
     public void newMaze() {
 	timerBar.stopTimer();
 	frame.remove(mc);
-	this.grid = new MazeGrid(rows, cols);
-	this.mc = new MazeComponent(grid, cellWidth);
+	this.grid = new MazeGrid(settings.rows, settings.cols);
+	this.mc = new MazeComponent(grid, settings.cellWidth);
+	mc.setVisible(true);
+	mc.setFocusable(true);
 	frame.add(mc);
         frame.pack();
 	frame.setVisible(true);
-	switch(this.genType){
+	switch(settings.genType){
 	case MazeGui.MULTI_CHAIN_GEN:
-	    this.mg = new MultipleChainGenerator(grid, genChainLength, genChainLengthFlux);
+	    this.mg = new MultipleChainGenerator(grid, settings.genChainLength, settings.genChainLengthFlux);
 	    break;
 	case MazeGui.ALT_STEP_GEN:
-	    this.mg = new AltStepGenerator(grid, this.stepGenDistance); 
+	    this.mg = new AltStepGenerator(grid, settings.stepGenDistance); 
 	    break;
 	case MazeGui.NEW_STEP_GEN:
-	    this.mg = new NewStepGenerator(grid, this.stepGenDistance);
+	    this.mg = new NewStepGenerator(grid, settings.stepGenDistance);
 	    break;
 	}
 	this.player = new MazePlayer(this.grid);
 	Action playerMoveAction = new PlayerMoveAction();
-	remapPlayerKeys(playerMoveAction);
-	mc.requestFocus();
+	//remapPlayerKeys(playerMoveAction);
+	//mc.requestFocus();
 	run();
     }
 
     public void solveMaze() {
 	timerBar.stopTimer();
 	// display the solution to the maze
-	mg.solve(new Cell(startRow, startCol), (byte)0x0,
-	    new Cell(endRow, endCol));
+	mg.solve(new Cell(settings.startRow, settings.startCol), (short)0x0,
+	    new Cell(settings.endRow, settings.endCol));
 	mc.repaint();
     }
 
     public void actionPerformed(ActionEvent e) {
 	if("multi_chain_gen".equals(e.getActionCommand())){
-	    this.genType = MazeGui.MULTI_CHAIN_GEN;
+	    settings.genType = MazeGui.MULTI_CHAIN_GEN;
 	}
 	else if("alt_step_gen".equals(e.getActionCommand())){
-	    this.genType = MazeGui.ALT_STEP_GEN;
+	    settings.genType = MazeGui.ALT_STEP_GEN;
 	}
 	else if("new_step_gen".equals(e.getActionCommand())){
-	    this.genType = MazeGui.NEW_STEP_GEN;
+	    settings.genType = MazeGui.NEW_STEP_GEN;
+	}
+	else if("settings".equals(e.getActionCommand())){
+	    //show settings dialog
+	    //JOptionPane.showConfirmDialog(frame, new MazeSettingsPanel(this.settings));
+	}
+	else if("prog_reveal".equals(e.getActionCommand())){
+	    AbstractButton button = (AbstractButton)e.getSource();
+	    settings.progReveal=button.getModel().isSelected();
 	}
     }
 
@@ -212,6 +215,7 @@ public class MazeGui implements ActionListener{
 	timerBar.stopTimer();
 	//JOptionPane.showMessageDialog(frame, "Congratulations, you won!\n It took you "+player.getNumMoves()+" moves.", "Victory",JOptionPane.INFORMATION_MESSAGE);
 	this.player=null;
+	//mc.requestFocus();
     }
 
     private void remapPlayerKeys(Action a){

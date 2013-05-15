@@ -24,25 +24,29 @@ public class MazeGrid {
     /** The bit representing the direction right */
     public static final byte DIR_RIGHT  = 0x1;
     /** The bit representing the direction up */
-    public static final byte DIR_UP     = 0x2;
+    public static final short DIR_UP     = 0x2;
     /** The bit representing the direction left */
-    public static final byte DIR_LEFT   = 0x4;
+    public static final short DIR_LEFT   = 0x4;
     /** The bit representing the direction down */
-    public static final byte DIR_DOWN   = 0x8;
+    public static final short DIR_DOWN   = 0x8;
 
     /** The bit representing marker1 */
-    public static final byte MARKER1 = 0x10;
+    public static final short MARKER1 = 0x10;
     /** The bit representing marker2 */
-    public static final byte MARKER2 = 0x20;
+    public static final short MARKER2 = 0x20;
     /** The bit representing marker3 */
-    public static final byte MARKER3 = 0x40;
+    public static final short MARKER3 = 0x40;
     /** The bit representing marker4 */
-    public static final byte MARKER4 = (byte)0x80;
+    public static final short MARKER4 = (short)0x80;
+    /**the bit representing marker5 */
+    public static final short MARKER5 = 0x100;
 
-    private byte[][] grid;
+    private short[][] grid;
     private int rows;
     private int cols;
-    private Cell player;
+    private MazePlayer player;
+    private int progRevealRadius;
+    private boolean progReveal;
     private Cell finish;
 
     /**
@@ -54,8 +58,7 @@ public class MazeGrid {
     public MazeGrid(int rows, int cols) {
 	this.rows = rows;
 	this.cols = cols;
-	grid = new byte[this.rows][this.cols];
-	player = new Cell(0,0);
+	grid = new short[this.rows][this.cols];
 	finish = new Cell(this.rows-1, this.cols-1);
     }
 
@@ -70,7 +73,7 @@ public class MazeGrid {
 	ArrayList<Cell> ret = new ArrayList<Cell>();
 	// cycle through the directions, adding adjacent unvisited cells
 	// to ret
-	for (byte dir = MazeGrid.DIR_RIGHT; dir <= MazeGrid.DIR_DOWN; dir = (byte)(dir << 1)) {
+	for (short dir = MazeGrid.DIR_RIGHT; dir <= MazeGrid.DIR_DOWN; dir = (short)(dir << 1)) {
 	    Cell b = this.getCell(a, dir);
 	    if (b != null && this.getCellDirections(b) == 0)
 		ret.add(b);
@@ -81,33 +84,33 @@ public class MazeGrid {
 	    
     /**
        Carves a new path from Cell a to Cell b, saving the information of newly opened walls in each
-       cell in the 2D byte array. Assumes cells a and b are adjacent
+       cell in the 2D short array. Assumes cells a and b are adjacent
        
        @param a the cell the path is being carved from
        @param b the cell the path is being carved to
     */
     public void carvePath(Cell a, Cell b) {
-	byte dir = direction(a, b);
-	this.grid[a.row][a.col] = (byte)(this.grid[a.row][a.col] | dir);  // Cell a gains the direction 
-	this.grid[b.row][b.col] = (byte)(directionInverse(dir)); // Cell b gets the inverse direction
+	short dir = direction(a, b);
+	this.grid[a.row][a.col] = (short)(this.grid[a.row][a.col] | dir);  // Cell a gains the direction 
+	this.grid[b.row][b.col] = (short)(directionInverse(dir)); // Cell b gets the inverse direction
     }
 
     /**
-       Returns the byte information pertaining to the direction from Cell a
+       Returns the short information pertaining to the direction from Cell a
        to cell b. Assumes that the cells are adjacent, arbitrarily returns the
-       byte 0xFF otherwise.
+       short 0xFF otherwise.
 
        @param a the cell we are getting the direction from
        @param b the cell we are getting the direction to
        @return the directoin from Cell a to Cell b
     */
-    public byte direction(Cell a, Cell b) {
+    public short direction(Cell a, Cell b) {
 	if (b.col - a.col ==  1) return MazeGrid.DIR_RIGHT;
 	if (b.col - a.col == -1) return MazeGrid.DIR_LEFT;
 	if (b.row - a.row ==  1) return MazeGrid.DIR_DOWN;
 	if (b.row - a.row == -1) return MazeGrid.DIR_UP;
 	// return 0 if these cells aren't adjacent
-	return (byte)0x0;
+	return (short)0x0;
     }
 
     /**
@@ -117,7 +120,7 @@ public class MazeGrid {
        @param dir the direction of which we are getting the inverse
        @return the oppositve direction of dir
     */
-    public byte directionInverse(byte dir) {
+    public short directionInverse(short dir) {
 	if (dir == MazeGrid.DIR_LEFT ) return MazeGrid.DIR_RIGHT;
 	if (dir == MazeGrid.DIR_RIGHT) return MazeGrid.DIR_LEFT;
 	if (dir == MazeGrid.DIR_UP)    return MazeGrid.DIR_DOWN;
@@ -134,7 +137,7 @@ public class MazeGrid {
        @return true if it is possible to move from this Cell a in direction dir,
        false otherwise
     */
-    public boolean canMove(Cell a, byte dir) {
+    public boolean canMove(Cell a, short dir) {
 	return (this.grid[a.row][a.col] & dir) > 0;
     }
 
@@ -155,7 +158,7 @@ public class MazeGrid {
        @return the Cell adjaced to Cell a, in the direction of dir. Null if that Cell
        is out of bounds of this MazeGrid
     */
-    public Cell getCell(Cell a, byte dir) {
+    public Cell getCell(Cell a, short dir) {
 	Cell ret = new Cell(a.row + ((dir & 0x8) >> 3) - ((dir & 0x2) >> 1),
 			    a.col + ((dir & 0x1) >> 0) - ((dir & 0x4) >> 2));
 	return this.contains(ret) ? ret : null;
@@ -173,49 +176,49 @@ public class MazeGrid {
     public int getCols() { return this.cols; }
     
     /**
-       Returns the byte information pertaining to the directions in which this Cell has open walls,
+       Returns the short information pertaining to the directions in which this Cell has open walls,
        a.k.a. the directions in which one cran travel from this Cell. Assumes Cell a is in this grid
        @param a the Cell of interest. Assumes this Cell is in this grd
-       @return the byte information pertaining to the directions this cell holds
+       @return the short information pertaining to the directions this cell holds
     */
-    public byte getCellDirections(Cell a) {
+    public short getCellDirections(Cell a) {
 	return this.grid[a.row][a.col];
     }
 
     /**
        Save this Marker in this cell
        @param a the Cell of interest
-       @param marker the byte information peratining to the marker we are saving on this cell
+       @param marker the short information peratining to the marker we are saving on this cell
     */
-    public void markCell(Cell a, byte marker) {
-	this.grid[a.row][a.col] = (byte)(this.grid[a.row][a.col] | marker);
+    public void markCell(Cell a, short marker) {
+	this.grid[a.row][a.col] = (short)(this.grid[a.row][a.col] | marker);
     }
 
     /**
        Remove this Marker in this cell
        @param a the Cell of interest
-       @param marker the byte information peratining to the marker we are removing from this cell
+       @param marker the short information peratining to the marker we are removing from this cell
     */
-    public void unmarkCell(Cell a, byte marker) {
-	this.grid[a.row][a.col] = (byte)(this.grid[a.row][a.col] & ~marker);
+    public void unmarkCell(Cell a, short marker) {
+	this.grid[a.row][a.col] = (short)(this.grid[a.row][a.col] & ~marker);
     }
 
     /**
-    For debugging, returns byte value of cell
+    For debugging, returns short value of cell
     @param a cell of interest
-    @return raw byte value of cell
+    @return raw short value of cell
     */
-    public byte getCellByte(Cell a){
+    public short getCellShort(Cell a){
 	return this.grid[a.row][a.col];
     }
 
     /**
        Return true if this Cell a has this marker. Otherwise return false
        @param a the Cell of interest. Assumes this Cell is in this grid
-       @param marker the byte information pertaining to the marker we are saving on this cell
+       @param marker the short information pertaining to the marker we are saving on this cell
        @return true if this Cell a has this marker. otherwise return false
     */
-    public boolean hasMarker(Cell a, byte marker) {
+    public boolean hasMarker(Cell a, short marker) {
 	return ((this.grid[a.row][a.col] & marker) != 0);
     }
 
@@ -226,5 +229,46 @@ public class MazeGrid {
 
     public boolean isAtFinish(Cell a){
 	return a.equals(this.finish);
+    }
+
+    public void markCellsInRadius(Cell a, int radius, short marker){
+	for(int i=0; i<cols; ++i){
+	    for(int j=0; j<rows; ++j){
+		if(Math.sqrt(
+			Math.pow(a.col-i,2)+Math.pow(a.row-j,2)
+			     )<radius){
+		    markCell(new Cell(j,i),marker);
+		}
+	    }
+	}
+    }
+
+    public void unmarkCellsInRadius(Cell a, int radius, short marker){
+	for(int i=0; i<cols; ++i){
+	    for(int j=0; j<rows; ++j){
+		if(Math.sqrt(
+			Math.pow(a.col-i,2)+Math.pow(a.row-j,2)
+			     )<radius){
+		    unmarkCell(new Cell(j,i),marker);
+		}
+	    }
+	}
+    }
+
+    public void setProgReveal(MazePlayer p, int progRevealRadius){
+	this.progReveal=true;
+	this.progRevealRadius=progRevealRadius;
+	this.player=p;
+	markCellsInRadius(new Cell(0,0),this.rows+this.cols,MazeGrid.MARKER5);
+    }
+
+    public void updatePlayerPosition(){
+	this.markCell(player.getPosition(), MazeGrid.MARKER4);
+	if(this.progReveal)
+	    this.unmarkCellsInRadius(this.player.getPosition(), this.progRevealRadius, MazeGrid.MARKER5);
+    }
+
+    public void setPlayer(MazePlayer p){
+	this.player=p;
     }
 }

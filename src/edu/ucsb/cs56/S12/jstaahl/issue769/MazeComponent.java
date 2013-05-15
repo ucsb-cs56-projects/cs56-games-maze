@@ -2,6 +2,7 @@ package edu.ucsb.cs56.S12.jstaahl.issue769;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
+import java.lang.Math;
 
 
 /**
@@ -13,6 +14,9 @@ import java.awt.geom.*;
 public class MazeComponent extends JComponent {
     private MazeGrid grid;
     private int cellWidth;    
+    private MazePlayer player;
+    private int progRevealRadius;
+    private boolean progReveal;
 
     /**
        Construct a MazeComponent to draw this MazeGrid grid, with the width of each
@@ -23,6 +27,8 @@ public class MazeComponent extends JComponent {
     public MazeComponent(MazeGrid grid, int cellWidth) {
 	this.grid = grid;
 	this.cellWidth = cellWidth;
+	this.player=null;
+	this.progReveal=false;
     }
 
     /**
@@ -35,7 +41,7 @@ public class MazeComponent extends JComponent {
 	Cell a = new Cell(0, 0);
 	for (; a.row < grid.getRows(); a.row++) {
 	    for (; a.col < grid.getCols(); a.col++) {
-		drawCell(g2, a);
+		    drawCell(g2, a);
 	    }
 	    a.col = 0;
 	}
@@ -64,18 +70,20 @@ public class MazeComponent extends JComponent {
     */
     public void drawCell(Graphics2D g2, Cell a) {
 	// paint the proper markers for the Cell in the proper order
-	if (this.grid.hasMarker(a, MazeGrid.MARKER3))
+	if(this.grid.hasMarker(a, MazeGrid.MARKER5)) //do not draw
+	    return;
+	if (this.grid.hasMarker(a, MazeGrid.MARKER3)) //solution
 	    this.paintMarker3(g2, a);
-	else if (this.grid.hasMarker(a, MazeGrid.MARKER1))
+	else if (this.grid.hasMarker(a, MazeGrid.MARKER1)) //finish
 	    this.paintMarker1(g2, a);
-	else if (this.grid.hasMarker(a, MazeGrid.MARKER2))
+	else if (this.grid.hasMarker(a, MazeGrid.MARKER2)) //start
 	    this.paintMarker2(g2, a);
-	if(this.grid.hasMarker(a, MazeGrid.MARKER4))
+	if(this.grid.hasMarker(a, MazeGrid.MARKER4)){ //player
 	    this.paintMarker4(g2, a);
-
+	}
 
 	// paint the walls of the Cell
-	byte directions = this.grid.getCellDirections(a);
+	short directions = this.grid.getCellDirections(a);
 	g2.setColor(Color.BLACK);
 	if ((directions & MazeGrid.DIR_RIGHT) == 0) {
 	    Line2D.Float wall = new Line2D.Float(this.cellWidth*a.col + this.cellWidth-1,
@@ -121,9 +129,8 @@ public class MazeComponent extends JComponent {
        How MazeGrid.MARKER2 should be painted. Change this if you want marker2 to be painted differently.
     */
     private void paintMarker2(Graphics2D g2, Cell a) {
-	g2.setColor(Color.BLUE);
+	g2.setColor(Color.CYAN);
 	g2.fill(new Rectangle2D.Float(this.cellWidth*a.col, this.cellWidth*a.row, this.cellWidth, this.cellWidth));
-
 	//g2.fill(new Rectangle2D.Double(this.cellWidth*a.col + (0.4*this.cellWidth)-1, this.cellWidth*a.row + (0.4*this.cellWidth)-1, 0.4*this.cellWidth,0.4*this.cellWidth));
     }
     /**
@@ -143,9 +150,17 @@ public class MazeComponent extends JComponent {
 
     }
 
-    
-
     public void setMazeGrid(MazeGrid mg){
 	this.grid=mg;
+    }
+
+    public void setProgReveal(MazePlayer p, int progRevealRadius){
+	this.player = p;
+	this.progReveal=true;
+    }
+    
+    public void unsetProgReveal(){
+	this.player=null;
+	this.progReveal=false;
     }
 }

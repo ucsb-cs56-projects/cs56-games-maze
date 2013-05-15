@@ -5,16 +5,16 @@ public class MazePlayer{
     private MazeGrid grid;
     private int numMoves;
     private boolean visible;
-    private byte herpderp = (byte)0x80;
 
     public MazePlayer(MazeGrid grid){
 	this.grid = grid;
 	this.position = new Cell(0,0);
 	this.numMoves=0;
 	this.visible=false;
+	this.grid.setPlayer(this);
     }
 
-    public void move(byte direction){
+    public void move(short direction){
 	if(this.grid.canMove(this.position,direction)){
 	    this.numMoves++;
 	    grid.unmarkCell(position, MazeGrid.MARKER4);
@@ -32,7 +32,8 @@ public class MazePlayer{
 		position.row+=1;
 		break;
 	    }
-	    if(this.visible) grid.markCell(position, MazeGrid.MARKER4);
+	    //if(this.visible) grid.markCell(position, MazeGrid.MARKER4);
+	    this.grid.updatePlayerPosition();
 	}
 	//else return, cannot move
     }
