@@ -11,5 +11,11 @@ The game creates a maze (slower than actual maze-generation time so that you can
 
 To see how the recursive backtracker works, visit http://weblog.jamisbuck.org/2011/2/7/maze-generation-algorithm-recap
 
-To better understand the idea of alternating betewen running off of the newest and oldest added cells, scroll down to the Growing Tree Algorithm and in the "Cell Selectoin Method" pulldown menu, select "Newest/Oldest, 50/50 split" and click "Run"
+Changes made to settings take effect on generation of a new maze.
+
+## Gameplay
+
+The player always start in the top left corner, and must always traverse to the lower right corner. Use WASD keys to move the player.
+
+In Progressive Reveal mode, only a small portion of the maze is revelaed to the player at a time.
 

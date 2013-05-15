@@ -1,4 +1,4 @@
-package edu.ucsb.cs56.S12.jstaahl.issue769;
+package edu.ucsb.cs56.projects.games.cs56_games_maze;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 

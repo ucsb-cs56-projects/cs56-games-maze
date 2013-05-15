@@ -1,4 +1,4 @@
-package edu.ucsb.cs56.S12.jstaahl.issue769;
+package edu.ucsb.cs56.projects.games.cs56_games_maze;
 
 /** NewStepGenerator runs off the newest added cell each step.
     The algorithm runs by creating a GenChain and calling stepNew() in each call to
@@ -30,11 +30,8 @@ public class NewStepGenerator extends MazeGenerator {
     }
 
     /**
-       Constructs a NewStepGenerator where each step is a tunnel of distance number
-       of cells (or  less if a tunel of that length cannot be constructed due to an
-       obstruction)
-       @param grid the MazeGrid this NewStepGenerator will run its maze generating
-       algorithm on
+       Constructs a NewStepGenerator where each step is a tunnel of distance number of cells (or  less if a tunel of that length cannot be constructed due to an obstruction)
+       @param grid the MazeGrid this NewStepGenerator will run its maze generating algorithm on
        @param distance the length of the tunnels generated at each step
        @see MazeGrid
     */

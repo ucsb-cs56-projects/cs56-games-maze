@@ -1,4 +1,4 @@
-package edu.ucsb.cs56.S12.jstaahl.issue769;
+package edu.ucsb.cs56.projects.games.cs56_games_maze;
 
 /** An abstract MazeGenerator class. In order to create a MazeGenerator
     and implement your own maze generating algorithms, you must implement
@@ -37,7 +37,7 @@ public abstract class MazeGenerator {
        @param end the ending cell to draw the solution path to
        @param direction important only for the recursive aspect
     */
-    public boolean solve(Cell start, byte direction, Cell end) {
+    public boolean solve(Cell start, short direction, Cell end) {
 	// base case. mark the Cell and return true if we are at the finish
 	if (start.equals(end)) {
 	    this.grid.markCell(start, MazeGrid.MARKER1);
@@ -47,28 +47,28 @@ public abstract class MazeGenerator {
 	// call solve() in each direction around this cell (except
 	// the direction from which this cell came a.k.a. 'direction')
 	// if calling solve() returns true, mark this Cell and return true
-	byte inverseDir = this.grid.directionInverse(direction);
+	short inverseDir = this.grid.directionInverse(direction);
 	if (inverseDir != MazeGrid.DIR_LEFT && this.grid.canMove(start, MazeGrid.DIR_LEFT)) {
 	    if (solve(this.grid.getCell(start, MazeGrid.DIR_LEFT), MazeGrid.DIR_LEFT,  end)) {
-		this.grid.markCell(start, MazeGrid.MARKER1);
+		this.grid.markCell(start, MazeGrid.MARKER3);
 		return true;
 	    }
 	}
 	if (inverseDir != MazeGrid.DIR_RIGHT && this.grid.canMove(start, MazeGrid.DIR_RIGHT)) {
 	    if (solve(this.grid.getCell(start, MazeGrid.DIR_RIGHT), MazeGrid.DIR_RIGHT, end)) {
-		this.grid.markCell(start, MazeGrid.MARKER1);
+		this.grid.markCell(start, MazeGrid.MARKER3);
 		return true;
 	    }
 	}
 	if (inverseDir != MazeGrid.DIR_UP && this.grid.canMove(start, MazeGrid.DIR_UP)) {
 	    if (solve(this.grid.getCell(start, MazeGrid.DIR_UP), MazeGrid.DIR_UP, end)) {
-		this.grid.markCell(start, MazeGrid.MARKER1);
+		this.grid.markCell(start, MazeGrid.MARKER3);
 		return true;
 	    }
 	}	    
 	if (inverseDir != MazeGrid.DIR_DOWN && this.grid.canMove(start, MazeGrid.DIR_DOWN)) {
 	    if (solve(this.grid.getCell(start, MazeGrid.DIR_DOWN), MazeGrid.DIR_DOWN, end)) {
-		this.grid.markCell(start, MazeGrid.MARKER1);
+		this.grid.markCell(start, MazeGrid.MARKER3);
 		return true;
 	    }
 	}

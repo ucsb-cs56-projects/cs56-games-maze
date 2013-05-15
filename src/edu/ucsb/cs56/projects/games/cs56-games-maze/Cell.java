@@ -1,4 +1,4 @@
-package edu.ucsb.cs56.S12.jstaahl.issue769;
+package edu.ucsb.cs56.projects.games.cs56_games_maze;
 
 /** A Cell is just an object that holds a set of coordinates (row, col)
     the coordinates are public instance variables and accessible by

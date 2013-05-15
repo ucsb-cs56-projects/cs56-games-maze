@@ -1,4 +1,4 @@
-package edu.ucsb.cs56.S12.jstaahl.issue769;
+package edu.ucsb.cs56.projects.games.cs56_games_maze;
 import java.util.ArrayList;
 
 /** MultipleChainGenerator runs like a string of AltStepGenerator algorithms to create
@@ -119,6 +119,7 @@ public class MultipleChainGenerator extends MazeGenerator {
 	// return true if there are still GenChains in chains (a.k.a. chains the
 	// generator can dontinue off of), false otherwise (a.k.a. the generator
 	// has completed carving the maze into the MazeGrid
+	//In that case, mark start and finish
 	return (this.chains.size() > 0);
     }
 
