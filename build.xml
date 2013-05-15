@@ -1,12 +1,14 @@
 <project default="compile">
 
   <!-- build.xml for MazeGame, S12, CS56
-       name: Jakob Staahl -->
+       name: Jakob Staahl 
+       name: Evan West
+  -->
 
   <property name="projectName" value="MazeGame" />   
-  <property name="mainClass" value="edu.ucsb.cs56.S12.jstaahl.issue769.MazeGui" />
+  <property name="mainClass" value="edu.ucsb.cs56.projects.games.cs56_games_maze.MazeGui" />
   <property environment="env"/> <!-- load the environment variables --> 
-  <property name="projectPath" value="cs56/S12/issues/0000769" />
+  <property name="projectPath" value="cs56/13S/e_west/cs56-games-maze" />
   <property name="webRoot" value="${env.HOME}/public_html" />
   <property name="webBaseURL" value="http://www.cs.ucsb.edu/~${env.USER}" />
   <property name="jwsDest" value="${webRoot}/${projectPath}/jws" />
@@ -19,7 +21,7 @@
     <javac srcdir="src" destdir="build" includeantruntime="false" debug="true" debuglevel="lines,vars,source" >
       <classpath>
 	<pathelement location="build"/>
-	<pathelement location="/cs/faculty/pconrad/public_html/cs56/lib/junit-4.8.2.jar"/>
+	<pathelement location="lib/junit-4.8.2.jar"/>
       </classpath>
     </javac>
   </target>
@@ -213,5 +215,6 @@ endCol: (numCols-1)
      <arg value='tree -ifQ src | grep \.java\"$ | xargs pr -n > numberedsource.txt'/>
    </exec>
 </target>
+
 
 </project>

@@ -1,4 +1,4 @@
-package edu.ucsb.cs56.S12.jstaahl.issue769;
+package edu.ucsb.cs56.projects.games.cs56_games_maze;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
@@ -6,6 +6,10 @@ import java.awt.*;
 
 /**
    Class where the MazeGui is constructed.  This is also the main class and contains the main method
+
+   @author Jake Staahl
+   @author Evan West
+   @version 5/14/13 for proj1, cs56, S13
 */
 
 public class MazeGui implements ActionListener{
@@ -26,6 +30,8 @@ public class MazeGui implements ActionListener{
     public static final int ALT_STEP_GEN = 2;
     public static final int NEW_STEP_GEN = 3;
 
+    /** Main method spins off thread to run controller and create Maze game
+     */
     public static void main(final String[] args){
 	SwingUtilities.invokeLater(new Runnable(){
 		public void run(){
@@ -34,6 +40,9 @@ public class MazeGui implements ActionListener{
 	    });
     }
 
+    /** Sole constructor for MazeGui (controller)
+	@param args Command-line arguments for settings (optional)
+     */
     public MazeGui(String[] args){
 
 	this.settings = new MazeSettings();
@@ -126,6 +135,8 @@ public class MazeGui implements ActionListener{
 	mc.requestFocus();
     }
     
+    /** Stepwise generates and displays maze
+     */
     public void run() {
 	// generate the maze in steps (rather than all at once using MazeGenerator.generate())
 	// repaint() in between each step to watch it grow
@@ -155,6 +166,8 @@ public class MazeGui implements ActionListener{
 	//mc.requestFocus();
     }
 
+    /** Creates new maze with current options, then displays and restarts game
+     */
     public void newMaze() {
 	timerBar.stopTimer();
 	frame.remove(mc);
@@ -183,14 +196,20 @@ public class MazeGui implements ActionListener{
 	run();
     }
 
+    /** Will reveal maze if necessary and show solution
+     */
     public void solveMaze() {
 	timerBar.stopTimer();
+	//reveal maze if hidden
+	grid.unmarkCellsInRadius(new Cell(0,0), grid.getCols()+grid.getRows(), MazeGrid.MARKER5);
 	// display the solution to the maze
 	mg.solve(new Cell(settings.startRow, settings.startCol), (short)0x0,
 	    new Cell(settings.endRow, settings.endCol));
 	mc.repaint();
     }
 
+    /** Callback for menu choice changes
+     */
     public void actionPerformed(ActionEvent e) {
 	if("multi_chain_gen".equals(e.getActionCommand())){
 	    settings.genType = MazeGui.MULTI_CHAIN_GEN;
@@ -211,6 +230,9 @@ public class MazeGui implements ActionListener{
 	}
     }
 
+    /** Call when user has successfully navigated the maze.
+	Eventually want to show win dialog.
+     */
     private void wonMaze(){
 	timerBar.stopTimer();
 	//JOptionPane.showMessageDialog(frame, "Congratulations, you won!\n It took you "+player.getNumMoves()+" moves.", "Victory",JOptionPane.INFORMATION_MESSAGE);
@@ -218,6 +240,9 @@ public class MazeGui implements ActionListener{
 	//mc.requestFocus();
     }
 
+    /** Maps current player movement keys to an action
+	@param a Action object to map all keys to
+     */
     private void remapPlayerKeys(Action a){
 	InputMap inputMap = ((JPanel)this.frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
 	inputMap.put(KeyStroke.getKeyStroke("W"),"player_up");
@@ -231,6 +256,8 @@ public class MazeGui implements ActionListener{
 	actionmap.put("player_right",a);
     }
 
+    /** Action object that responds to player move keyboard inputs
+     */
     class PlayerMoveAction extends AbstractAction{
 	public void actionPerformed(ActionEvent e){
 	    if(player!=null){

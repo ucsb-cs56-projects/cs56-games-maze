@@ -1,4 +1,4 @@
-package edu.ucsb.cs56.S12.jstaahl.issue769;
+package edu.ucsb.cs56.projects.games.cs56_games_maze;
 import java.util.ArrayList;
 
 /**
@@ -177,7 +177,7 @@ public class GenChain extends ArrayList<Cell> {
 	// Cells in the samedirection for distance number of Cells, or
 	// until it is no longer possible to do so
 	int randCell = (int)(Math.random()*adjUnvisited.size());
-	byte dir = this.grid.direction(this.get(this.size()-1), adjUnvisited.get(randCell));
+	short dir = this.grid.direction(this.get(this.size()-1), adjUnvisited.get(randCell));
 	this.grid.carvePath(this.get(this.size()-1), adjUnvisited.get(randCell));
 	this.add(adjUnvisited.get(randCell));
 	this.numCarvedCells++;
@@ -218,7 +218,7 @@ public class GenChain extends ArrayList<Cell> {
 	// Cells in the samedirection for distance number of Cells, or
 	// until it is no longer possible to do so
 	int randCell = (int)(Math.random()*adjUnvisited.size());
-	byte dir = this.grid.direction(this.get(startingIndex), adjUnvisited.get(randCell));
+	short dir = this.grid.direction(this.get(startingIndex), adjUnvisited.get(randCell));
 	this.grid.carvePath(this.get(startingIndex), adjUnvisited.get(randCell));
 	this.add(adjUnvisited.get(randCell));
 	this.numCarvedCells++;

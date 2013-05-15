@@ -1,4 +1,4 @@
-package edu.ucsb.cs56.S12.jstaahl.issue769;
+package edu.ucsb.cs56.projects.games.cs56_games_maze;
 import java.util.ArrayList;
 
 /** MultipleChainGenerator runs like a string of AltStepGenerator algorithms to create

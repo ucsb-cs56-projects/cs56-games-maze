@@ -1,4 +1,4 @@
-package edu.ucsb.cs56.S12.jstaahl.issue769;
+package edu.ucsb.cs56.projects.games.cs56_games_maze;
 
 /** NewStepGenerator runs off the newest added cell each step.
     The algorithm runs by creating a GenChain and calling stepNew() in each call to

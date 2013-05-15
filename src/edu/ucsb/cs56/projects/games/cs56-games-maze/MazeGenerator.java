@@ -1,4 +1,4 @@
-package edu.ucsb.cs56.S12.jstaahl.issue769;
+package edu.ucsb.cs56.projects.games.cs56_games_maze;
 
 /** An abstract MazeGenerator class. In order to create a MazeGenerator
     and implement your own maze generating algorithms, you must implement

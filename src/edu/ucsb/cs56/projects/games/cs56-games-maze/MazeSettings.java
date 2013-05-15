@@ -1,4 +1,11 @@
-package edu.ucsb.cs56.S12.jstaahl.issue769;
+package edu.ucsb.cs56.projects.games.cs56_games_maze;
+
+/**
+ Class to hold settings information for one game.
+ Made to be passed into settings editor window.
+ @author Evan West
+ @version 5/14/13 for proj1, cs56, S13
+*/
 
 public class MazeSettings
 {
@@ -16,6 +23,8 @@ public class MazeSettings
     public boolean progReveal;
     public int progRevealRadius;
 
+    /** No-arg constructor, creates all default values
+     */
     public MazeSettings(){
 	this.genChainLength=50;
 	this.genChainLengthFlux=50;

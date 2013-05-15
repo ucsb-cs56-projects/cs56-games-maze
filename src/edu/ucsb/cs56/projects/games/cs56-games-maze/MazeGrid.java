@@ -1,4 +1,4 @@
-package edu.ucsb.cs56.S12.jstaahl.issue769;
+package edu.ucsb.cs56.projects.games.cs56_games_maze;
 import java.util.ArrayList;
 
 
@@ -16,9 +16,11 @@ import java.util.ArrayList;
    of a Cell gets drawn. 
 
    @author Jakob Staahl
-   @version MazeGame CP1 for CS56, Spring 2012
+   @author Evan West
+   @version 5/14/13 for proj1, cs56, S13
    @see MazeGenerator
    @see MazeComponent
+   @see Cell
  */
 public class MazeGrid {
     /** The bit representing the direction right */
@@ -222,15 +224,29 @@ public class MazeGrid {
 	return ((this.grid[a.row][a.col] & marker) != 0);
     }
 
+    /**
+       Marks cells 0,0 and opposite corner as start and finish, respectively
+       Consider moving to controller
+     */
     public void markStartFinish(){
 	markCell(new Cell(0,0),MazeGrid.MARKER2);
 	markCell(new Cell(this.rows-1,this.cols-1),MazeGrid.MARKER1);
     }
 
+    /** Determines if a cell is equal to finish
+	@return Whether cell is the finish
+	@param a Cell to compare to finish
+     */
     public boolean isAtFinish(Cell a){
 	return a.equals(this.finish);
     }
-
+    
+    /**
+       Set this Marker for cells within radius or a
+       @param a the Cell of interest
+       @param radius the radius within which to add marker
+       @param marker the short information peratining to the marker we are removing from this cell
+    */
     public void markCellsInRadius(Cell a, int radius, short marker){
 	for(int i=0; i<cols; ++i){
 	    for(int j=0; j<rows; ++j){
@@ -243,6 +259,12 @@ public class MazeGrid {
 	}
     }
 
+    /**
+       Remove this Marker from cells within radius or a
+       @param a the Cell of interest
+       @param radius the radius within which to remove marker
+       @param marker the short information peratining to the marker we are removing from this cell
+    */
     public void unmarkCellsInRadius(Cell a, int radius, short marker){
 	for(int i=0; i<cols; ++i){
 	    for(int j=0; j<rows; ++j){
@@ -255,6 +277,10 @@ public class MazeGrid {
 	}
     }
 
+    /** Enable progressiveReveal mode, progressively removes doNotDraw markers in proximity to player as player moves
+	@param p MazePlayer around which to reveal the grid
+	@param progRevealRadius the radius around the player to reveal
+     */
     public void setProgReveal(MazePlayer p, int progRevealRadius){
 	this.progReveal=true;
 	this.progRevealRadius=progRevealRadius;
@@ -262,12 +288,16 @@ public class MazeGrid {
 	markCellsInRadius(new Cell(0,0),this.rows+this.cols,MazeGrid.MARKER5);
     }
 
+    /**
+       Rr-marks player position on grid, then reveals cells if ncecssary as per progressiveReveal settings
+     */
     public void updatePlayerPosition(){
 	this.markCell(player.getPosition(), MazeGrid.MARKER4);
 	if(this.progReveal)
 	    this.unmarkCellsInRadius(this.player.getPosition(), this.progRevealRadius, MazeGrid.MARKER5);
     }
 
+    /** @param MazePlayer to associate with this grid */
     public void setPlayer(MazePlayer p){
 	this.player=p;
     }

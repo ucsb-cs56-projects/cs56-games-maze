@@ -1,4 +1,4 @@
-package edu.ucsb.cs56.S12.jstaahl.issue769;
+package edu.ucsb.cs56.projects.games.cs56_games_maze;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
@@ -9,14 +9,14 @@ import java.lang.Math;
    A class extending JComponent that is used to draw all of the information held in
    a MazeGrid (the markers, as well as the remaining closed walls of each cell)
 
+   @author Jake Staahl
+   @author Evan West
+   @version 5/14/13 for proj1, cs56, S13
    @see MazeGrid
 */
 public class MazeComponent extends JComponent {
     private MazeGrid grid;
     private int cellWidth;    
-    private MazePlayer player;
-    private int progRevealRadius;
-    private boolean progReveal;
 
     /**
        Construct a MazeComponent to draw this MazeGrid grid, with the width of each
@@ -27,8 +27,6 @@ public class MazeComponent extends JComponent {
     public MazeComponent(MazeGrid grid, int cellWidth) {
 	this.grid = grid;
 	this.cellWidth = cellWidth;
-	this.player=null;
-	this.progReveal=false;
     }
 
     /**
@@ -150,17 +148,10 @@ public class MazeComponent extends JComponent {
 
     }
 
+    /** Sets MazeGrid associated with this MazeComponent
+	@param mg New MazeGrid to associate with this component
+     */
     public void setMazeGrid(MazeGrid mg){
 	this.grid=mg;
-    }
-
-    public void setProgReveal(MazePlayer p, int progRevealRadius){
-	this.player = p;
-	this.progReveal=true;
-    }
-    
-    public void unsetProgReveal(){
-	this.player=null;
-	this.progReveal=false;
     }
 }
