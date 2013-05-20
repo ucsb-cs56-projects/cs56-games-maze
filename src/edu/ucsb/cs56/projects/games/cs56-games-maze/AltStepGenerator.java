@@ -1,4 +1,4 @@
-package edu.ucsb.cs56.S12.jstaahl.issue769;
+package edu.ucsb.cs56.projects.games.cs56_games_maze;
 
 /** AltStepGenerator runs off the newest added cell then the oldest added cell each
     step. The maze it creates branches out in all directions from the random cell it
