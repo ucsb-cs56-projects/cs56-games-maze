@@ -222,7 +222,7 @@ public class MazeGui implements ActionListener{
 	}
 	else if("settings".equals(e.getActionCommand())){
 	    //show settings dialog
-	    //JOptionPane.showConfirmDialog(frame, new MazeSettingsPanel(this.settings));
+	    JOptionPane.showConfirmDialog(frame, new MazeSettingsPanel(this.settings), "Settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
 	}
 	else if("prog_reveal".equals(e.getActionCommand())){
 	    AbstractButton button = (AbstractButton)e.getSource();
