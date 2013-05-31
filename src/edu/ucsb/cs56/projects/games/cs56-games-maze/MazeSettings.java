@@ -22,6 +22,8 @@ public class MazeSettings
     public int genType;
     public boolean progReveal;
     public int progRevealRadius;
+    public boolean progDraw;
+    public int progDrawSpeed;
 
     /** No-arg constructor, creates all default values
      */
@@ -39,5 +41,7 @@ public class MazeSettings
 	this.genType=1;
 	this.progReveal=false;
 	this.progRevealRadius=3;
+	this.progDraw=true;
+	this.progDrawSpeed=10;
     }
 }

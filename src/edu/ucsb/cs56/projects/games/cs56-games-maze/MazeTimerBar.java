@@ -6,6 +6,8 @@ import java.util.Date;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
+import java.awt.event.*;
+
 
 /**
    Represents the control bar which contains the game timer, New Maze and Solve Maze buttons
@@ -13,7 +15,7 @@ import java.text.SimpleDateFormat;
    @author Evan West
    @version 5/14/13 for proj1, cs56, S13
 */
-public class MazeTimerBar extends JPanel{
+public class MazeTimerBar extends JPanel implements FocusListener{
 
     private JTextField timerField;
     private JButton newButton;
@@ -50,6 +52,10 @@ public class MazeTimerBar extends JPanel{
 	    });
 
 	this.timerFormat = new SimpleDateFormat("mm:ss:SSS");
+
+	//this.timerField.setFocusable(false);
+	//setFocusable(false);
+	addFocusListener(this);
     }
 
     /** Prints component, currently unnecessary override
@@ -88,6 +94,24 @@ public class MazeTimerBar extends JPanel{
     public long stopTimer(){
 	t.stop();
 	return System.currentTimeMillis()-this.startTime;
+    }
+
+    public void focusGained(FocusEvent e) {
+        displayMessage("Focus gained", e);
+    }
+    
+    public void focusLost(FocusEvent e) {
+        displayMessage("Focus lost", e);
+    }
+    
+    void displayMessage(String prefix, FocusEvent e) {
+        System.out.println(prefix
+	    + (e.isTemporary() ? " (temporary):" : ":")
+	    +  e.getComponent().getClass().getName()
+	    + "; Opposite component: " 
+	    + (e.getOppositeComponent() != null ?
+			   e.getOppositeComponent().getClass().getName() : "null")
+	    + "\n"); 
     }
 
 }

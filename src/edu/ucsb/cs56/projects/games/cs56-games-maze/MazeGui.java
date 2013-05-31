@@ -2,6 +2,7 @@ package edu.ucsb.cs56.projects.games.cs56_games_maze;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
+import java.beans.*;
 
 
 /**
@@ -25,6 +26,8 @@ public class MazeGui implements ActionListener{
     private Timer drawTimer;
     private MazeSettings settings;
     private Action playerMoveAction;
+
+    private MazeSettingsDialog settingsDialog;
     
     public static final int MULTI_CHAIN_GEN = 1;
     public static final int ALT_STEP_GEN = 2;
@@ -75,7 +78,7 @@ public class MazeGui implements ActionListener{
 	// initialize the JFrame
 	this.frame = new JFrame();
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	frame.setTitle("Maze Game by Jakob Staahl");
+	frame.setTitle("Maze Game");
 
 	//initialize timer/controls bar
 	this.timerBar = new MazeTimerBar(this);
@@ -119,51 +122,61 @@ public class MazeGui implements ActionListener{
 	// initialize the MazeGrid, MazeComponent, and MazeGenerator
 	this.grid = new MazeGrid(settings.rows, settings.cols);
 	this.mc = new MazeComponent(grid, settings.cellWidth);
-	mc.setFocusable(true);
 	frame.add(mc);
 	frame.pack();
 	frame.setVisible(true);
 	this.mg = new MultipleChainGenerator(grid, settings.genChainLength, settings.genChainLengthFlux);
 
 	//initialize the player
-	this.player = new MazePlayer(this.grid);
+	this.player = new MazePlayer(this.grid, new Cell(settings.startRow,settings.startCol));
 	grid.setPlayer(player);
+
 	//set up player keybinds
 	this.playerMoveAction = new PlayerMoveAction();
-	//mc.requestFocus();
 	remapPlayerKeys(this.playerMoveAction);
-	mc.requestFocus();
+
+	//init settings Dialog
+	settingsDialog = new MazeSettingsDialog(settings);
+	settingsDialog.setLocationRelativeTo(frame);
     }
     
     /** Stepwise generates and displays maze
      */
     public void run() {
-	// generate the maze in steps (rather than all at once using MazeGenerator.generate())
+	// generate the maze in steps if asked (rather than all at once using MazeGenerator.generate())
 	// repaint() in between each step to watch it grow
-	// for performance only draw every 10 steps
-	if(drawTimer!=null)
-	    drawTimer.stop();
-	drawTimer = new Timer(1, new ActionListener() {
-		int i=0;
-		public void actionPerformed(ActionEvent e){
-		    ++i;
-		    if(mg.step() && i%10==0)
-			frame.repaint();
-		    else if(i%10==0){
-			//done drawing
-			((Timer)e.getSource()).stop();
-			timerBar.startTimer();
-			grid.markStartFinish();
-			if(settings.progReveal)
-			    grid.setProgReveal(player, settings.progRevealRadius);
-			grid.updatePlayerPosition();
-			mc.repaint();
-			//mc.requestFocusInWindow();
+	if(settings.progDraw){
+	    if(drawTimer!=null)
+		drawTimer.stop();
+	    drawTimer = new Timer(1, new ActionListener() {
+		    int i=0;
+		    public void actionPerformed(ActionEvent e){
+			++i;
+			if(mg.step() && i%(settings.progDrawSpeed)==0)
+			    frame.repaint();
+			else if(i%(settings.progDrawSpeed)==0){
+			    //done drawing
+			    ((Timer)e.getSource()).stop();
+			    timerBar.startTimer();
+			    grid.markStartFinish(new Cell(settings.startRow,settings.startCol),new Cell(settings.endRow,settings.endCol));
+			    if(settings.progReveal)
+				grid.setProgReveal(player, settings.progRevealRadius);
+			    grid.updatePlayerPosition();
+			    mc.repaint();
+			}
 		    }
-		}
-	    });
-	drawTimer.start();
-	//mc.requestFocus();
+		});
+	    drawTimer.start();
+	}
+	else{ //quick draw
+	    mg.generate();
+	    timerBar.startTimer();
+	    grid.markStartFinish(new Cell(settings.startRow,settings.startCol),new Cell(settings.endRow,settings.endCol));
+	    if(settings.progReveal)
+		grid.setProgReveal(player, settings.progRevealRadius);
+	    grid.updatePlayerPosition();
+	    mc.repaint();   
+	}
     }
 
     /** Creates new maze with current options, then displays and restarts game
@@ -174,7 +187,6 @@ public class MazeGui implements ActionListener{
 	this.grid = new MazeGrid(settings.rows, settings.cols);
 	this.mc = new MazeComponent(grid, settings.cellWidth);
 	mc.setVisible(true);
-	mc.setFocusable(true);
 	frame.add(mc);
         frame.pack();
 	frame.setVisible(true);
@@ -189,10 +201,8 @@ public class MazeGui implements ActionListener{
 	    this.mg = new NewStepGenerator(grid, settings.stepGenDistance);
 	    break;
 	}
-	this.player = new MazePlayer(this.grid);
+	this.player = new MazePlayer(this.grid, new Cell(settings.startRow,settings.startCol));
 	Action playerMoveAction = new PlayerMoveAction();
-	//remapPlayerKeys(playerMoveAction);
-	//mc.requestFocus();
 	run();
     }
 
@@ -205,6 +215,7 @@ public class MazeGui implements ActionListener{
 	// display the solution to the maze
 	mg.solve(new Cell(settings.startRow, settings.startCol), (short)0x0,
 	    new Cell(settings.endRow, settings.endCol));
+	this.player=null;
 	mc.repaint();
     }
 
@@ -221,13 +232,13 @@ public class MazeGui implements ActionListener{
 	    settings.genType = MazeGui.NEW_STEP_GEN;
 	}
 	else if("settings".equals(e.getActionCommand())){
-	    //show settings dialog
-	    JOptionPane.showConfirmDialog(frame, new MazeSettingsPanel(this.settings), "Settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
+	    settingsDialog.setVisible(true);
 	}
 	else if("prog_reveal".equals(e.getActionCommand())){
 	    AbstractButton button = (AbstractButton)e.getSource();
 	    settings.progReveal=button.getModel().isSelected();
 	}
+
     }
 
     /** Call when user has successfully navigated the maze.
@@ -235,9 +246,8 @@ public class MazeGui implements ActionListener{
      */
     private void wonMaze(){
 	timerBar.stopTimer();
-	//JOptionPane.showMessageDialog(frame, "Congratulations, you won!\n It took you "+player.getNumMoves()+" moves.", "Victory",JOptionPane.INFORMATION_MESSAGE);
+	JOptionPane.showMessageDialog(frame, "Congratulations, you won!\n It took you "+player.getNumMoves()+" moves.", "Victory",JOptionPane.INFORMATION_MESSAGE);
 	this.player=null;
-	//mc.requestFocus();
     }
 
     /** Maps current player movement keys to an action
@@ -284,4 +294,5 @@ public class MazeGui implements ActionListener{
 	    }
 	}
     }
+
 }

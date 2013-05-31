@@ -49,6 +49,7 @@ public class MazeGrid {
     private MazePlayer player;
     private int progRevealRadius;
     private boolean progReveal;
+    private Cell start;
     private Cell finish;
 
     /**
@@ -228,9 +229,11 @@ public class MazeGrid {
        Marks cells 0,0 and opposite corner as start and finish, respectively
        Consider moving to controller
      */
-    public void markStartFinish(){
-	markCell(new Cell(0,0),MazeGrid.MARKER2);
-	markCell(new Cell(this.rows-1,this.cols-1),MazeGrid.MARKER1);
+    public void markStartFinish(Cell start, Cell finish){
+	markCell(start,MazeGrid.MARKER2);
+	this.start=start;
+	markCell(finish,MazeGrid.MARKER1);
+	this.finish=finish;
     }
 
     /** Determines if a cell is equal to finish

@@ -2,6 +2,7 @@ package edu.ucsb.cs56.projects.games.cs56_games_maze;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
+import java.awt.event.*;
 import java.lang.Math;
 
 
@@ -14,7 +15,7 @@ import java.lang.Math;
    @version 5/14/13 for proj1, cs56, S13
    @see MazeGrid
 */
-public class MazeComponent extends JComponent {
+public class MazeComponent extends JComponent implements MouseListener{
     private MazeGrid grid;
     private int cellWidth;    
 
@@ -27,6 +28,8 @@ public class MazeComponent extends JComponent {
     public MazeComponent(MazeGrid grid, int cellWidth) {
 	this.grid = grid;
 	this.cellWidth = cellWidth;
+	addMouseListener(this);
+	this.setFocusable(true);
     }
 
     /**
@@ -154,4 +157,13 @@ public class MazeComponent extends JComponent {
     public void setMazeGrid(MazeGrid mg){
 	this.grid=mg;
     }
+
+    public void mouseClicked(MouseEvent e){
+	requestFocusInWindow();
+    }
+
+    public void mouseExited(MouseEvent e){}
+    public void mouseEntered(MouseEvent e){}
+    public void mouseReleased(MouseEvent e){}
+    public void mousePressed(MouseEvent e){}
 }

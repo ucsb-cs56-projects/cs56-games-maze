@@ -3,6 +3,10 @@ package edu.ucsb.cs56.projects.games.cs56_games_maze;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.text.*;
+import javax.swing.border.*;
+import java.awt.event.*;
+import java.beans.*;
+
 
 
 public class MazeSettingsPanel extends JPanel{
@@ -20,12 +24,17 @@ public class MazeSettingsPanel extends JPanel{
     private JTextField startColField;
     private JTextField endRowField;
     private JTextField endColField;
-    private JTextField genTypeField;
     private JTextField progRevealRadiusField;
-    private JCheckBox progRevealCB;
+
+    private JCheckBox progDrawCB;
+    private JTextField progDrawSpeedField;
+
+    private JButton okButton;
+    private JButton cancelButton;
 
     private PlainDocument doc;
     private IntegerDocumentFilter intDocumentFilter;
+    private Border padding;
 
     public MazeSettingsPanel(MazeSettings settings){
 	super();
@@ -34,26 +43,13 @@ public class MazeSettingsPanel extends JPanel{
 	this.layout.setVgap(10);
 	this.setLayout(this.layout);
 
+	padding = BorderFactory.createEmptyBorder(20,20,15,10);
+	this.setBorder(padding);
+
 	initFields();
 	updateFieldValues();
     }
-
-    /** writes changes in UI elements back to settings file
-     */
-    public void writeback(){
-	this.settings.genChainLength = Integer.parseInt(genChainLengthField.getText());
-	this.settings.genChainLengthFlux = Integer.parseInt(genChainLengthFluxField.getText());
-	this.settings.stepGenDistance = Integer.parseInt(stepGenDistanceField.getText());
-	this.settings.rows = Integer.parseInt(rowsField.getText());
-	this.settings.cols = Integer.parseInt(colsField.getText());
-	this.settings.cellWidth = Integer.parseInt(cellWidthField.getText());
-	this.settings.startRow = Integer.parseInt(startRowField.getText());
-	this.settings.startCol = Integer.parseInt(startColField.getText());
-	this.settings.endRow = Integer.parseInt(endRowField.getText());
-	this.settings.endCol = Integer.parseInt(endColField.getText());
-	this.settings.genType = Integer.parseInt(genTypeField.getText());
-	this.settings.progRevealRadius = Integer.parseInt(progRevealRadiusField.getText());
-    }
+ 
 
     private void initFields(){
 	intDocumentFilter = new IntegerDocumentFilter();
@@ -82,6 +78,7 @@ public class MazeSettingsPanel extends JPanel{
 	this.add(new JLabel("Rows"));
 
 	rowsField = new JTextField(5);
+	rowsField.setToolTipText("Number of total rows in maze");
 	doc = (PlainDocument)rowsField.getDocument();
 	doc.setDocumentFilter(intDocumentFilter);
 	this.add(rowsField);
@@ -89,6 +86,7 @@ public class MazeSettingsPanel extends JPanel{
 	this.add(new JLabel("Columns"));
 
 	colsField = new JTextField(5);
+	colsField.setToolTipText("Number of total columns in maze.");
 	doc = (PlainDocument)colsField.getDocument();
 	doc.setDocumentFilter(intDocumentFilter);
 	this.add(colsField);
@@ -96,6 +94,7 @@ public class MazeSettingsPanel extends JPanel{
 	this.add(new JLabel("Cell Width"));
 
 	cellWidthField = new JTextField(5);
+	cellWidthField.setToolTipText("Width of a single cell in pixels");
 	doc = (PlainDocument)cellWidthField.getDocument();
 	doc.setDocumentFilter(intDocumentFilter);
 	this.add(cellWidthField);
@@ -103,6 +102,7 @@ public class MazeSettingsPanel extends JPanel{
 	this.add(new JLabel("Start Row"));
 
 	startRowField = new JTextField(5);
+	startRowField.setToolTipText("Row of starting position (0,0 is top left)");
 	doc = (PlainDocument)startRowField.getDocument();
 	doc.setDocumentFilter(intDocumentFilter);
 	this.add(startRowField);
@@ -110,6 +110,7 @@ public class MazeSettingsPanel extends JPanel{
 	this.add(new JLabel("Start Column"));
 
 	startColField = new JTextField(5);
+	startColField.setToolTipText("Column of starting position (0,0 is top left)");
 	doc = (PlainDocument)startColField.getDocument();
 	doc.setDocumentFilter(intDocumentFilter);
 	this.add(startColField);
@@ -117,6 +118,7 @@ public class MazeSettingsPanel extends JPanel{
 	this.add(new JLabel("End Row"));
 
 	endRowField = new JTextField(5);
+	endRowField.setToolTipText("Row of ending (goal) position (0,0 is top left)");
 	doc = (PlainDocument)endRowField.getDocument();
 	doc.setDocumentFilter(intDocumentFilter);
 	this.add(endRowField);
@@ -124,16 +126,10 @@ public class MazeSettingsPanel extends JPanel{
 	this.add(new JLabel("End Column"));
 
 	endColField = new JTextField(5);
+	endColField.setToolTipText("Column of ending (goal) position (0,0 is top left)");
 	doc = (PlainDocument)endColField.getDocument();
 	doc.setDocumentFilter(intDocumentFilter);
 	this.add(endColField);
-
-	this.add(new JLabel("Generator Type"));
-
-	genTypeField = new JTextField(5);
-	doc = (PlainDocument)genTypeField.getDocument();
-	doc.setDocumentFilter(intDocumentFilter);
-	this.add(genTypeField);
 
 	this.add(new JLabel("Progressive Reveal Radius"));
 
@@ -141,6 +137,60 @@ public class MazeSettingsPanel extends JPanel{
 	doc = (PlainDocument)progRevealRadiusField.getDocument();
 	doc.setDocumentFilter(intDocumentFilter);
 	this.add(progRevealRadiusField);
+
+	this.add(new JLabel("Progressive Draw"));
+
+	progDrawCB = new JCheckBox();
+	progDrawCB.setToolTipText("Whether maze should be drawn progressively or not (immediately)");
+	this.add(progDrawCB);
+
+	this.add(new JLabel("Progressive Draw Speed"));
+
+	progDrawSpeedField = new JTextField(5);
+	progDrawSpeedField.setToolTipText("Size of chunks in which maze should be drawn progressively (larger is faster)");
+	doc = (PlainDocument)progDrawSpeedField.getDocument();
+	doc.setDocumentFilter(intDocumentFilter);
+	this.add(progDrawSpeedField);
+
+
+
+
+	okButton = new JButton("OK");
+	okButton.addActionListener(new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+		    writeback();
+		    JDialog parentDialog = (JDialog)(getRootPane().getParent());
+		    parentDialog.setVisible(false);
+		}
+	    });
+	this.add(okButton);
+
+	cancelButton = new JButton("Cancel");
+	cancelButton.addActionListener(new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+		    JDialog parentDialog = (JDialog)(getRootPane().getParent());
+		    parentDialog.setVisible(false);
+		}
+	    });
+	this.add(cancelButton);
+    }
+
+    /** writes changes in UI elements back to settings file
+     */
+    public void writeback(){
+	this.settings.genChainLength = Integer.parseInt(genChainLengthField.getText());
+	this.settings.genChainLengthFlux = Integer.parseInt(genChainLengthFluxField.getText());
+	this.settings.stepGenDistance = Integer.parseInt(stepGenDistanceField.getText());
+	this.settings.rows = Integer.parseInt(rowsField.getText());
+	this.settings.cols = Integer.parseInt(colsField.getText());
+	this.settings.cellWidth = Integer.parseInt(cellWidthField.getText());
+	this.settings.startRow = Integer.parseInt(startRowField.getText());
+	this.settings.startCol = Integer.parseInt(startColField.getText());
+	this.settings.endRow = Integer.parseInt(endRowField.getText());
+	this.settings.endCol = Integer.parseInt(endColField.getText());
+	this.settings.progRevealRadius = Integer.parseInt(progRevealRadiusField.getText());
+	this.settings.progDraw = progDrawCB.isSelected();
+	this.settings.progDrawSpeed = Integer.parseInt(progDrawSpeedField.getText());
     }
 
     private void updateFieldValues(){
@@ -154,14 +204,13 @@ public class MazeSettingsPanel extends JPanel{
 	startColField.setText(String.valueOf(settings.startCol));
 	endRowField.setText(String.valueOf(settings.endRow));
 	endColField.setText(String.valueOf(settings.endCol));
-	genTypeField.setText(String.valueOf(settings.genType));
 	progRevealRadiusField.setText(String.valueOf(settings.progRevealRadius));
+	progDrawCB.setSelected(settings.progDraw);
+	progDrawSpeedField.setText(String.valueOf(settings.progDrawSpeed));
     }
 
     public void paintComponent(Graphics g){
-	Graphics2D g2 = (Graphics2D)g;
-
-
-	super.paintComponent(g);	
+	updateFieldValues();
+	super.paintComponent(g);
     }
 }

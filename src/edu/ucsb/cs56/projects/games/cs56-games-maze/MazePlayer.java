@@ -23,6 +23,14 @@ public class MazePlayer{
 	this.grid.setPlayer(this);
     }
 
+    public MazePlayer(MazeGrid grid, Cell position){
+	this.grid=grid;
+	this.position=position;
+	this.numMoves=0;
+	this.visible=false;
+	this.grid.setPlayer(this);
+    }
+
     /** Moves the player one space in specificed direction is possible, otherwise does nothing
 	@param direction Bitwise indicator of direction, as defined in MazeGui
 	@see MazeGui
