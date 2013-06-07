@@ -1,12 +1,14 @@
 package edu.ucsb.cs56.projects.games.cs56_games_maze;
 
+import java.io.Serializable;
+
 /**
    Class to represent active player in maze game
 
    @author Evan West
    @version 5/14/13 for proj1, cs56, S13
 */
-public class MazePlayer{
+public class MazePlayer implements Serializable{
     private Cell position;
     private MazeGrid grid;
     private int numMoves;
@@ -16,8 +18,16 @@ public class MazePlayer{
 	@param grid The MazeGrid on which the player will be played
      */
     public MazePlayer(MazeGrid grid){
-	this.grid = grid;
-	this.position = new Cell(0,0);
+	this(grid,new Cell(0,0));
+    }
+
+    /** Constructor that creates player at specified position
+	@param grid The MazeGrid on which the player will be played
+	@param position The position to create the player at
+     */
+    public MazePlayer(MazeGrid grid, Cell position){
+	this.grid=grid;
+	this.position=position;
 	this.numMoves=0;
 	this.visible=false;
 	this.grid.setPlayer(this);

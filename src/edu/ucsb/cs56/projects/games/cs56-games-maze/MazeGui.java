@@ -1,7 +1,11 @@
 package edu.ucsb.cs56.projects.games.cs56_games_maze;
 import javax.swing.*;
+import javax.swing.filechooser.*;
 import java.awt.event.*;
 import java.awt.*;
+import java.beans.*;
+
+import java.io.*;
 
 
 /**
@@ -24,7 +28,13 @@ public class MazeGui implements ActionListener{
     private MazePlayer player;
     private Timer drawTimer;
     private MazeSettings settings;
+    private MazeSettings oldSettings;
     private Action playerMoveAction;
+    private MazeGameSave gameSave;
+
+    private JFileChooser fc;
+    private javax.swing.filechooser.FileFilter fileFilter;
+    private MazeSettingsDialog settingsDialog;
     
     public static final int MULTI_CHAIN_GEN = 1;
     public static final int ALT_STEP_GEN = 2;
@@ -46,6 +56,8 @@ public class MazeGui implements ActionListener{
     public MazeGui(String[] args){
 
 	this.settings = new MazeSettings();
+	this.oldSettings = new MazeSettings();
+	this.gameSave = null;
 
 	// check for command line arguments, initialize variables accordingly
 	if (args.length != 0 && args.length != 2 && args.length != 5 && args.length != 9) {
@@ -75,7 +87,7 @@ public class MazeGui implements ActionListener{
 	// initialize the JFrame
 	this.frame = new JFrame();
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	frame.setTitle("Maze Game by Jakob Staahl");
+	frame.setTitle("Maze Game");
 
 	//initialize timer/controls bar
 	this.timerBar = new MazeTimerBar(this);
@@ -111,6 +123,16 @@ public class MazeGui implements ActionListener{
 	menuItem.setActionCommand("settings");
 	menuItem.addActionListener(this);
 	menu.add(menuItem);
+
+	menuItem = new JMenuItem("Save...");
+	menuItem.setActionCommand("save");
+	menuItem.addActionListener(this);
+	menu.add(menuItem);
+
+	menuItem = new JMenuItem("Load...");
+	menuItem.setActionCommand("load");
+	menuItem.addActionListener(this);
+	menu.add(menuItem);
 	
 	this.menuBar.add(this.menu);
 
@@ -119,51 +141,69 @@ public class MazeGui implements ActionListener{
 	// initialize the MazeGrid, MazeComponent, and MazeGenerator
 	this.grid = new MazeGrid(settings.rows, settings.cols);
 	this.mc = new MazeComponent(grid, settings.cellWidth);
-	mc.setFocusable(true);
 	frame.add(mc);
 	frame.pack();
 	frame.setVisible(true);
 	this.mg = new MultipleChainGenerator(grid, settings.genChainLength, settings.genChainLengthFlux);
 
 	//initialize the player
-	this.player = new MazePlayer(this.grid);
+	this.player = new MazePlayer(this.grid, new Cell(settings.startRow,settings.startCol));
 	grid.setPlayer(player);
+
 	//set up player keybinds
 	this.playerMoveAction = new PlayerMoveAction();
-	//mc.requestFocus();
 	remapPlayerKeys(this.playerMoveAction);
-	mc.requestFocus();
+
+	//init settings Dialog
+	settingsDialog = new MazeSettingsDialog(settings);
+	settingsDialog.setLocationRelativeTo(frame);
+
+	//init file chooser window
+	fc = new JFileChooser();
+	fileFilter = new FileNameExtensionFilter("MazeGame saves (*.mzgs)", "mzgs");
+	fc.addChoosableFileFilter(fileFilter);
+	fc.setFileFilter(fileFilter);
     }
+
+
     
     /** Stepwise generates and displays maze
      */
     public void run() {
-	// generate the maze in steps (rather than all at once using MazeGenerator.generate())
+	// generate the maze in steps if asked (rather than all at once using MazeGenerator.generate())
 	// repaint() in between each step to watch it grow
-	// for performance only draw every 10 steps
-	if(drawTimer!=null)
-	    drawTimer.stop();
-	drawTimer = new Timer(1, new ActionListener() {
-		int i=0;
-		public void actionPerformed(ActionEvent e){
-		    ++i;
-		    if(mg.step() && i%10==0)
-			frame.repaint();
-		    else if(i%10==0){
-			//done drawing
-			((Timer)e.getSource()).stop();
-			timerBar.startTimer();
-			grid.markStartFinish();
-			if(settings.progReveal)
-			    grid.setProgReveal(player, settings.progRevealRadius);
-			grid.updatePlayerPosition();
-			mc.repaint();
-			//mc.requestFocusInWindow();
+	if(settings.progDraw){
+	    if(drawTimer!=null)
+		drawTimer.stop();
+	    drawTimer = new Timer(1, new ActionListener() {
+		    int i=0;
+		    public void actionPerformed(ActionEvent e){
+			++i;
+			if(mg.step() && i%(settings.progDrawSpeed)==0)
+			    frame.repaint();
+			else if(i%(settings.progDrawSpeed)==0){
+			    //done drawing
+			    ((Timer)e.getSource()).stop();
+			    timerBar.startTimer();
+			    grid.markStartFinish(new Cell(settings.startRow,settings.startCol),new Cell(settings.endRow,settings.endCol));
+			    if(settings.progReveal)
+				grid.setProgReveal(player, settings.progRevealRadius);
+			    grid.updatePlayerPosition();
+			    mc.repaint();
+			}
 		    }
-		}
-	    });
-	drawTimer.start();
-	//mc.requestFocus();
+		});
+	    drawTimer.start();
+	}
+	else{ //quick draw
+	    mg.generate();
+	    timerBar.startTimer();
+	    grid.markStartFinish(new Cell(settings.startRow,settings.startCol),new Cell(settings.endRow,settings.endCol));
+	    if(settings.progReveal)
+		grid.setProgReveal(player, settings.progRevealRadius);
+	    grid.updatePlayerPosition();
+	    mc.repaint();   
+	}
     }
 
     /** Creates new maze with current options, then displays and restarts game
@@ -171,10 +211,11 @@ public class MazeGui implements ActionListener{
     public void newMaze() {
 	timerBar.stopTimer();
 	frame.remove(mc);
+	this.gameSave = null;
+	this.oldSettings=new MazeSettings(settings);
 	this.grid = new MazeGrid(settings.rows, settings.cols);
 	this.mc = new MazeComponent(grid, settings.cellWidth);
 	mc.setVisible(true);
-	mc.setFocusable(true);
 	frame.add(mc);
         frame.pack();
 	frame.setVisible(true);
@@ -189,11 +230,36 @@ public class MazeGui implements ActionListener{
 	    this.mg = new NewStepGenerator(grid, settings.stepGenDistance);
 	    break;
 	}
-	this.player = new MazePlayer(this.grid);
+	this.player = new MazePlayer(this.grid, new Cell(settings.startRow,settings.startCol));
 	Action playerMoveAction = new PlayerMoveAction();
-	//remapPlayerKeys(playerMoveAction);
-	//mc.requestFocus();
 	run();
+    }
+
+    /** Creates a new maze from saved game state, possibly including grid, settings, time, player position
+	@param game Game state to resume
+    */
+    public void newMaze(MazeGameSave game){
+	if(game == null){
+	    System.err.println("Error reading MazeSaveGame object");
+	    newMaze();
+	}
+	else{
+	    timerBar.stopTimer();
+	    frame.remove(mc);
+	    this.settings=game.getSettings();
+	    this.grid=game.getGrid();
+	    this.mc=new MazeComponent(grid, settings.cellWidth);
+	    timerBar.setTimeElapsed(game.getTimeElapsed());
+	    mc.setVisible(true);
+	    frame.add(mc);
+	    frame.pack();
+	    frame.setVisible(true);
+	    this.player=game.getPlayer();
+	    if(game.hasHighScores()){
+		JOptionPane.showMessageDialog(this.frame, "This maze was completed in:\n "+game.getHighScore().getTime()/1000.0+" by "+game.getHighScore().getName()+" \n Can you do better?");
+	    }
+	    run();
+	}
     }
 
     /** Will reveal maze if necessary and show solution
@@ -205,6 +271,7 @@ public class MazeGui implements ActionListener{
 	// display the solution to the maze
 	mg.solve(new Cell(settings.startRow, settings.startCol), (short)0x0,
 	    new Cell(settings.endRow, settings.endCol));
+	this.player=null;
 	mc.repaint();
     }
 
@@ -221,13 +288,64 @@ public class MazeGui implements ActionListener{
 	    settings.genType = MazeGui.NEW_STEP_GEN;
 	}
 	else if("settings".equals(e.getActionCommand())){
-	    //show settings dialog
-	    //JOptionPane.showConfirmDialog(frame, new MazeSettingsPanel(this.settings));
+	    settingsDialog.setVisible(true);
 	}
 	else if("prog_reveal".equals(e.getActionCommand())){
 	    AbstractButton button = (AbstractButton)e.getSource();
 	    settings.progReveal=button.getModel().isSelected();
 	}
+	else if("save".equals(e.getActionCommand())){
+	    //prompt user and write to file
+	    int returnVal = fc.showSaveDialog(this.frame);
+	    if(returnVal == JFileChooser.APPROVE_OPTION){
+		File file;
+		//System.out.println(fc.getSelectedFile().toString());
+		if(fc.getSelectedFile().toString().length()>=5 && fc.getSelectedFile().toString().substring(fc.getSelectedFile().toString().length()-5).equals(".mzgs"))
+		    file = fc.getSelectedFile();
+		else
+		    file = new File(fc.getSelectedFile()+".mzgs");
+		FileOutputStream fout;
+		ObjectOutputStream oout;
+		try{ 
+		    fout = new FileOutputStream(file);
+		    oout = new ObjectOutputStream(fout);
+		    timerBar.stopTimer();
+		    if(this.gameSave == null){
+			oout.writeObject(new MazeGameSave(this.grid, this.oldSettings,this.player,this.timerBar.getTimeElapsed()));
+		    }
+		    else{
+			this.gameSave.setTimeElapsed(this.timerBar.getTimeElapsed());
+			oout.writeObject(this.gameSave);
+		    }
+		    oout.close();
+		    fout.close();
+		}
+		catch(IOException ioe){ ioe.printStackTrace(); }
+		player=null;
+		this.mc.setVisible(false);
+	    }
+	}
+	else if("load".equals(e.getActionCommand())){
+	    int returnVal = fc.showOpenDialog(this.frame);
+	    if(returnVal == JFileChooser.APPROVE_OPTION){
+		File file = fc.getSelectedFile();
+		FileInputStream fin;
+		ObjectInputStream oin;
+		try{ 
+		    fin = new FileInputStream(file);
+		    oin = new ObjectInputStream(fin);
+		    MazeGameSave game = (MazeGameSave)oin.readObject();
+		    oin.close();
+		    fin.close();
+		    this.gameSave = game;
+		    newMaze(game);
+		}
+		catch(IOException | ClassNotFoundException ex){
+		    System.err.println("Invalid file specified.");
+		    ex.printStackTrace(); }
+	    }
+	}
+
     }
 
     /** Call when user has successfully navigated the maze.
@@ -235,9 +353,41 @@ public class MazeGui implements ActionListener{
      */
     private void wonMaze(){
 	timerBar.stopTimer();
-	//JOptionPane.showMessageDialog(frame, "Congratulations, you won!\n It took you "+player.getNumMoves()+" moves.", "Victory",JOptionPane.INFORMATION_MESSAGE);
+	String message = "Congratulations, you won!\nIt took you "+player.getNumMoves()+" moves and "+timerBar.getTimeElapsed()/1000.0+" seconds.\n";
+	if(this.gameSave != null && this.gameSave.hasHighScores() && this.gameSave.getTimeElapsed()==0){
+	    if(timerBar.getTimeElapsed()<gameSave.getHighScore().getTime()){
+		message+="You beat "+gameSave.getHighScore().getName()+" with "+gameSave.getHighScore().getTime()/1000.0+"\n";
+	    }
+	}
+	message+="Would you like to save this score to this maze?\n";
+	int choice = JOptionPane.showConfirmDialog(frame, message, "Victory",JOptionPane.YES_NO_OPTION);
+	if(choice == JOptionPane.YES_OPTION){
+	    //prompt user and write to file
+	    int returnVal = fc.showSaveDialog(this.frame);
+	    if(returnVal == JFileChooser.APPROVE_OPTION){
+		File file = fc.getSelectedFile();
+		FileOutputStream fout;
+		ObjectOutputStream oout;
+		try{ 
+		    fout = new FileOutputStream(file);
+		    oout = new ObjectOutputStream(fout);
+		    this.timerBar.stopTimer();
+		    if(this.gameSave == null){
+			this.gameSave = new MazeGameSave(this.grid, this.oldSettings);
+		    }
+		    String name = JOptionPane.showInputDialog(this.frame,"Enter Name","Enter your name:");
+		    gameSave.addHighScore(new MazeHighScore(name, this.timerBar.getTimeElapsed()));
+		    gameSave.setTimeElapsed(0);
+		    gameSave.resetPlayer();
+		    oout.writeObject(gameSave);
+		    oout.close();
+		    fout.close();
+		}
+		catch(IOException ioe){ ioe.printStackTrace(); }
+	    }
+
+	}
 	this.player=null;
-	//mc.requestFocus();
     }
 
     /** Maps current player movement keys to an action
@@ -284,4 +434,5 @@ public class MazeGui implements ActionListener{
 	    }
 	}
     }
+
 }

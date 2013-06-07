@@ -1,5 +1,7 @@
 package edu.ucsb.cs56.projects.games.cs56_games_maze;
 
+import java.io.Serializable;
+
 /** A Cell is just an object that holds a set of coordinates (row, col)
     the coordinates are public instance variables and accessible by
     cell.row and cell.col
@@ -8,7 +10,7 @@ package edu.ucsb.cs56.projects.games.cs56_games_maze;
     @version MazeGame CP1 for CS56, Spring 2012
 */
 
-public class Cell {
+public class Cell implements Serializable{
     public int row;
     public int col;
     

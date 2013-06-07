@@ -19,3 +19,8 @@ The player always start in the top left corner, and must always traverse to the 
 
 In Progressive Reveal mode, only a small portion of the maze is revelaed to the player at a time.
 
+At any time, mazes can be saved and resumed later, from the same position and with the same elapsed time.
+
+##Sharing
+
+Upon winning a maze, players can save the maze along with their name and time. If this file is then loaded by another player, they will be prompted to beat the previous best score and save their score to the file. 
