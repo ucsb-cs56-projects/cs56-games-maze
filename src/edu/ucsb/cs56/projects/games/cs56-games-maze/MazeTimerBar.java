@@ -119,6 +119,7 @@ public class MazeTimerBar extends JPanel implements FocusListener{
     }
 
     public long getTimeElapsed(){
+	System.out.println("Elapsed: "+(this.stopTime-this.startTime));
 	return this.stopTime-this.startTime;       
     }
 

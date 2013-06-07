@@ -306,17 +306,18 @@ public class MazeGui implements ActionListener{
 		try{ 
 		    fout = new FileOutputStream(file);
 		    oout = new ObjectOutputStream(fout);
+		    timerBar.stopTimer();
 		    if(this.gameSave == null){
 			oout.writeObject(new MazeGameSave(this.grid, this.oldSettings,this.player,this.timerBar.getTimeElapsed()));
 		    }
 		    else{
 			this.gameSave.setTimeElapsed(this.timerBar.getTimeElapsed());
+			oout.writeObject(this.gameSave);
 		    }
 		    oout.close();
 		    fout.close();
 		}
 		catch(IOException ioe){ ioe.printStackTrace(); }
-		timerBar.stopTimer();
 		player=null;
 		this.mc.setVisible(false);
 	    }
@@ -350,7 +351,7 @@ public class MazeGui implements ActionListener{
     private void wonMaze(){
 	timerBar.stopTimer();
 	String message = "Congratulations, you won!\nIt took you "+player.getNumMoves()+" moves and "+timerBar.getTimeElapsed()/1000.0+" seconds.\n";
-	if(this.gameSave != null && this.gameSave.hasHighScores()){
+	if(this.gameSave != null && this.gameSave.hasHighScores() && this.gameSave.getTimeElapsed()==0){
 	    if(timerBar.getTimeElapsed()<gameSave.getHighScore().getTime()){
 		message+="You beat "+gameSave.getHighScore().getName()+" with "+gameSave.getHighScore().getTime()/1000.0+"\n";
 	    }
@@ -358,12 +359,6 @@ public class MazeGui implements ActionListener{
 	message+="Would you like to save this score to this maze?\n";
 	int choice = JOptionPane.showConfirmDialog(frame, message, "Victory",JOptionPane.YES_NO_OPTION);
 	if(choice == JOptionPane.YES_OPTION){
-	    if(this.gameSave == null){
-	        this.gameSave = new MazeGameSave(this.grid, this.oldSettings);
-	    }
-	    String name = JOptionPane.showInputDialog(this.frame,"Enter Name","Enter your name:");
-	    gameSave.addHighScore(new MazeHighScore(name, this.timerBar.getTimeElapsed()));
-	    gameSave.setTimeElapsed(0);
 	    //prompt user and write to file
 	    int returnVal = fc.showSaveDialog(this.frame);
 	    if(returnVal == JFileChooser.APPROVE_OPTION){
@@ -373,6 +368,14 @@ public class MazeGui implements ActionListener{
 		try{ 
 		    fout = new FileOutputStream(file);
 		    oout = new ObjectOutputStream(fout);
+		    this.timerBar.stopTimer();
+		    if(this.gameSave == null){
+			this.gameSave = new MazeGameSave(this.grid, this.oldSettings);
+		    }
+		    String name = JOptionPane.showInputDialog(this.frame,"Enter Name","Enter your name:");
+		    gameSave.addHighScore(new MazeHighScore(name, this.timerBar.getTimeElapsed()));
+		    gameSave.setTimeElapsed(0);
+		    gameSave.resetPlayer();
 		    oout.writeObject(gameSave);
 		    oout.close();
 		    fout.close();

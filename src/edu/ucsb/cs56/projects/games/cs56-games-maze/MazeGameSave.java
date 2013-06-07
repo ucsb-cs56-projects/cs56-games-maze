@@ -74,4 +74,8 @@ public class MazeGameSave implements Serializable{
     public void setTimeElapsed(long elapsed){
 	this.timeElapsed=elapsed;
     }
+
+    public void resetPlayer(){
+	this.player = new MazePlayer(this.grid);
+    }
 }
