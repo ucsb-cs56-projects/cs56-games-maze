@@ -235,6 +235,9 @@ public class MazeGui implements ActionListener{
 	run();
     }
 
+    /** Creates a new maze from saved game state, possibly including grid, settings, time, player position
+	@param game Game state to resume
+    */
     public void newMaze(MazeGameSave game){
 	if(game == null){
 	    System.err.println("Error reading MazeSaveGame object");

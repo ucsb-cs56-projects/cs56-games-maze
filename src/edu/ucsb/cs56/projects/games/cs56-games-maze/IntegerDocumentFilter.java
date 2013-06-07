@@ -15,6 +15,7 @@ import javax.swing.text.PlainDocument;
 
 public class IntegerDocumentFilter extends DocumentFilter{
     
+    @Override
     public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException{
 	Document doc = fb.getDocument();
 	StringBuilder sb = new StringBuilder();
@@ -25,6 +26,7 @@ public class IntegerDocumentFilter extends DocumentFilter{
 	    super.insertString(fb, offset, string, attr);
     }
 
+    @Override
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
 	Document doc = fb.getDocument();
 	StringBuilder sb = new StringBuilder();
@@ -35,7 +37,7 @@ public class IntegerDocumentFilter extends DocumentFilter{
 	    super.replace(fb, offset, length, text, attrs);	
     }
 
-
+    @Override
     private boolean isValidInt(String text) {
 	try {
 	    Integer.parseInt(text);

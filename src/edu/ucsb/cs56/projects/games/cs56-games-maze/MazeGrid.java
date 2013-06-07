@@ -306,6 +306,7 @@ public class MazeGrid implements Serializable{
 	this.player=p;
     }
 
+    /** @return MazePlayer associated with this grid */
     public MazePlayer getPlayer(){
 	return this.player;
     }

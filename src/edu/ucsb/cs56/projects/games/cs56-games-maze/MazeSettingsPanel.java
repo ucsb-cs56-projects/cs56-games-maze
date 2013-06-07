@@ -8,7 +8,12 @@ import java.awt.event.*;
 import java.beans.*;
 
 
+/**
+   A JPanel that has labels and fields for all settings, as well as funcitonality to writeback as necessary.
 
+   @author Evan West
+   @version CS56 S13 UCSB
+ */
 public class MazeSettingsPanel extends JPanel{
 
     public GridLayout layout;
@@ -36,6 +41,9 @@ public class MazeSettingsPanel extends JPanel{
     private IntegerDocumentFilter intDocumentFilter;
     private Border padding;
 
+    /** Constructor for the JPanel
+@param settings Settings object that will be read and written back to as necessary.
+     */
     public MazeSettingsPanel(MazeSettings settings){
 	super();
 	this.settings=settings;
@@ -50,7 +58,8 @@ public class MazeSettingsPanel extends JPanel{
 	updateFieldValues();
     }
  
-
+    /** Constructs and initializes all fields and values (empty)
+     */
     private void initFields(){
 	intDocumentFilter = new IntegerDocumentFilter();
 
@@ -193,6 +202,8 @@ public class MazeSettingsPanel extends JPanel{
 	this.settings.progDrawSpeed = Integer.parseInt(progDrawSpeedField.getText());
     }
 
+    /** Sets values of fields on the panel to their current values form settings file.
+     */
     private void updateFieldValues(){
 	genChainLengthField.setText(String.valueOf(settings.genChainLength));
 	genChainLengthFluxField.setText(String.valueOf(settings.genChainLengthFlux));

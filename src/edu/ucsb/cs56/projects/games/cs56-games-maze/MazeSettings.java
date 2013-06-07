@@ -46,7 +46,9 @@ public class MazeSettings implements Serializable
 	this.progDraw=true;
 	this.progDrawSpeed=10;
     }
-
+    /** Copy constructor, used to clone settings objects for saving.
+	@param other Another MazeSettings object to copy all values from;
+     */
     public MazeSettings(MazeSettings other){
 	this.genChainLength=other.genChainLength;
 	this.genChainLengthFlux=other.genChainLengthFlux;

@@ -134,6 +134,7 @@ public class MazeComponent extends JComponent implements MouseListener{
 	g2.fill(new Rectangle2D.Float(this.cellWidth*a.col, this.cellWidth*a.row, this.cellWidth, this.cellWidth));
 	//g2.fill(new Rectangle2D.Double(this.cellWidth*a.col + (0.4*this.cellWidth)-1, this.cellWidth*a.row + (0.4*this.cellWidth)-1, 0.4*this.cellWidth,0.4*this.cellWidth));
     }
+
     /**
        How MazeGrid.MARKER3 should be painted. Change this if you want marker3 to be painted differently.
     */
@@ -141,6 +142,7 @@ public class MazeComponent extends JComponent implements MouseListener{
 	g2.setColor(Color.YELLOW);
 	g2.fill(new Rectangle2D.Float(this.cellWidth*a.col, this.cellWidth*a.row, this.cellWidth, this.cellWidth));
     }
+
     /**
        How MazeGrid.MARKER4 should be painted. Change this if you want marker4 to be painted differently.
     */
@@ -148,7 +150,6 @@ public class MazeComponent extends JComponent implements MouseListener{
 	g2.setColor(Color.BLACK);
 	//g2.fill(new Rectangle2D.Float(this.cellWidth*a.col, this.cellWidth*a.row, this.cellWidth, this.cellWidth));
 	g2.fill(new Rectangle2D.Double(this.cellWidth*a.col + (0.4*this.cellWidth)-1, this.cellWidth*a.row + (0.4*this.cellWidth)-1, 0.4*this.cellWidth,0.4*this.cellWidth));
-
     }
 
     /** Sets MazeGrid associated with this MazeComponent
@@ -158,12 +159,19 @@ public class MazeComponent extends JComponent implements MouseListener{
 	this.grid=mg;
     }
 
+    /** MouseListener implementation to catch focus on click
+     */
+    @Override
     public void mouseClicked(MouseEvent e){
 	requestFocusInWindow();
     }
 
+    /** Functionless implementation for MouseListener interface */
     public void mouseExited(MouseEvent e){}
+    /** Functionless implementation for MouseListener interface */
     public void mouseEntered(MouseEvent e){}
+    /** Functionless implementation for MouseListener interface */
     public void mouseReleased(MouseEvent e){}
+    /** Functionless implementation for MouseListener interface */
     public void mousePressed(MouseEvent e){}
 }

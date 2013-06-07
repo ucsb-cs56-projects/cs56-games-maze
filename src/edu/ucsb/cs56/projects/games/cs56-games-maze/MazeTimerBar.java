@@ -100,29 +100,18 @@ public class MazeTimerBar extends JPanel implements FocusListener{
 	return this.stopTime-this.startTime;
     }
 
-    public void focusGained(FocusEvent e) {
-        displayMessage("Focus gained", e);
-    }
-    
-    public void focusLost(FocusEvent e) {
-        displayMessage("Focus lost", e);
-    }
-    
-    void displayMessage(String prefix, FocusEvent e) {
-        System.out.println(prefix
-	    + (e.isTemporary() ? " (temporary):" : ":")
-	    +  e.getComponent().getClass().getName()
-	    + "; Opposite component: " 
-	    + (e.getOppositeComponent() != null ?
-			   e.getOppositeComponent().getClass().getName() : "null")
-	    + "\n"); 
-    }
-
+    /** Returns total time elapsed as displayed on the timer.
+     */
     public long getTimeElapsed(){
-	System.out.println("Elapsed: "+(this.stopTime-this.startTime));
-	return this.stopTime-this.startTime;       
+	if(this.startTime>this.stopTime)
+	    return System.currentTimeMillis()-this.startTime;
+	else
+	    return this.stopTime-this.startTime;       
     }
 
+    /** Sets current timer value, used when resuming game state
+	@param t Value in milliseconds to set timer to
+     */
     public void setTimeElapsed(long t){
 	this.elapsed=t;
     }

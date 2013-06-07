@@ -18,13 +18,13 @@ public class MazePlayer implements Serializable{
 	@param grid The MazeGrid on which the player will be played
      */
     public MazePlayer(MazeGrid grid){
-	this.grid = grid;
-	this.position = new Cell(0,0);
-	this.numMoves=0;
-	this.visible=false;
-	this.grid.setPlayer(this);
+	this(grid,new Cell(0,0));
     }
 
+    /** Constructor that creates player at specified position
+	@param grid The MazeGrid on which the player will be played
+	@param position The position to create the player at
+     */
     public MazePlayer(MazeGrid grid, Cell position){
 	this.grid=grid;
 	this.position=position;
