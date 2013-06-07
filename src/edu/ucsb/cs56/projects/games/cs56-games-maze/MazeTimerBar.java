@@ -21,6 +21,8 @@ public class MazeTimerBar extends JPanel implements FocusListener{
     private JButton newButton;
     private JButton solveButton;
     private long startTime;
+    private long stopTime;
+    private long elapsed=0;
     private SimpleDateFormat timerFormat;
     private Timer t;
     private MazeGui parentMazeGui;
@@ -64,11 +66,11 @@ public class MazeTimerBar extends JPanel implements FocusListener{
 	super.printComponent(g);
 	Graphics2D g2d = (Graphics2D)g;
     }
-    
-    /** Starts gameplay timer
+
+    /** Starts the gameplay timer
      */
     public void startTimer(){
-	startTime = System.currentTimeMillis();
+	startTime = System.currentTimeMillis()-this.elapsed;
 	t = new Timer(1, new ActionListener() {
 		public void actionPerformed(ActionEvent e){
 		    //update text field
@@ -77,6 +79,7 @@ public class MazeTimerBar extends JPanel implements FocusListener{
 	    });
 	t.start();
     }
+
 
     /** Restart gameplay timer
 	@return long Value of timer before reset
@@ -93,7 +96,8 @@ public class MazeTimerBar extends JPanel implements FocusListener{
      */
     public long stopTimer(){
 	t.stop();
-	return System.currentTimeMillis()-this.startTime;
+	this.stopTime = System.currentTimeMillis();
+	return this.stopTime-this.startTime;
     }
 
     public void focusGained(FocusEvent e) {
@@ -112,6 +116,14 @@ public class MazeTimerBar extends JPanel implements FocusListener{
 	    + (e.getOppositeComponent() != null ?
 			   e.getOppositeComponent().getClass().getName() : "null")
 	    + "\n"); 
+    }
+
+    public long getTimeElapsed(){
+	return this.stopTime-this.startTime;       
+    }
+
+    public void setTimeElapsed(long t){
+	this.elapsed=t;
     }
 
 }

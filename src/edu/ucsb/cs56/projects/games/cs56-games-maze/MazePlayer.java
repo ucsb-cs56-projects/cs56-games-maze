@@ -1,12 +1,14 @@
 package edu.ucsb.cs56.projects.games.cs56_games_maze;
 
+import java.io.Serializable;
+
 /**
    Class to represent active player in maze game
 
    @author Evan West
    @version 5/14/13 for proj1, cs56, S13
 */
-public class MazePlayer{
+public class MazePlayer implements Serializable{
     private Cell position;
     private MazeGrid grid;
     private int numMoves;

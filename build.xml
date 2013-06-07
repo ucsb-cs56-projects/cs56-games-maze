@@ -19,6 +19,7 @@
   <target name="compile" description="compile my code">
     <mkdir dir="build" />
     <javac srcdir="src" destdir="build" includeantruntime="false" debug="true" debuglevel="lines,vars,source" >
+      <compilerarg value="-Xlint:unchecked"/>
       <classpath>
 	<pathelement location="build"/>
 	<pathelement location="lib/junit-4.8.2.jar"/>

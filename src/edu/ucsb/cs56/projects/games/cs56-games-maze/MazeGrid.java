@@ -1,5 +1,6 @@
 package edu.ucsb.cs56.projects.games.cs56_games_maze;
 import java.util.ArrayList;
+import java.io.Serializable;
 
 
 /**
@@ -22,7 +23,7 @@ import java.util.ArrayList;
    @see MazeComponent
    @see Cell
  */
-public class MazeGrid {
+public class MazeGrid implements Serializable{
     /** The bit representing the direction right */
     public static final byte DIR_RIGHT  = 0x1;
     /** The bit representing the direction up */
@@ -304,4 +305,9 @@ public class MazeGrid {
     public void setPlayer(MazePlayer p){
 	this.player=p;
     }
+
+    public MazePlayer getPlayer(){
+	return this.player;
+    }
+
 }
