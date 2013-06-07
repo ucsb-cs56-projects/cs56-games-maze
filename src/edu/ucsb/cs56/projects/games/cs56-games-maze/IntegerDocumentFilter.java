@@ -37,7 +37,6 @@ public class IntegerDocumentFilter extends DocumentFilter{
 	    super.replace(fb, offset, length, text, attrs);	
     }
 
-    @Override
     private boolean isValidInt(String text) {
 	try {
 	    Integer.parseInt(text);

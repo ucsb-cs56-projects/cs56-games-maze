@@ -62,103 +62,117 @@ public class MazeSettingsPanel extends JPanel{
      */
     private void initFields(){
 	intDocumentFilter = new IntegerDocumentFilter();
+	JLabel label;
 
-	this.add(new JLabel("Gen Chain Length"));
+	label=new JLabel("Gen Chain Length");
 
 	genChainLengthField = new JTextField(5);
 	doc = (PlainDocument)genChainLengthField.getDocument();
 	doc.setDocumentFilter(intDocumentFilter);
+	this.add(label);
 	this.add(genChainLengthField);
 
-	this.add(new JLabel("Gen Chain Length Flux"));
+	label=new JLabel("Gen Chain Length Flux");
 
 	genChainLengthFluxField = new JTextField(5);
 	doc = (PlainDocument)genChainLengthFluxField.getDocument();
 	doc.setDocumentFilter(intDocumentFilter);
+	this.add(label);
 	this.add(genChainLengthFluxField);
 
-	this.add(new JLabel("Step Gen Distance"));
+	label=new JLabel("Step Gen Distance");
 
 	stepGenDistanceField = new JTextField(5);
 	doc = (PlainDocument)stepGenDistanceField.getDocument();
 	doc.setDocumentFilter(intDocumentFilter);
+	this.add(label);
 	this.add(stepGenDistanceField);
 
-	this.add(new JLabel("Rows"));
+	label=new JLabel("Rows");
 
 	rowsField = new JTextField(5);
-	rowsField.setToolTipText("Number of total rows in maze");
+	label.setToolTipText("Number of total rows in maze");
 	doc = (PlainDocument)rowsField.getDocument();
 	doc.setDocumentFilter(intDocumentFilter);
+	this.add(label);
 	this.add(rowsField);
 
-	this.add(new JLabel("Columns"));
+	label=new JLabel("Columns");
 
 	colsField = new JTextField(5);
-	colsField.setToolTipText("Number of total columns in maze.");
+	label.setToolTipText("Number of total columns in maze.");
 	doc = (PlainDocument)colsField.getDocument();
 	doc.setDocumentFilter(intDocumentFilter);
+	this.add(label);
 	this.add(colsField);
 
-	this.add(new JLabel("Cell Width"));
-
-	cellWidthField = new JTextField(5);
-	cellWidthField.setToolTipText("Width of a single cell in pixels");
-	doc = (PlainDocument)cellWidthField.getDocument();
-	doc.setDocumentFilter(intDocumentFilter);
-	this.add(cellWidthField);
-
-	this.add(new JLabel("Start Row"));
+	label=new JLabel("Start Row");
 
 	startRowField = new JTextField(5);
-	startRowField.setToolTipText("Row of starting position (0,0 is top left)");
+	label.setToolTipText("Row of starting position (0,0 is top left)");
 	doc = (PlainDocument)startRowField.getDocument();
 	doc.setDocumentFilter(intDocumentFilter);
+	this.add(label);
 	this.add(startRowField);
 
-	this.add(new JLabel("Start Column"));
+	label=new JLabel("Start Column");
 
 	startColField = new JTextField(5);
-	startColField.setToolTipText("Column of starting position (0,0 is top left)");
+	label.setToolTipText("Column of starting position (0,0 is top left)");
 	doc = (PlainDocument)startColField.getDocument();
 	doc.setDocumentFilter(intDocumentFilter);
+	this.add(label);
 	this.add(startColField);
 
-	this.add(new JLabel("End Row"));
+	label=new JLabel("End Row");
 
 	endRowField = new JTextField(5);
-	endRowField.setToolTipText("Row of ending (goal) position (0,0 is top left)");
+	label.setToolTipText("Row of ending (goal) position (0,0 is top left)");
 	doc = (PlainDocument)endRowField.getDocument();
 	doc.setDocumentFilter(intDocumentFilter);
+	this.add(label);
 	this.add(endRowField);
 
-	this.add(new JLabel("End Column"));
+	label=new JLabel("End Column");
 
 	endColField = new JTextField(5);
-	endColField.setToolTipText("Column of ending (goal) position (0,0 is top left)");
+	label.setToolTipText("Column of ending (goal) position (0,0 is top left)");
 	doc = (PlainDocument)endColField.getDocument();
 	doc.setDocumentFilter(intDocumentFilter);
+	this.add(label);
 	this.add(endColField);
 
-	this.add(new JLabel("Progressive Reveal Radius"));
+	label=new JLabel("Cell Width");
+
+	cellWidthField = new JTextField(5);
+	label.setToolTipText("Width of a single cell in pixels");
+	doc = (PlainDocument)cellWidthField.getDocument();
+	doc.setDocumentFilter(intDocumentFilter);
+	this.add(label);
+	this.add(cellWidthField);
+
+	label=new JLabel("Progressive Reveal Radius");
 
 	progRevealRadiusField = new JTextField(5);
 	doc = (PlainDocument)progRevealRadiusField.getDocument();
 	doc.setDocumentFilter(intDocumentFilter);
+	this.add(label);
 	this.add(progRevealRadiusField);
 
-	this.add(new JLabel("Progressive Draw"));
+	label=new JLabel("Progressive Draw");
 
 	progDrawCB = new JCheckBox();
-	progDrawCB.setToolTipText("Whether maze should be drawn progressively or not (immediately)");
+	label.setToolTipText("Whether maze should be drawn progressively or not (immediately)");
+	this.add(label);
 	this.add(progDrawCB);
 
-	this.add(new JLabel("Progressive Draw Speed"));
+	label=new JLabel("Progressive Draw Speed");
 
 	progDrawSpeedField = new JTextField(5);
-	progDrawSpeedField.setToolTipText("Size of chunks in which maze should be drawn progressively (larger is faster)");
+	label.setToolTipText("Size of chunks in which maze should be drawn progressively (larger is faster)");
 	doc = (PlainDocument)progDrawSpeedField.getDocument();
 	doc.setDocumentFilter(intDocumentFilter);
+	this.add(label);
 	this.add(progDrawSpeedField);
 
 

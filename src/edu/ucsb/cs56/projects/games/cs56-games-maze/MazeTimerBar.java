@@ -15,7 +15,7 @@ import java.awt.event.*;
    @author Evan West
    @version 5/14/13 for proj1, cs56, S13
 */
-public class MazeTimerBar extends JPanel implements FocusListener{
+public class MazeTimerBar extends JPanel{
 
     private JTextField timerField;
     private JButton newButton;
@@ -54,10 +54,6 @@ public class MazeTimerBar extends JPanel implements FocusListener{
 	    });
 
 	this.timerFormat = new SimpleDateFormat("mm:ss:SSS");
-
-	//this.timerField.setFocusable(false);
-	//setFocusable(false);
-	addFocusListener(this);
     }
 
     /** Prints component, currently unnecessary override
