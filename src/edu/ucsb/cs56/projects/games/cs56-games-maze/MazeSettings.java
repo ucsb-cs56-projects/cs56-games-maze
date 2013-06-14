@@ -1,5 +1,7 @@
 package edu.ucsb.cs56.projects.games.cs56_games_maze;
 
+import java.io.Serializable;
+
 /**
  Class to hold settings information for one game.
  Made to be passed into settings editor window.
@@ -7,7 +9,7 @@ package edu.ucsb.cs56.projects.games.cs56_games_maze;
  @version 5/14/13 for proj1, cs56, S13
 */
 
-public class MazeSettings
+public class MazeSettings implements Serializable
 {
     public int genChainLength;
     public int genChainLengthFlux;
@@ -22,6 +24,8 @@ public class MazeSettings
     public int genType;
     public boolean progReveal;
     public int progRevealRadius;
+    public boolean progDraw;
+    public int progDrawSpeed;
 
     /** No-arg constructor, creates all default values
      */
@@ -39,5 +43,27 @@ public class MazeSettings
 	this.genType=1;
 	this.progReveal=false;
 	this.progRevealRadius=3;
+	this.progDraw=true;
+	this.progDrawSpeed=10;
+    }
+    /** Copy constructor, used to clone settings objects for saving.
+	@param other Another MazeSettings object to copy all values from;
+     */
+    public MazeSettings(MazeSettings other){
+	this.genChainLength=other.genChainLength;
+	this.genChainLengthFlux=other.genChainLengthFlux;
+	this.stepGenDistance=other.stepGenDistance;
+	this.rows=other.rows;
+	this.cols=other.cols;
+	this.cellWidth=other.cellWidth;
+	this.startRow=other.startRow;
+	this.startCol=other.startCol;
+	this.endRow=other.endRow;
+	this.endCol=other.endCol;
+	this.genType=other.genType;
+	this.progReveal=other.progReveal;
+	this.progRevealRadius=other.progRevealRadius;
+	this.progDraw=other.progDraw;
+	this.progDrawSpeed=other.progDrawSpeed;
     }
 }

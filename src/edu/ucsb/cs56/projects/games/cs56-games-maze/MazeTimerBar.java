@@ -6,6 +6,8 @@ import java.util.Date;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
+import java.awt.event.*;
+
 
 /**
    Represents the control bar which contains the game timer, New Maze and Solve Maze buttons
@@ -19,6 +21,8 @@ public class MazeTimerBar extends JPanel{
     private JButton newButton;
     private JButton solveButton;
     private long startTime;
+    private long stopTime;
+    private long elapsed=0;
     private SimpleDateFormat timerFormat;
     private Timer t;
     private MazeGui parentMazeGui;
@@ -58,11 +62,11 @@ public class MazeTimerBar extends JPanel{
 	super.printComponent(g);
 	Graphics2D g2d = (Graphics2D)g;
     }
-    
-    /** Starts gameplay timer
+
+    /** Starts the gameplay timer
      */
     public void startTimer(){
-	startTime = System.currentTimeMillis();
+	startTime = System.currentTimeMillis()-this.elapsed;
 	t = new Timer(1, new ActionListener() {
 		public void actionPerformed(ActionEvent e){
 		    //update text field
@@ -71,6 +75,7 @@ public class MazeTimerBar extends JPanel{
 	    });
 	t.start();
     }
+
 
     /** Restart gameplay timer
 	@return long Value of timer before reset
@@ -87,7 +92,24 @@ public class MazeTimerBar extends JPanel{
      */
     public long stopTimer(){
 	t.stop();
-	return System.currentTimeMillis()-this.startTime;
+	this.stopTime = System.currentTimeMillis();
+	return this.stopTime-this.startTime;
+    }
+
+    /** Returns total time elapsed as displayed on the timer.
+     */
+    public long getTimeElapsed(){
+	if(this.startTime>this.stopTime)
+	    return System.currentTimeMillis()-this.startTime;
+	else
+	    return this.stopTime-this.startTime;       
+    }
+
+    /** Sets current timer value, used when resuming game state
+	@param t Value in milliseconds to set timer to
+     */
+    public void setTimeElapsed(long t){
+	this.elapsed=t;
     }
 
 }

@@ -2,6 +2,7 @@ package edu.ucsb.cs56.projects.games.cs56_games_maze;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
+import java.awt.event.*;
 import java.lang.Math;
 
 
@@ -14,7 +15,7 @@ import java.lang.Math;
    @version 5/14/13 for proj1, cs56, S13
    @see MazeGrid
 */
-public class MazeComponent extends JComponent {
+public class MazeComponent extends JComponent implements MouseListener{
     private MazeGrid grid;
     private int cellWidth;    
 
@@ -27,6 +28,8 @@ public class MazeComponent extends JComponent {
     public MazeComponent(MazeGrid grid, int cellWidth) {
 	this.grid = grid;
 	this.cellWidth = cellWidth;
+	addMouseListener(this);
+	this.setFocusable(true);
     }
 
     /**
@@ -131,6 +134,7 @@ public class MazeComponent extends JComponent {
 	g2.fill(new Rectangle2D.Float(this.cellWidth*a.col, this.cellWidth*a.row, this.cellWidth, this.cellWidth));
 	//g2.fill(new Rectangle2D.Double(this.cellWidth*a.col + (0.4*this.cellWidth)-1, this.cellWidth*a.row + (0.4*this.cellWidth)-1, 0.4*this.cellWidth,0.4*this.cellWidth));
     }
+
     /**
        How MazeGrid.MARKER3 should be painted. Change this if you want marker3 to be painted differently.
     */
@@ -138,6 +142,7 @@ public class MazeComponent extends JComponent {
 	g2.setColor(Color.YELLOW);
 	g2.fill(new Rectangle2D.Float(this.cellWidth*a.col, this.cellWidth*a.row, this.cellWidth, this.cellWidth));
     }
+
     /**
        How MazeGrid.MARKER4 should be painted. Change this if you want marker4 to be painted differently.
     */
@@ -145,7 +150,6 @@ public class MazeComponent extends JComponent {
 	g2.setColor(Color.BLACK);
 	//g2.fill(new Rectangle2D.Float(this.cellWidth*a.col, this.cellWidth*a.row, this.cellWidth, this.cellWidth));
 	g2.fill(new Rectangle2D.Double(this.cellWidth*a.col + (0.4*this.cellWidth)-1, this.cellWidth*a.row + (0.4*this.cellWidth)-1, 0.4*this.cellWidth,0.4*this.cellWidth));
-
     }
 
     /** Sets MazeGrid associated with this MazeComponent
@@ -154,4 +158,20 @@ public class MazeComponent extends JComponent {
     public void setMazeGrid(MazeGrid mg){
 	this.grid=mg;
     }
+
+    /** MouseListener implementation to catch focus on click
+     */
+    @Override
+    public void mouseClicked(MouseEvent e){
+	requestFocusInWindow();
+    }
+
+    /** Functionless implementation for MouseListener interface */
+    public void mouseExited(MouseEvent e){}
+    /** Functionless implementation for MouseListener interface */
+    public void mouseEntered(MouseEvent e){}
+    /** Functionless implementation for MouseListener interface */
+    public void mouseReleased(MouseEvent e){}
+    /** Functionless implementation for MouseListener interface */
+    public void mousePressed(MouseEvent e){}
 }
