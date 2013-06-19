@@ -1,0 +1,17 @@
+Instructions:
+-------------------------------------------------------------
+1)Starting from the top left corner
+2)Move towards the bottom right corner (final destination) using the WASD keys...
+       W : up 
+       A : left
+       S : down
+       D : right
+
+-------------------------------------------------------------
+If stuck:
+   1) click on 'Solve' for the correct path to the maze
+
+When complete:
+     1) You can play again by selecting 'New'
+     2) Or close out of the window to quit
+-------------------------------------------------------------
