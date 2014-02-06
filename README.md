@@ -13,13 +13,13 @@ To see how the recursive backtracker works, visit http://weblog.jamisbuck.org/20
 
 Changes made to settings take effect on generation of a new maze.
 
-## Gameplay
-### Running the Game:
+## Playing the Game:
 
 To launch the game simply use the command:
 ```
 ant run
 ```
+### Gameplay
 
 ![](http://i.imgur.com/eve3g50.png)
 
@@ -29,6 +29,6 @@ In Progressive Reveal mode, only a small portion of the maze is revelaed to the 
 
 At any time, mazes can be saved and resumed later, from the same position and with the same elapsed time.
 
-##Sharing
+### Sharing
 
 Upon winning a maze, players can save the maze along with their name and time. If this file is then loaded by another player, they will be prompted to beat the previous best score and save their score to the file. 
