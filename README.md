@@ -14,6 +14,12 @@ To see how the recursive backtracker works, visit http://weblog.jamisbuck.org/20
 Changes made to settings take effect on generation of a new maze.
 
 ## Gameplay
+### Running the Game:
+
+To launch the game simply use the command:
+```
+ant run
+```
 
 ![](http://i.imgur.com/eve3g50.png)
 
