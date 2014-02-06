@@ -15,6 +15,8 @@ Changes made to settings take effect on generation of a new maze.
 
 ## Gameplay
 
+![](http://i.imgur.com/eve3g50.png)
+
 The player always start in the top left corner, and must always traverse to the lower right corner. Use WASD keys to move the player.
 
 In Progressive Reveal mode, only a small portion of the maze is revelaed to the player at a time.
