@@ -155,7 +155,7 @@ public class MazeGui implements ActionListener{
 	remapPlayerKeys(this.playerMoveAction);
 
 	//init settings Dialog
-	settingsDialog = new MazeSettingsDialog(settings);
+	settingsDialog = new MazeSettingsDialog(settings, this);
 	settingsDialog.setLocationRelativeTo(frame);
 
 	//init file chooser window

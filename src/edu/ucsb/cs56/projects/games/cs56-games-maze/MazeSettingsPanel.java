@@ -18,6 +18,7 @@ public class MazeSettingsPanel extends JPanel{
 
     public GridLayout layout;
     public MazeSettings settings;
+    public MazeGui gm;
 
     private JTextField genChainLengthField;
     private JTextField genChainLengthFluxField;
@@ -44,9 +45,10 @@ public class MazeSettingsPanel extends JPanel{
     /** Constructor for the JPanel
 @param settings Settings object that will be read and written back to as necessary.
      */
-    public MazeSettingsPanel(MazeSettings settings){
+    public MazeSettingsPanel(MazeSettings settings, MazeGui gm){
 	super();
 	this.settings=settings;
+	this.gm = gm;
 	this.layout = new GridLayout(0,2);
 	this.layout.setVgap(10);
 	this.setLayout(this.layout);
@@ -184,6 +186,7 @@ public class MazeSettingsPanel extends JPanel{
 		    writeback();
 		    JDialog parentDialog = (JDialog)(getRootPane().getParent());
 		    parentDialog.setVisible(false);
+		    gm.newMaze();
 		}
 	    });
 	this.add(okButton);

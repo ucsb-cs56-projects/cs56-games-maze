@@ -19,11 +19,11 @@ public class MazeSettingsDialog extends JDialog{
     /** Constructor for dialog
 	@param settings MazeSettings object that will be both read and written to as necessary.
      */
-    public MazeSettingsDialog(MazeSettings settings){
+    public MazeSettingsDialog(MazeSettings settings, MazeGui gm){
 	super();
 	this.setTitle("Settings");
 	this.settings=settings;
-	this.panel = new MazeSettingsPanel(settings);
+	this.panel = new MazeSettingsPanel(settings, gm);
 	this.setContentPane(this.panel);
 	this.pack();
     }
