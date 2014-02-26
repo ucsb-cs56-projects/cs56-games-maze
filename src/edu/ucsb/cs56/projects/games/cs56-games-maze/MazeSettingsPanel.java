@@ -44,6 +44,7 @@ public class MazeSettingsPanel extends JPanel{
 
     /** Constructor for the JPanel
 @param settings Settings object that will be read and written back to as necessary.
+       gm MazeGui object that MazeSettingsDialog is placed on (MazeSettingsPanel placed on MazeSettingsDialog)
      */
     public MazeSettingsPanel(MazeSettings settings, MazeGui gm){
 	super();
