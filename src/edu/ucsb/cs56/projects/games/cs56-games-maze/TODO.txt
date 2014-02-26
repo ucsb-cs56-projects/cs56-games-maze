@@ -1,0 +1,9 @@
+other improvements:
+
+fix the load bug - 
+    	after loading a saved game, when the "new" game 
+	button is pressed the timebar starts from the previous.
+fix after save bug - 
+    	after the game is saved, the saved maze is 
+	erased, the frame is left blank and the user is left without 
+	direction.
