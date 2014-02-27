@@ -348,7 +348,8 @@ public class MazeGui implements ActionListener{
 		    oin.close();
 		    fin.close();
 		    this.gameSave = game;
-		    newMaze(game);
+		    newMaze(game); // this "restarts" the game from load point
+		    // newMaze(); // this creates a "new" game, like the button advertises
 		}
 		catch(IOException | ClassNotFoundException ex){
 		    System.err.println("Invalid file specified.");
