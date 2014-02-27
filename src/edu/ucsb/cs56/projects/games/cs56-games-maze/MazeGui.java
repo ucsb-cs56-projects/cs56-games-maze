@@ -13,7 +13,9 @@ import java.io.*;
 
    @author Jake Staahl
    @author Evan West
-   @version 5/14/13 for proj1, cs56, S13
+   @author Logan Ortega
+   @author Richard Wang
+   @version 2/24/14 for proj1, cs56, W14
 */
 
 public class MazeGui implements ActionListener{
@@ -236,7 +238,8 @@ public class MazeGui implements ActionListener{
 	run();
     }
 
-    /** Creates a new maze from saved game state, possibly including grid, settings, time, player position
+    /** Creates a new maze from saved game state, possibly including grid,
+	settings, time, player position
 	@param game Game state to resume
     */
     public void newMaze(MazeGameSave game){
@@ -297,7 +300,7 @@ public class MazeGui implements ActionListener{
 	}
 	else if("save".equals(e.getActionCommand())){
 	    timerBar.stopTimer();
-	    RealTime = timerBar.getTimeElapsed();
+	    RealTime = timerBar.getTimeElapsed(); // records ACTUAL time when save button is pressed
 	    //prompt user and write to file
 	    int returnVal = fc.showSaveDialog(this.frame);
 	    if(returnVal == JFileChooser.APPROVE_OPTION){
@@ -316,7 +319,7 @@ public class MazeGui implements ActionListener{
 			oout.writeObject(new MazeGameSave(this.grid, this.oldSettings,this.player,RealTime));
 		    }
 		    else{
-			this.gameSave.setTimeElapsed(RealTime);
+			this.gameSave.setTimeElapsed(RealTime); // saves ACTUAL time to file 
 			oout.writeObject(this.gameSave);
 		    }
 		    oout.close();
@@ -325,6 +328,11 @@ public class MazeGui implements ActionListener{
 		catch(IOException ioe){ ioe.printStackTrace(); }
 		player=null;
 		this.mc.setVisible(false);
+
+		// Set an onscreen message to guide user after 
+		// previous Maze is saved. 
+		JOptionPane.showMessageDialog(frame,"To start new game press OK then New.",
+					      "Maze Saved", JOptionPane.INFORMATION_MESSAGE);
 	    }
 	}
 	else if("load".equals(e.getActionCommand())){
