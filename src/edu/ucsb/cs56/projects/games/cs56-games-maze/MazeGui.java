@@ -188,10 +188,15 @@ public class MazeGui implements ActionListener{
 			    //done drawing
 			    ((Timer)e.getSource()).stop();
 			    timerBar.startTimer();
-			    grid.markStartFinish(new Cell(settings.startRow,settings.startCol),new Cell(settings.endRow,settings.endCol));
+			    grid.markStartFinish(new Cell(settings.startRow,settings.startCol),
+						 new Cell(settings.endRow,settings.endCol));
 			    if(settings.progReveal) {
 				grid.setProgReveal(player, settings.progRevealRadius);
 				if (gameSave != null) gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
+				else {
+				    grid.updatePlayerPosition();
+				    mc.repaint();
+				}
 			    }
 			    else {
 				grid.updatePlayerPosition();
@@ -292,11 +297,7 @@ public class MazeGui implements ActionListener{
 	    this.mg = new NewStepGenerator(grid, settings.stepGenDistance);
 	    break;
 	}
-	if (settings.progReveal) {;
-	    this.player = new MazePlayer(this.grid);
-	}
-	else 
-	    this.player = new MazePlayer(this.grid, new Cell(settings.startRow,settings.startCol));
+	this.player = new MazePlayer(this.grid, new Cell(settings.startRow,settings.startCol));
 
 
 	Action playerMoveAction = new PlayerMoveAction();
@@ -308,9 +309,7 @@ public class MazeGui implements ActionListener{
 	@param game Game state to resume
     */
     public void newMaze(MazeGameSave game){
-	
-
-	if(game == null){
+       	if(game == null){
 	    System.err.println("Error reading MazeSaveGame object");
 	    newMaze();
 	}
