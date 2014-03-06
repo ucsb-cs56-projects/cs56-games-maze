@@ -18,7 +18,9 @@ import java.io.Serializable;
 
    @author Jakob Staahl
    @author Evan West
-   @version 5/14/13 for proj1, cs56, S13
+   @author Logan Ortega
+   @author Richard Wang
+   @version 2/24/14 for proj1, cs56, W14
    @see MazeGenerator
    @see MazeComponent
    @see Cell
@@ -33,15 +35,15 @@ public class MazeGrid implements Serializable{
     /** The bit representing the direction down */
     public static final short DIR_DOWN   = 0x8;
 
-    /** The bit representing marker1 */
+    /** The bit representing marker1 - FINISH POINT */
     public static final short MARKER1 = 0x10;
-    /** The bit representing marker2 */
+    /** The bit representing marker2 - START POINT */
     public static final short MARKER2 = 0x20;
-    /** The bit representing marker3 */
+    /** The bit representing marker3 - YELLOW SOLUTION PATH */
     public static final short MARKER3 = 0x40;
-    /** The bit representing marker4 */
+    /** The bit representing marker4 - PLAYER SQUARE */
     public static final short MARKER4 = (short)0x80;
-    /**the bit representing marker5 */
+    /**the bit representing marker5 - DO NOT DRAW */
     public static final short MARKER5 = 0x100;
 
     private short[][] grid;
@@ -52,6 +54,8 @@ public class MazeGrid implements Serializable{
     private boolean progReveal;
     private Cell start;
     private Cell finish;
+    private ArrayList<Cell> revealedCoordinates;
+    private MazeGameSave gameSave;
 
     /**
        Constructs a MazeGrid with the given number of rows and cols
@@ -60,6 +64,7 @@ public class MazeGrid implements Serializable{
        @param cols number of cols to be in this grid
     */
     public MazeGrid(int rows, int cols) {
+	revealedCoordinates = new ArrayList<Cell>();
 	this.rows = rows;
 	this.cols = cols;
 	grid = new short[this.rows][this.cols];
@@ -106,7 +111,7 @@ public class MazeGrid implements Serializable{
 
        @param a the cell we are getting the direction from
        @param b the cell we are getting the direction to
-       @return the directoin from Cell a to Cell b
+       @return the direction from Cell a to Cell b
     */
     public short direction(Cell a, Cell b) {
 	if (b.col - a.col ==  1) return MazeGrid.DIR_RIGHT;
@@ -169,6 +174,14 @@ public class MazeGrid implements Serializable{
     }
 
     /**
+       Gets the progressive reveal radius 
+       @return progRevealRadius of type int
+    */
+    public int getProgRevealRadius() {
+	return progRevealRadius;
+    }
+    
+    /**
        @return true if this cell has been carved to or from (has any opened walls), false otherwise
     */
     public boolean isVisited(Cell a) { return (this.grid[a.row][a.col] & 0x0F) != 0; }
@@ -187,6 +200,13 @@ public class MazeGrid implements Serializable{
     */
     public short getCellDirections(Cell a) {
 	return this.grid[a.row][a.col];
+    }
+
+    /** Returns ArrayList of visited coordinates.
+	@return ArrayList<Cell>
+    */
+    public ArrayList<Cell> getRevealedCoordinates() {
+	return revealedCoordinates;
     }
 
     /**
@@ -225,6 +245,7 @@ public class MazeGrid implements Serializable{
     public boolean hasMarker(Cell a, short marker) {
 	return ((this.grid[a.row][a.col] & marker) != 0);
     }
+    
 
     /**
        Marks cells 0,0 and opposite corner as start and finish, respectively
@@ -249,7 +270,7 @@ public class MazeGrid implements Serializable{
        Set this Marker for cells within radius or a
        @param a the Cell of interest
        @param radius the radius within which to add marker
-       @param marker the short information peratining to the marker we are removing from this cell
+       @param marker the short information peratining to the marker we are adding to this cell
     */
     public void markCellsInRadius(Cell a, int radius, short marker){
 	for(int i=0; i<cols; ++i){
@@ -272,13 +293,35 @@ public class MazeGrid implements Serializable{
     public void unmarkCellsInRadius(Cell a, int radius, short marker){
 	for(int i=0; i<cols; ++i){
 	    for(int j=0; j<rows; ++j){
-		if(Math.sqrt(
-			Math.pow(a.col-i,2)+Math.pow(a.row-j,2)
-			     )<radius){
+		if(Math.sqrt(Math.pow(a.col-i,2)+Math.pow(a.row-j,2))<radius){
+		    //if (!hasMarker(new Cell(j,i),MazeGrid.MARKER5)) {;} 
+		    //else unmarkCell(new Cell(j,i),marker);
 		    unmarkCell(new Cell(j,i),marker);
 		}
 	    }
 	}
+    }
+
+    /**
+       Remove hidden marker (MARKER5) from cells alread visited, 
+       including cells within the progRevealRadius
+       @param gameSave the MazeGameSave object used to reference the grid of interest
+    */
+    public void unmarkVisitedCoordinates(MazeGameSave gameSave) {
+	ArrayList<Cell> visibleCoordinates = gameSave.getGrid().getRevealedCoordinates();
+	for (int i = 0; i < visibleCoordinates.size(); i++) {
+	    unmarkCellsInRadius(visibleCoordinates.get(i), progRevealRadius, MazeGrid.MARKER5);
+	}
+    }
+
+
+    /** 
+	Save the coordinates of MARKER4 (visible) cells.
+	@param a the Cell coordinate that is to be saved for load 
+	with progressive reveal enabled
+    */
+    public void revealedCells(Cell a) {
+	revealedCoordinates.add(a);
     }
 
     /** Enable progressiveReveal mode, progressively removes doNotDraw markers in proximity to player as player moves
@@ -293,12 +336,21 @@ public class MazeGrid implements Serializable{
     }
 
     /**
-       Rr-marks player position on grid, then reveals cells if ncecssary as per progressiveReveal settings
+       Marks player position on grid, then reveals cells if necessary as per progressiveReveal settings
      */
     public void updatePlayerPosition(){
-	this.markCell(player.getPosition(), MazeGrid.MARKER4);
-	if(this.progReveal)
-	    this.unmarkCellsInRadius(this.player.getPosition(), this.progRevealRadius, MazeGrid.MARKER5);
+	this.markCell(player.getPosition(), MazeGrid.MARKER4); 
+	if(this.progReveal) {
+	    this.unmarkCellsInRadius(this.player.getPosition(), 
+				     this.progRevealRadius, MazeGrid.MARKER5);
+	    if(gameSave != null) unmarkVisitedCoordinates(gameSave);
+	}
+	// save coordinates of visited cells
+	if (!this.revealedCoordinates.contains(this.player.getPosition()))
+	    this.revealedCells(this.player.getPosition());
+
+	
+	
     }
 
     /** @param MazePlayer to associate with this grid */

@@ -4,6 +4,7 @@ import javax.swing.filechooser.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.beans.*;
+import java.util.ArrayList;
 
 import java.io.*;
 
@@ -168,7 +169,6 @@ public class MazeGui implements ActionListener{
 	fc.setFileFilter(fileFilter);
     }
 
-
     
     /** Stepwise generates and displays maze
      */
@@ -189,10 +189,14 @@ public class MazeGui implements ActionListener{
 			    ((Timer)e.getSource()).stop();
 			    timerBar.startTimer();
 			    grid.markStartFinish(new Cell(settings.startRow,settings.startCol),new Cell(settings.endRow,settings.endCol));
-			    if(settings.progReveal)
+			    if(settings.progReveal) {
 				grid.setProgReveal(player, settings.progRevealRadius);
-			    grid.updatePlayerPosition();
-			    mc.repaint();
+				if (gameSave != null) gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
+			    }
+			    else {
+				grid.updatePlayerPosition();
+				mc.repaint();
+			    }
 			}
 		    }
 		});
@@ -202,12 +206,67 @@ public class MazeGui implements ActionListener{
 	    mg.generate();
 	    timerBar.startTimer();
 	    grid.markStartFinish(new Cell(settings.startRow,settings.startCol),new Cell(settings.endRow,settings.endCol));
-	    if(settings.progReveal)
+	    if(settings.progReveal) {
 		grid.setProgReveal(player, settings.progRevealRadius);
-	    grid.updatePlayerPosition();
-	    mc.repaint();   
+		if (gameSave != null) gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
+	    }
+	    else {
+		grid.updatePlayerPosition();
+		mc.repaint();
+	    }
 	}
     }
+
+    /**
+       An alternative to the no-arg run() method that deals with 
+       the case of using newGame(game) where game had progressive
+       reveal enabled.
+    */
+    public void run(boolean progOn) {
+	// generate the maze in steps if asked (rather than all at once using MazeGenerator.generate())
+	// repaint() in between each step to watch it grow
+	if(settings.progDraw){
+	    if(drawTimer!=null)
+		drawTimer.stop();
+	    drawTimer = new Timer(1, new ActionListener() {
+		    int i=0;
+		    public void actionPerformed(ActionEvent e){
+			++i;
+			if(mg.step() && i%(settings.progDrawSpeed)==0)
+			    frame.repaint();
+			else if(i%(settings.progDrawSpeed)==0){
+			    //done drawing
+			    ((Timer)e.getSource()).stop();
+			    timerBar.startTimer();
+			    grid.markStartFinish(new Cell(settings.startRow,settings.startCol),new Cell(settings.endRow,settings.endCol));
+			    if(settings.progReveal) {
+				if (gameSave != null) gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
+			    }
+			    else {
+				grid.updatePlayerPosition();
+				mc.repaint();
+			    }
+			}
+		    }
+		});
+	    drawTimer.start();
+	}
+	else{ //quick draw
+	    mg.generate();
+	    timerBar.startTimer();
+	    grid.markStartFinish(new Cell(settings.startRow,settings.startCol),new Cell(settings.endRow,settings.endCol));
+	    if(settings.progReveal) {
+		if (gameSave != null) gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
+	    }
+	    else {
+		grid.updatePlayerPosition();
+		mc.repaint();
+	    }
+	}
+    }
+
+
+
 
     /** Creates new maze with current options, then displays and restarts game
      */
@@ -233,7 +292,13 @@ public class MazeGui implements ActionListener{
 	    this.mg = new NewStepGenerator(grid, settings.stepGenDistance);
 	    break;
 	}
-	this.player = new MazePlayer(this.grid, new Cell(settings.startRow,settings.startCol));
+	if (settings.progReveal) {;
+	    this.player = new MazePlayer(this.grid);
+	}
+	else 
+	    this.player = new MazePlayer(this.grid, new Cell(settings.startRow,settings.startCol));
+
+
 	Action playerMoveAction = new PlayerMoveAction();
 	run();
     }
@@ -243,6 +308,8 @@ public class MazeGui implements ActionListener{
 	@param game Game state to resume
     */
     public void newMaze(MazeGameSave game){
+	
+
 	if(game == null){
 	    System.err.println("Error reading MazeSaveGame object");
 	    newMaze();
@@ -262,7 +329,8 @@ public class MazeGui implements ActionListener{
 	    if(game.hasHighScores()){
 		JOptionPane.showMessageDialog(this.frame, "This maze was completed in:\n "+game.getHighScore().getTime()/1000.0+" by "+game.getHighScore().getName()+" \n Can you do better?");
 	    }
-	    run();
+	    if (settings.progReveal) run(true);
+	    else run();
 	}
     }
 
@@ -437,10 +505,11 @@ public class MazeGui implements ActionListener{
 		    player.move(MazeGrid.DIR_RIGHT);
 		    break;
 		}
-		mc.repaint();
-		if(grid.isAtFinish(player.getPosition()))
-		    wonMaze();
+
+	    mc.repaint();
+	    if(grid.isAtFinish(player.getPosition())) wonMaze();
 	    }
+
 	    else{
 		System.err.println("NULL player!");
 	    }
