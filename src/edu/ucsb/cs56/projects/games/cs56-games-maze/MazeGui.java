@@ -32,6 +32,7 @@ public class MazeGui implements ActionListener{
     private Timer drawTimer;
     private MazeSettings settings;
     private MazeSettings oldSettings;
+    private MazeSettingsPanel fetchedSettings;
     private Action playerMoveAction;
     private MazeGameSave gameSave;
     private long RealTime;
@@ -280,6 +281,7 @@ public class MazeGui implements ActionListener{
 	frame.remove(mc);
 	this.gameSave = null;
 	this.oldSettings=new MazeSettings(settings);
+	//fetchedSettings.writeback();
 	this.grid = new MazeGrid(settings.rows, settings.cols);
 	this.mc = new MazeComponent(grid, settings.cellWidth);
 	mc.setVisible(true);
