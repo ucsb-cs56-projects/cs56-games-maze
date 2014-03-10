@@ -19,6 +19,8 @@ To launch the game simply use the command:
 ```
 ant run
 ```
+
+**Note** - java version 1.7 or higher is required to run
 ### Gameplay
 
 ![](http://i.imgur.com/eve3g50.png)
