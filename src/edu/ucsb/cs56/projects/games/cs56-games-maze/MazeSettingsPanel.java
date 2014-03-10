@@ -12,12 +12,15 @@ import java.beans.*;
    A JPanel that has labels and fields for all settings, as well as funcitonality to writeback as necessary.
 
    @author Evan West
-   @version CS56 S13 UCSB
+   @author Logan Ortega
+   @author Richard Wang
+   @version CS56 W14 UCSB
  */
 public class MazeSettingsPanel extends JPanel{
 
     public GridLayout layout;
     public MazeSettings settings;
+    public MazeGui gm;
 
     private JTextField genChainLengthField;
     private JTextField genChainLengthFluxField;
@@ -42,11 +45,14 @@ public class MazeSettingsPanel extends JPanel{
     private Border padding;
 
     /** Constructor for the JPanel
-@param settings Settings object that will be read and written back to as necessary.
+	@param settings Settings object that will be read and written back to as necessary.
+	@param gm MazeGui object that MazeSettingsDialog is placed on 
+	(MazeSettingsPanel placed on MazeSettingsDialog)
      */
-    public MazeSettingsPanel(MazeSettings settings){
+    public MazeSettingsPanel(MazeSettings settings, MazeGui gm){
 	super();
 	this.settings=settings;
+	this.gm = gm;
 	this.layout = new GridLayout(0,2);
 	this.layout.setVgap(10);
 	this.setLayout(this.layout);
@@ -184,6 +190,7 @@ public class MazeSettingsPanel extends JPanel{
 		    writeback();
 		    JDialog parentDialog = (JDialog)(getRootPane().getParent());
 		    parentDialog.setVisible(false);
+		    gm.newMaze();
 		}
 	    });
 	this.add(okButton);
@@ -209,8 +216,18 @@ public class MazeSettingsPanel extends JPanel{
 	this.settings.cellWidth = Integer.parseInt(cellWidthField.getText());
 	this.settings.startRow = Integer.parseInt(startRowField.getText());
 	this.settings.startCol = Integer.parseInt(startColField.getText());
-	this.settings.endRow = Integer.parseInt(endRowField.getText());
-	this.settings.endCol = Integer.parseInt(endColField.getText());
+
+	// check to ensure the final maze location is within the bounds of the maze
+	if (Integer.parseInt(endRowField.getText()) > this.settings.rows) {
+	    this.settings.endRow = (this.settings.rows - 1);
+	}
+	else { this.settings.endRow = Integer.parseInt(endRowField.getText()); }
+	
+	if (Integer.parseInt(endColField.getText()) > this.settings.cols) {
+	    this.settings.endCol = (this.settings.cols - 1);
+	}
+	else { this.settings.endCol = Integer.parseInt(endColField.getText()); }
+
 	this.settings.progRevealRadius = Integer.parseInt(progRevealRadiusField.getText());
 	this.settings.progDraw = progDrawCB.isSelected();
 	this.settings.progDrawSpeed = Integer.parseInt(progDrawSpeedField.getText());

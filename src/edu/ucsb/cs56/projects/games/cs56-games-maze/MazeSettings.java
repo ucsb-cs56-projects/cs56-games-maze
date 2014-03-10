@@ -6,7 +6,9 @@ import java.io.Serializable;
  Class to hold settings information for one game.
  Made to be passed into settings editor window.
  @author Evan West
- @version 5/14/13 for proj1, cs56, S13
+ @author Logan Ortega
+ @author Richard Wang
+ @version 2/24/14 for proj1, cs56, W14
 */
 
 public class MazeSettings implements Serializable
@@ -35,7 +37,7 @@ public class MazeSettings implements Serializable
 	this.stepGenDistance=2;
 	this.rows=20;
 	this.cols=20;
-	this.cellWidth=10;
+	this.cellWidth=20; // increase size of maze
 	this.startRow=0;
 	this.startCol=0;
 	this.endRow=rows-1;
