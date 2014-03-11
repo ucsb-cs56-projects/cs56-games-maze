@@ -221,12 +221,16 @@ public class MazeSettingsPanel extends JPanel{
 	if (Integer.parseInt(endRowField.getText()) > this.settings.rows) {
 	    this.settings.endRow = (this.settings.rows - 1);
 	}
-	else { this.settings.endRow = Integer.parseInt(endRowField.getText()); }
+	else { 
+	    this.settings.endRow = Integer.parseInt(endRowField.getText()); 
+	}
 	
 	if (Integer.parseInt(endColField.getText()) > this.settings.cols) {
 	    this.settings.endCol = (this.settings.cols - 1);
 	}
-	else { this.settings.endCol = Integer.parseInt(endColField.getText()); }
+	else { 
+	    this.settings.endCol = Integer.parseInt(endColField.getText()); 
+	}
 
 	this.settings.progRevealRadius = Integer.parseInt(progRevealRadiusField.getText());
 	this.settings.progDraw = progDrawCB.isSelected();

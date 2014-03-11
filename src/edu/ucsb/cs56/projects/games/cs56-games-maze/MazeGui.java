@@ -34,7 +34,7 @@ public class MazeGui implements ActionListener{
     private MazeSettings oldSettings;
     private Action playerMoveAction;
     private MazeGameSave gameSave;
-    private long RealTime;
+    private long realTime;
 
     private JFileChooser fc;
     private javax.swing.filechooser.FileFilter fileFilter;
@@ -374,7 +374,7 @@ public class MazeGui implements ActionListener{
 	}
 	else if("save".equals(e.getActionCommand())){
 	    timerBar.stopTimer();
-	    RealTime = timerBar.getTimeElapsed(); // records ACTUAL time when save button is pressed
+	    realTime = timerBar.getTimeElapsed(); // records ACTUAL time when save button is pressed
 	    //prompt user and write to file
 	    int returnVal = fc.showSaveDialog(this.frame);
 	    if(returnVal == JFileChooser.APPROVE_OPTION){
@@ -390,10 +390,10 @@ public class MazeGui implements ActionListener{
 		    fout = new FileOutputStream(file);
 		    oout = new ObjectOutputStream(fout);
 		    if(this.gameSave == null){
-			oout.writeObject(new MazeGameSave(this.grid, this.oldSettings,this.player,RealTime));
+			oout.writeObject(new MazeGameSave(this.grid, this.oldSettings,this.player,realTime));
 		    }
 		    else{
-			this.gameSave.setTimeElapsed(RealTime); // saves ACTUAL time to file 
+			this.gameSave.setTimeElapsed(realTime); // saves ACTUAL time to file 
 			oout.writeObject(this.gameSave);
 		    }
 		    oout.close();
@@ -438,10 +438,10 @@ public class MazeGui implements ActionListener{
      */
     private void wonMaze(){
 	timerBar.stopTimer();
-	RealTime = timerBar.getTimeElapsed();
-	String message = "Congratulations, you won!\nIt took you "+player.getNumMoves()+" moves and "+RealTime/1000.0+" seconds.\n";
-	if(this.gameSave != null && this.gameSave.hasHighScores() && RealTime==0){
-	    if(RealTime<gameSave.getHighScore().getTime()){
+	realTime = timerBar.getTimeElapsed();
+	String message = "Congratulations, you won!\nIt took you "+player.getNumMoves()+" moves and "+realTime/1000.0+" seconds.\n";
+	if(this.gameSave != null && this.gameSave.hasHighScores() && realTime==0){
+	    if(realTime<gameSave.getHighScore().getTime()){
 		message+="You beat "+gameSave.getHighScore().getName()+" with "+gameSave.getHighScore().getTime()/1000.0+"\n";
 	    }
 	}
@@ -457,12 +457,12 @@ public class MazeGui implements ActionListener{
 		try{ 
 		    fout = new FileOutputStream(file);
 		    oout = new ObjectOutputStream(fout);
-		    this.timerBar.setTimeElapsed(RealTime);
+		    this.timerBar.setTimeElapsed(realTime);
 		    if(this.gameSave == null){
 			this.gameSave = new MazeGameSave(this.grid, this.oldSettings);
 		    }
 		    String name = JOptionPane.showInputDialog(this.frame,"Enter Name","Enter your name:");
-		    gameSave.addHighScore(new MazeHighScore(name, RealTime));
+		    gameSave.addHighScore(new MazeHighScore(name, realTime));
 		    gameSave.setTimeElapsed(0);
 		    gameSave.resetPlayer();
 		    oout.writeObject(gameSave);
