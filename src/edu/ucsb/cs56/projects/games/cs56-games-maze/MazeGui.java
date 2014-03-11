@@ -32,7 +32,6 @@ public class MazeGui implements ActionListener{
     private Timer drawTimer;
     private MazeSettings settings;
     private MazeSettings oldSettings;
-    private MazeSettingsPanel fetchedSettings;
     private Action playerMoveAction;
     private MazeGameSave gameSave;
     private long RealTime;
@@ -59,11 +58,9 @@ public class MazeGui implements ActionListener{
 	@param args Command-line arguments for settings (optional)
      */
     public MazeGui(String[] args){
-
 	this.settings = new MazeSettings();
 	this.oldSettings = new MazeSettings();
 	this.gameSave = null;
-
 	// check for command line arguments, initialize variables accordingly
 	if (args.length != 0 && args.length != 2 && args.length != 5 && args.length != 9) {
 	    System.out.println("Improper number of command line arguments: " + args.length);
@@ -192,14 +189,19 @@ public class MazeGui implements ActionListener{
 			    grid.markStartFinish(new Cell(settings.startRow,settings.startCol),
 						 new Cell(settings.endRow,settings.endCol));
 			    if(settings.progReveal) {
+				//settingsDialog.getPanel().writeback();//
+				//mc.repaint();//
 				grid.setProgReveal(player, settings.progRevealRadius);
-				if (gameSave != null) gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
+				if (gameSave != null) { 
+				    gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
+				}
 				else {
 				    grid.updatePlayerPosition();
 				    mc.repaint();
 				}
 			    }
 			    else {
+				//settingsDialog.getPanel().writeback();//
 				grid.updatePlayerPosition();
 				mc.repaint();
 			    }
@@ -278,10 +280,11 @@ public class MazeGui implements ActionListener{
      */
     public void newMaze() {
 	timerBar.stopTimer();
+
 	frame.remove(mc);
 	this.gameSave = null;
 	this.oldSettings=new MazeSettings(settings);
-	//fetchedSettings.writeback();
+	//settingsDialog.getPanel().writeback();//
 	this.grid = new MazeGrid(settings.rows, settings.cols);
 	this.mc = new MazeComponent(grid, settings.cellWidth);
 	mc.setVisible(true);
@@ -303,6 +306,7 @@ public class MazeGui implements ActionListener{
 
 
 	Action playerMoveAction = new PlayerMoveAction();
+	//settingsDialog.getPanel().writeback();//
 	run();
     }
 
@@ -313,6 +317,7 @@ public class MazeGui implements ActionListener{
     public void newMaze(MazeGameSave game){
        	if(game == null){
 	    System.err.println("Error reading MazeSaveGame object");
+	    //settingsDialog.getPanel().writeback();//
 	    newMaze();
 	}
 	else{
