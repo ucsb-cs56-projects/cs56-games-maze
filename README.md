@@ -39,7 +39,7 @@ Each of these options represents a different method of random maze generation.
 In Progressive Reveal mode, only a small portion of the maze is revealed to the player at a time and all visited cells are retained as visible. 
 
 ##### Settings 
-The user has the ability to change maze size, via number of rows and columns, maze cell thickness, end maze location, and Progressive Reveal radius. 
+The user has the ability to change maze dimensions, via number of rows and columns, maze cell thickness, end maze location, and Progressive Reveal radius. 
 
 ##### Save 
 The user has the option to save an in-progress game at any point during gameplay.
@@ -70,3 +70,9 @@ In this file, the main can be found. Also, several methods involving new maze ge
 In this file, methods to save and implement user defined settings can be found. 
 * [MazeTimerBar](src/edu/ucsb/cs56/project/games/cs56-games-maze/MazeTimerBar.java)  
 In this file, action listener's for the New, Solve and How to buttons can be found. Also, several methods involving retrieval of elapsed time. 
+
+### Future Enhancements
+* Add arrow key navigation functionality
+* Add spacebar key game pause functionality
+* Develop a Score count algorithm based on maze dimensions, moves and time elapsed
+* Create a High Score table panel accessible from menu bar
