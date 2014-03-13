@@ -1,9 +1,8 @@
 <project default="compile">
 
-  <!-- build.xml for MazeGame, S12, CS56
-       name: Jakob Staahl 
-       name: Evan West
-  -->
+  <!-- build.xml for github.com/UCSB-CS56-Projects/cs56-games-maze
+       original authors: Jakob Staahl, Evan West
+       updated P. Conrad for github W14-->
 
   <property name="projectName" value="MazeGame" />   
   <property name="mainClass" value="edu.ucsb.cs56.projects.games.cs56_games_maze.MazeGui" />
@@ -11,19 +10,19 @@
   <property name="projectPath" value="cs56/W14/${env.USER}/cs56-games-maze" />
   <property name="webRoot" value="${env.HOME}/public_html" />
   <property name="webBaseURL" value="http://www.cs.ucsb.edu/~${env.USER}" />
-  <property name="jwsDest" value="${webRoot}/${projectPath}/jws" />
-  <property name="jwsURL" value="${webBaseURL}/${projectPath}/jws" />
   <property name="javadocDest" value="${webRoot}/${projectPath}/javadoc" /> 
   <property name="javadocURL" value="${webBaseURL}/${projectPath}/javadoc" /> 
+  <path id="project.class.path">
+         <pathelement location="build"/>
+         <pathelement location="lib/junit-4.8.2.jar"/>
+  </path>
+
 
   <target name="compile" description="compile my code">
     <mkdir dir="build" />
     <javac srcdir="src" destdir="build" includeantruntime="false" debug="true" debuglevel="lines,vars,source" >
       <compilerarg value="-Xlint:unchecked"/>
-      <classpath>
-	<pathelement location="build"/>
-	<pathelement location="lib/junit-4.8.2.jar"/>
-      </classpath>
+      <classpath refid="project.class.path" />
     </javac>
   </target>
 
@@ -59,9 +58,6 @@ endCol: (numCols-1)
   <target name="clean" description="delete unnecessary files and directories">
     <delete dir="build" quiet="true" />
     <delete dir="javadoc" quiet="true" />
-    <delete dir="dist" quiet="true" />
-    <delete dir="download" quiet="true" />
-    <delete dir="temp" quiet="true" />   
   </target>
 
   <target name="javadoc" depends="compile" description="create the javadoc">
@@ -90,17 +86,15 @@ endCol: (numCols-1)
     
     <chmod dir="${javadocDest}" perm="755"  type="dir" includes="**" />
     <chmod dir="${javadocDest}" perm="755"  type="file" includes="**/*" /> 
-   <echo>Javadoc deployed to ${javadocURL}</echo>
+   <echo>Javadoc deployed to ${javadocURL} if on CSIL</echo>
+   <echo> or if not on CSIL, try file:///${javadocDest}/index.html</echo>
 
   </target>    
 
   <target name="test" depends="compile" description="run the JUnit tests">
 
     <junit haltonerror="no" haltonfailure="no">
-      <classpath>
-	<pathelement location="lib/junit-4.8.2.jar"/>
-	<pathelement location="build"/>
-      </classpath>
+    <classpath refid="project.class.path" />
       
       <batchtest fork="yes">
 	<fileset dir="src">
@@ -113,22 +107,5 @@ endCol: (numCols-1)
       
     </junit>
   </target>
-
-  <target name="jar" depends="compile" description="create the jar">
-    <mkdir dir="dist" />
-    <jar destfile="dist/${projectName}.jar" basedir="build">
-      <manifest>
-	<attribute name="Main-Class" value="${mainClass}" />
-      </manifest>
-    </jar>
-  </target>
-
-<target name="linenumbers" description="Creates a file containing all source files with line numbers">
-   <exec executable="bash">
-     <arg value="-c"/>
-     <arg value='tree -ifQ src | grep \.java\"$ | xargs pr -n > numberedsource.txt'/>
-   </exec>
-</target>
-
 
 </project>
