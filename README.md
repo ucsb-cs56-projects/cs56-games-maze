@@ -51,7 +51,7 @@ The user has the option to load any previously saved game with the same position
 Upon winning a maze, players can save the maze, along with their name and time. If this file is then loaded by another player, they will be prompted to beat the previous best time and save their name and time to the maze. 
 
 ### [Gameplay Demonstration](http://www.youtube.com/watch?v=K7tsf0IDrzY) 
-![](http://i.imgur.com/zaG1AVZ.png?1 "Video Demonstration")  
+![](http://i.imgur.com/zaG1AVZ.png?1 "Click 'Gameplaye Demonstration' to watch")  
 [Play Video](http://www.youtube.com/watch?v=K7tsf0IDrzY)
 
 
