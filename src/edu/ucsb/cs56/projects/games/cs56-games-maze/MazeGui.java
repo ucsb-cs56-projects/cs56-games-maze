@@ -58,9 +58,9 @@ public class MazeGui implements ActionListener{
 	@param args Command-line arguments for settings (optional)
      */
     public MazeGui(String[] args){
-	this.settings = new MazeSettings();
-	this.oldSettings = new MazeSettings();
-	this.gameSave = null;
+	this.settings = new MazeSettings(); // instantiate MazeSettings object to hold command line args
+	this.oldSettings = new MazeSettings(); // instantiate MazeSettings object to hold settings to be serialized
+	this.gameSave = null; // for cmd line purposes, say that the game is new and has no saved game attributed to it
 	// check for command line arguments, initialize variables accordingly
 	if (args.length != 0 && args.length != 2 && args.length != 5 && args.length != 9) {
 	    System.out.println("Improper number of command line arguments: " + args.length);
@@ -173,8 +173,8 @@ public class MazeGui implements ActionListener{
     public void run() {
 	// generate the maze in steps if asked (rather than all at once using MazeGenerator.generate())
 	// repaint() in between each step to watch it grow
-	if(settings.progDraw){
-	    if(drawTimer!=null)
+	if(settings.progDraw){ // if the user chooses to watch the drawing of the maze
+	    if(drawTimer!=null) 
 		drawTimer.stop();
 	    drawTimer = new Timer(1, new ActionListener() {
 		    int i=0;
@@ -188,11 +188,9 @@ public class MazeGui implements ActionListener{
 			    timerBar.startTimer();
 			    grid.markStartFinish(new Cell(settings.startRow,settings.startCol),
 						 new Cell(settings.endRow,settings.endCol));
-			    if(settings.progReveal) {
-				//settingsDialog.getPanel().writeback();//
-				//mc.repaint();//
+			    if(settings.progReveal) { // if the user chooses to enable Progressive Reveal
 				grid.setProgReveal(player, settings.progRevealRadius);
-				if (gameSave != null) { 
+				if (gameSave != null) { // if the game is new and has no saved game attributed to it
 				    gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
 				}
 				else {
@@ -201,7 +199,6 @@ public class MazeGui implements ActionListener{
 				}
 			    }
 			    else {
-				//settingsDialog.getPanel().writeback();//
 				grid.updatePlayerPosition();
 				mc.repaint();
 			    }
@@ -210,13 +207,15 @@ public class MazeGui implements ActionListener{
 		});
 	    drawTimer.start();
 	}
-	else{ //quick draw
+	else{ //quick draw, the user chooses not to watch the drawing of the maze
 	    mg.generate();
 	    timerBar.startTimer();
 	    grid.markStartFinish(new Cell(settings.startRow,settings.startCol),new Cell(settings.endRow,settings.endCol));
-	    if(settings.progReveal) {
+	    if(settings.progReveal) { // if the user chooses to enable Progressive Reveal
 		grid.setProgReveal(player, settings.progRevealRadius);
-		if (gameSave != null) gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
+		if (gameSave != null) { // if the game is new and has no saved game attributed to it
+			gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
+		}
 	    }
 	    else {
 		grid.updatePlayerPosition();
