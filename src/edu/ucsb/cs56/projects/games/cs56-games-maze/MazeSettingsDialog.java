@@ -29,4 +29,8 @@ public class MazeSettingsDialog extends JDialog{
 	this.pack();
     }
 
+    public MazeSettingsPanel getPanel() {
+	return panel;
+    }
+
 }
