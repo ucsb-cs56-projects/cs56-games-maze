@@ -8,6 +8,13 @@ Before W14:
 
 After W14:
 * [Javadoc page] (http://www.cs.ucsb.edu/~loganortega/cs56/W14/loganortega/cs56-games-maze/javadoc)
+* 
+
+project history
+===============
+```
+ W14 | jstaahl 4pm | loganortega, richardwang94 | A program that generates at random a solvable rectangular maze
+```
 
 ## User View
 
