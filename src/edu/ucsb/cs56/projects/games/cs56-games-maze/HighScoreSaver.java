@@ -19,6 +19,9 @@ import java.util.*;
 
 public class HighScoreSaver{
 
+  ArrayList<MazeHighScore> savedScores;
+
+
   // write a new high score to the file
   public boolean addNewHighScore(MazeHighScore thisHS) throws IOException{
     FileOutputStream outstream = null;
@@ -39,12 +42,12 @@ public class HighScoreSaver{
   }
 
   // read high scores from the file and display
-  public boolean displayScores() throws IOException{
+  public ArrayList<MazeHighScore> getScores() throws IOException{
     //
     MazeHighScore tempHighScore;
     FileInputStream instream = null;
     ObjectInputStream osi = null;
-    ArrayList<MazeHighScore> savedScores;
+
 
     try{
       instream = new FileInputStream("hs.ser");
@@ -65,24 +68,15 @@ public class HighScoreSaver{
         // at this point, we should have an arraylist of MazeHighScore objects
         // time to sort
         MazeScoreCompare mazeScoreCompare = new MazeScoreCompare();
-        Collections.sort(savedScores,mazeScoreCompare);
-
-
-
-
-
-
-
-
-
-
+        Collections.sort(savedScores,mazeScoreCompare); // sort call
 
     }catch(IOException e){
       System.out.println("read file error");
-      return false;
+      return null;
     }finally{
       osi.close();
-      return true;
+      System.out.println("Successfully returning Arraylist");
+      return savedScores;
     }
 
 
