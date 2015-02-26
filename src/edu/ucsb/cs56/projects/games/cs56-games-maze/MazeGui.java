@@ -499,7 +499,7 @@ public class MazeGui implements ActionListener{
 	public int pauseCount = 0;
 	Font font = new Font("Verdana", Font.BOLD, 30);
 	JTextArea pauseArea =
-		 new JTextArea("\n\n\n       GAME PAUSED:\n\n      Click to Resume");
+		 new JTextArea("\n\n\n       GAME PAUSED:\n\n    Press 'P' to Resume");
 	public void actionPerformed(ActionEvent e){
 	     if(player!=null){
 		switch(e.getActionCommand()){
