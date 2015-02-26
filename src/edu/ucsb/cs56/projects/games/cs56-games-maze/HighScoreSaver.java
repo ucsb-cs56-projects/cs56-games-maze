@@ -18,19 +18,22 @@ import java.util.*;
 */
 
 public class HighScoreSaver{
-
+  File myFile=null;
   ArrayList<MazeHighScore> savedScores;
+  HighScoreSaver(String filename){
+    myFile = new File(filename);
+  }
 
-
-  // write a new high score to the file
-  public boolean addNewHighScore(MazeHighScore thisHS) throws IOException{
+  // pass this function an arraylist and it will write the objects to .ser file
+  public boolean writeHighScoreList(ArrayList<MazeHighScore> scoreList) throws IOException{
     FileOutputStream outstream = null;
     ObjectOutputStream oso = null;
-
       try{
-      outstream = new FileOutputStream("hs.ser");
+      outstream = new FileOutputStream(myFile);
       oso = new ObjectOutputStream(outstream);
-      oso.writeObject(thisHS);
+      for (MazeHighScore thisScore:scoreList){
+        oso.writeObject(thisScore);
+        }
     }catch(IOException e){
           System.out.println("write file error");
           return false;
@@ -41,8 +44,8 @@ public class HighScoreSaver{
 
   }
 
-  // read high scores from the file and display
-  public ArrayList<MazeHighScore> getScores() throws IOException{
+  // returns all the scores read from the .ser file in an array
+  public ArrayList<MazeHighScore> getHighScoreList() throws IOException{
     //
     MazeHighScore tempHighScore;
     FileInputStream instream = null;
@@ -50,7 +53,7 @@ public class HighScoreSaver{
 
 
     try{
-      instream = new FileInputStream("hs.ser");
+      instream = new FileInputStream(myFile);
       osi = new ObjectInputStream(instream);
       savedScores = new ArrayList<MazeHighScore>();
       // read high scores until exception
@@ -67,8 +70,8 @@ public class HighScoreSaver{
         }
         // at this point, we should have an arraylist of MazeHighScore objects
         // time to sort
-        MazeScoreCompare mazeScoreCompare = new MazeScoreCompare();
-        Collections.sort(savedScores,mazeScoreCompare); // sort call
+        //MazeScoreCompare mazeScoreCompare = new MazeScoreCompare();
+        //Collections.sort(savedScores,mazeScoreCompare); // sort call
 
     }catch(IOException e){
       System.out.println("read file error");
