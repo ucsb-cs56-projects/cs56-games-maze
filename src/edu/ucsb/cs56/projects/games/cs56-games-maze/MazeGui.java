@@ -152,7 +152,7 @@ public class MazeGui implements ActionListener{
 	grid.setPlayer(player);
 
 	//set up player keybinds
-	this.playerMoveAction = new PlayerMoveAction();
+	this.playerMoveAction = new KeyBoardAction();
 	remapPlayerKeys(this.playerMoveAction);
 
 	//init settings Dialog
@@ -164,20 +164,6 @@ public class MazeGui implements ActionListener{
 	fileFilter = new FileNameExtensionFilter("MazeGame saves (*.mzgs)", "mzgs");
 	fc.addChoosableFileFilter(fileFilter);
 	fc.setFileFilter(fileFilter);
-
-/*	this.pauseButton = new JButton("Pause");
-        this.add(this.pauseButton);
-        this.pauseButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e){
-                        stopTimer();
-                        JFrame pauseFrame = new JFrame("Game Paused");
-                        JTextArea pauseArea = new JTextArea("Click to Resume");
-                        pauseFrame.setSize(300,300);
-                        pauseFrame.add(pauseArea);
-                        pauseFrame.setVisible(true);
-                }
-            });
-*/
 
     }
 
@@ -318,7 +304,7 @@ public class MazeGui implements ActionListener{
 	this.player = new MazePlayer(this.grid, new Cell(settings.startRow,settings.startCol));
 
 
-	Action playerMoveAction = new PlayerMoveAction();
+	Action playerMoveAction = new KeyBoardAction();
 	//settingsDialog.getPanel().writeback();//
 	run();
     }
@@ -509,9 +495,11 @@ public class MazeGui implements ActionListener{
 
     /** Action object that responds to player move keyboard inputs
      */
-    class PlayerMoveAction extends AbstractAction{
+    class KeyBoardAction extends AbstractAction{
 	public int pauseCount = 0;
-	JTextArea pauseArea = new JTextArea("GAME PAUSED: \n\n\nClick to Resume");
+	Font font = new Font("Verdana", Font.BOLD, 30);
+	JTextArea pauseArea =
+		 new JTextArea("\n\n\n       GAME PAUSED:\n\n      Click to Resume");
 	public void actionPerformed(ActionEvent e){
 	     if(player!=null){
 		switch(e.getActionCommand()){
@@ -527,17 +515,16 @@ public class MazeGui implements ActionListener{
 		case "d":
 		    player.move(MazeGrid.DIR_RIGHT);
 		    break;
-		case "p":
-		    System.out.println("USER ENTERED SPACE");
+	       	case "p":
+		    pauseArea.setEditable(false);
+		    pauseArea.setFont(font);
 		    if (pauseCount%2 != 0){
 			frame.remove(pauseArea);
-			//frame.add(menuBar);
 			frame.add(mc);
 			timerBar.resumeTimer();
 		    }
 		    else {
 			timerBar.stopTimer();
-			//frame.remove(menuBar);
 			frame.remove(mc);
 			frame.add(pauseArea);
 		    }
@@ -546,7 +533,7 @@ public class MazeGui implements ActionListener{
 		    pauseCount++;
 		    return;
 		}
-
+		    
 	    mc.repaint();
 	    if(grid.isAtFinish(player.getPosition())) wonMaze();
 	    }
@@ -557,4 +544,5 @@ public class MazeGui implements ActionListener{
 	}
     }
 
+    
 }

@@ -39,6 +39,7 @@ public class MazeTimerBar extends JPanel{
 	this.parentMazeGui=parent;
 
 	this.timerField = new JTextField("00:00:000");
+	this.timerField.setEditable(false);
 	this.add(this.timerField);
 
 	this.newButton = new JButton("New");
@@ -64,20 +65,6 @@ public class MazeTimerBar extends JPanel{
 
 		}
 	    });
-		
-	this.pauseButton = new JButton("Pause");
-	this.add(this.pauseButton);
-	this.pauseButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e){
-			stopTimer();			
-			JFrame pauseFrame = new JFrame("Game Paused");
-			JTextArea pauseArea = new JTextArea("Click to Resume");
-                        pauseFrame.setSize(300,300);
-			pauseFrame.add(pauseArea);
-			pauseFrame.setVisible(true);
-		}
-	    });
-
 	
 	this.timerFormat = new SimpleDateFormat("mm:ss:SSS");
     }
