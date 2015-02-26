@@ -36,6 +36,8 @@ public class MazeGui implements ActionListener{
     private MazeGameSave gameSave;
     private long realTime;
 
+
+
     private JFileChooser fc;
     private javax.swing.filechooser.FileFilter fileFilter;
     private MazeSettingsDialog settingsDialog;
@@ -449,8 +451,12 @@ public class MazeGui implements ActionListener{
 	if(choice == JOptionPane.YES_OPTION){
 		try{
       String name = JOptionPane.showInputDialog(this.frame,"Enter Name","Enter your name:");
-      HighScoreSaver mySaver = new HighScoreSaver("ABCDEF.ser");
-      ArrayList<MazeHighScore> tempScoreList = mySaver.getHighScoreList();
+      HighScoreSaver mySaver = new HighScoreSaver("ABCDEF.ser"); // CTOR
+
+          ArrayList<MazeHighScore> tempScoreList = mySaver.getHighScoreList(); // error here because hte file is empty!
+/*
+          ArrayList<MazeHighScore> tempScoreList = new ArrayList<MazeHighScore>();
+*/
       tempScoreList.add(new MazeHighScore(name,realTime));
       mySaver.writeHighScoreList(tempScoreList);
 

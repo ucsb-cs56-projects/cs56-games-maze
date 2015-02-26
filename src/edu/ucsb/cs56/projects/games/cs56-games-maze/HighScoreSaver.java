@@ -20,9 +20,13 @@ import java.util.*;
 public class HighScoreSaver{
   File myFile=null;
   ArrayList<MazeHighScore> savedScores;
-  HighScoreSaver(String filename){
+
+  HighScoreSaver(String filename){ // CTOR
     myFile = new File(filename);
   }
+
+  // write method for clearing the arraylist, write to an empty file...(empty file is creating null pointer exception)
+
 
   // pass this function an arraylist and it will write the objects to .ser file
   public boolean writeHighScoreList(ArrayList<MazeHighScore> scoreList) throws IOException{
@@ -44,6 +48,13 @@ public class HighScoreSaver{
 
   }
 
+  public boolean hasEmptyFile(){
+    if (myFile==null) return false;
+    if (myFile.length()!=0) return false;
+    return true;
+  }
+
+
   // returns all the scores read from the .ser file in an array
   public ArrayList<MazeHighScore> getHighScoreList() throws IOException{
     //
@@ -53,7 +64,9 @@ public class HighScoreSaver{
 
 
     try{
+      System.out.println(">BEGIN");
       instream = new FileInputStream(myFile);
+      System.out.println(">END");
       osi = new ObjectInputStream(instream);
       savedScores = new ArrayList<MazeHighScore>();
       // read high scores until exception
