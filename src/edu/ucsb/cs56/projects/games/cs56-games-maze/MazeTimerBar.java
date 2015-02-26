@@ -22,6 +22,7 @@ public class MazeTimerBar extends JPanel{
     private JButton newButton;
     private JButton solveButton;
     private JButton instructButton;
+    private JButton pauseButton;
     private long startTime;
     private long stopTime;
     private long elapsed=0;
@@ -63,7 +64,21 @@ public class MazeTimerBar extends JPanel{
 
 		}
 	    });
+		
+	this.pauseButton = new JButton("Pause");
+	this.add(this.pauseButton);
+	this.pauseButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e){
+			stopTimer();			
+			JFrame pauseFrame = new JFrame("Game Paused");
+			JTextArea pauseArea = new JTextArea("Click to Resume");
+                        pauseFrame.setSize(300,300);
+			pauseFrame.add(pauseArea);
+			pauseFrame.setVisible(true);
+		}
+	    });
 
+	
 	this.timerFormat = new SimpleDateFormat("mm:ss:SSS");
     }
 
@@ -105,6 +120,11 @@ public class MazeTimerBar extends JPanel{
 	t.stop();
 	this.stopTime = System.currentTimeMillis();
 	return this.stopTime-this.startTime;
+    }
+	
+    public long resumeTimer(){
+	
+	return 0;
     }
 
     /** Returns total time elapsed as displayed on the timer.

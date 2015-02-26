@@ -43,7 +43,6 @@ public class MazeGui implements ActionListener{
     public static final int MULTI_CHAIN_GEN = 1;
     public static final int ALT_STEP_GEN = 2;
     public static final int NEW_STEP_GEN = 3;
-
     /** Main method spins off thread to run controller and create Maze game
      */
     public static void main(final String[] args){
@@ -90,7 +89,7 @@ public class MazeGui implements ActionListener{
 	this.frame = new JFrame();
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	frame.setTitle("Maze Game");
-
+	
 	//initialize timer/controls bar
 	this.timerBar = new MazeTimerBar(this);
 	frame.add(timerBar, BorderLayout.SOUTH);
@@ -165,6 +164,21 @@ public class MazeGui implements ActionListener{
 	fileFilter = new FileNameExtensionFilter("MazeGame saves (*.mzgs)", "mzgs");
 	fc.addChoosableFileFilter(fileFilter);
 	fc.setFileFilter(fileFilter);
+
+/*	this.pauseButton = new JButton("Pause");
+        this.add(this.pauseButton);
+        this.pauseButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e){
+                        stopTimer();
+                        JFrame pauseFrame = new JFrame("Game Paused");
+                        JTextArea pauseArea = new JTextArea("Click to Resume");
+                        pauseFrame.setSize(300,300);
+                        pauseFrame.add(pauseArea);
+                        pauseFrame.setVisible(true);
+                }
+            });
+*/
+
     }
 
     
@@ -484,18 +498,22 @@ public class MazeGui implements ActionListener{
 	inputMap.put(KeyStroke.getKeyStroke("S"),"player_down");
 	inputMap.put(KeyStroke.getKeyStroke("A"),"player_left");
 	inputMap.put(KeyStroke.getKeyStroke("D"),"player_right");
+	inputMap.put(KeyStroke.getKeyStroke("P"),"pause_game");
 	ActionMap actionmap = ((JPanel)this.frame.getContentPane()).getActionMap();
 	actionmap.put("player_up",a);
 	actionmap.put("player_down",a);
 	actionmap.put("player_left",a);
 	actionmap.put("player_right",a);
+	actionmap.put("pause_game",a);
     }
 
     /** Action object that responds to player move keyboard inputs
      */
     class PlayerMoveAction extends AbstractAction{
+	public int pauseCount = 0;
+	JTextArea pauseArea = new JTextArea("Click to Resume");
 	public void actionPerformed(ActionEvent e){
-	    if(player!=null){
+	     if(player!=null){
 		switch(e.getActionCommand()){
 		case "w":
 		    player.move(MazeGrid.DIR_UP);
@@ -509,6 +527,22 @@ public class MazeGui implements ActionListener{
 		case "d":
 		    player.move(MazeGrid.DIR_RIGHT);
 		    break;
+		case "p":
+		    System.out.println("USER ENTERED SPACE");
+		    if (pauseCount%2 != 0){
+			timerBar.startTimer();
+			frame.remove(pauseArea);
+			frame.add(mc);
+		    }
+		    else {
+			timerBar.stopTimer();
+			frame.remove(mc);
+			frame.add(pauseArea);
+		    }
+		    frame.repaint();
+		    frame.setVisible(true);		    
+		    pauseCount++;
+		    return;
 		}
 
 	    mc.repaint();
