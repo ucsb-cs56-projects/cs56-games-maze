@@ -122,9 +122,10 @@ public class MazeTimerBar extends JPanel{
 	return this.stopTime-this.startTime;
     }
 	
-    public long resumeTimer(){
-	
-	return 0;
+    public void resumeTimer(){
+	this.startTime = System.currentTimeMillis() - getTimeElapsed();
+	t.start();	
+	return;
     }
 
     /** Returns total time elapsed as displayed on the timer.

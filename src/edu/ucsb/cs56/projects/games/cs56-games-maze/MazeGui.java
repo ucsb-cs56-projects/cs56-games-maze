@@ -511,7 +511,7 @@ public class MazeGui implements ActionListener{
      */
     class PlayerMoveAction extends AbstractAction{
 	public int pauseCount = 0;
-	JTextArea pauseArea = new JTextArea("Click to Resume");
+	JTextArea pauseArea = new JTextArea("GAME PAUSED: \n\n\nClick to Resume");
 	public void actionPerformed(ActionEvent e){
 	     if(player!=null){
 		switch(e.getActionCommand()){
@@ -530,12 +530,14 @@ public class MazeGui implements ActionListener{
 		case "p":
 		    System.out.println("USER ENTERED SPACE");
 		    if (pauseCount%2 != 0){
-			timerBar.startTimer();
 			frame.remove(pauseArea);
+			//frame.add(menuBar);
 			frame.add(mc);
+			timerBar.resumeTimer();
 		    }
 		    else {
 			timerBar.stopTimer();
+			//frame.remove(menuBar);
 			frame.remove(mc);
 			frame.add(pauseArea);
 		    }
