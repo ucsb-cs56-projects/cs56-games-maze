@@ -496,7 +496,7 @@ public class MazeGui implements ActionListener{
     /** Action object that responds to player move keyboard inputs
      */
     class KeyBoardAction extends AbstractAction{
-	public int pauseCount = 0;
+	public boolean isPaused = false;
 	Font font = new Font("Verdana", Font.BOLD, 30);
 	JTextArea pauseArea =
 		 new JTextArea("\n\n\n       GAME PAUSED:\n\n    Press 'P' to Resume");
@@ -504,25 +504,27 @@ public class MazeGui implements ActionListener{
 	     if(player!=null){
 		switch(e.getActionCommand()){
 		case "w":
-		    player.move(MazeGrid.DIR_UP);
+		    if(isPaused == false) {player.move(MazeGrid.DIR_UP);}
 		    break;
 		case"s":
-		    player.move(MazeGrid.DIR_DOWN);
+		    if(isPaused == false) {player.move(MazeGrid.DIR_DOWN);}
 		    break;
 		case "a":
-		    player.move(MazeGrid.DIR_LEFT);
+		    if(isPaused == false) {player.move(MazeGrid.DIR_LEFT);}
 		    break;
 		case "d":
-		    player.move(MazeGrid.DIR_RIGHT);
+		    if(isPaused == false) {player.move(MazeGrid.DIR_RIGHT);}
 		    break;
 	       	case "p":
 		    pauseArea.setEditable(false);
 		    pauseArea.setFont(font);
-		    if (pauseCount%2 != 0){
+		    //Game is Paused
+		    if (isPaused == true){
 			frame.remove(pauseArea);
 			frame.add(mc);
 			timerBar.resumeTimer();
 		    }
+		    //Game is not Paused
 		    else {
 			timerBar.stopTimer();
 			frame.remove(mc);
@@ -530,7 +532,8 @@ public class MazeGui implements ActionListener{
 		    }
 		    frame.repaint();
 		    frame.setVisible(true);		    
-		    pauseCount++;
+		    if(!isPaused) isPaused = true;
+		    else isPaused = false;
 		    return;
 		}
 		    
