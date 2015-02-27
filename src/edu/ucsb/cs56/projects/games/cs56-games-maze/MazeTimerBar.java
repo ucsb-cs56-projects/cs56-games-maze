@@ -31,7 +31,7 @@ public class MazeTimerBar extends JPanel{
     private Timer t;
     private MazeGui parentMazeGui;
     private MazeInstructGui instructGui;
-    
+    private HighScoreTable highScores;
     /** Constructor for default MazeTimerBar
 	@param parent The parent MazeGui instance that created this
      */
@@ -70,7 +70,7 @@ public class MazeTimerBar extends JPanel{
 	this.add(this.scoresButton);
 	this.scoresButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e){
-
+			highScores = new HighScoreTable();
 		}
 	    });
 	

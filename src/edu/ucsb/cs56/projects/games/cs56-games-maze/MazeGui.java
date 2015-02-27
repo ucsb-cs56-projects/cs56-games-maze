@@ -515,7 +515,7 @@ public class MazeGui implements ActionListener{
 		case "d":
 		    if(isPaused == false) {player.move(MazeGrid.DIR_RIGHT);}
 		    break;
-	       	case "p":
+	    case "p":
 		    pauseArea.setEditable(false);
 		    pauseArea.setFont(font);
 		    //Game is Paused
