@@ -51,18 +51,12 @@ public class HighScoreSaver{
   public boolean hasEmptyFile(){
     if (myFile==null)
       {
-        System.out.println("NULL file");
+        System.err.println("*****NULL file");
         return false;
       }
     if (myFile.length()!=0) return false;
     return true;
   }
-
-  public ArrayList<MazeHighScore> getEmptyScoreList(){
-    ArrayList<MazeHighScore> myEmptyList = new ArrayList<>();
-    return myEmptyList;
-  }
-
 
   // returns all the scores read from the .ser file in an array
   public ArrayList<MazeHighScore> getHighScoreList() throws IOException{
@@ -96,7 +90,7 @@ public class HighScoreSaver{
         //Collections.sort(savedScores,mazeScoreCompare); // sort call
 
     }catch(IOException e){
-      System.out.println("read file error");
+      System.err.println("read file error");
       return null;
     }finally{
       osi.close();

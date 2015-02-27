@@ -456,9 +456,11 @@ public class MazeGui implements ActionListener{
     //if (mySaver.hasEmptyFile())
       //  ArrayList<MazeHighScore> currentScoreList = mySaver.getEmptyScoreList();
       //else
-        ArrayList<MazeHighScore> currentScoreList = mySaver.getHighScoreList();
+        ArrayList<MazeHighScore> currentScoreList = new ArrayList<MazeHighScore>();
+        if (mySaver.hasEmptyFile()==false)  // if the .ser file=empty, then don't read
+          currentScoreList = mySaver.getHighScoreList();
 
-
+        System.out.println(">>> REACHED");
 
       currentScoreList.add(new MazeHighScore(name,realTime));
       mySaver.writeHighScoreList(currentScoreList);
