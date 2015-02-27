@@ -453,16 +453,19 @@ public class MazeGui implements ActionListener{
       String name = JOptionPane.showInputDialog(this.frame,"Enter Name","Enter your name:");
       HighScoreSaver mySaver = new HighScoreSaver("ABCDEF.ser"); // CTOR
 
-          ArrayList<MazeHighScore> tempScoreList = mySaver.getHighScoreList(); // error here because hte file is empty!
-/*
-          ArrayList<MazeHighScore> tempScoreList = new ArrayList<MazeHighScore>();
-*/
-      tempScoreList.add(new MazeHighScore(name,realTime));
-      mySaver.writeHighScoreList(tempScoreList);
+    //if (mySaver.hasEmptyFile())
+      //  ArrayList<MazeHighScore> currentScoreList = mySaver.getEmptyScoreList();
+      //else
+        ArrayList<MazeHighScore> currentScoreList = mySaver.getHighScoreList();
 
 
-      System.out.println("Top Player: "+tempScoreList.get(0).getName()+ " with Score: "+tempScoreList.get(0).getTime());
-      System.out.println("Arr Size= "+tempScoreList.size());
+
+      currentScoreList.add(new MazeHighScore(name,realTime));
+      mySaver.writeHighScoreList(currentScoreList);
+
+
+      System.out.println("Top Player: "+currentScoreList.get(0).getName()+ " with Score: "+currentScoreList.get(0).getTime());
+      System.out.println("Arr Size= "+currentScoreList.size());
 
 
       //display Scoreboard here

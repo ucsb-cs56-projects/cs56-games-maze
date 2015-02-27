@@ -49,9 +49,18 @@ public class HighScoreSaver{
   }
 
   public boolean hasEmptyFile(){
-    if (myFile==null) return false;
+    if (myFile==null)
+      {
+        System.out.println("NULL file");
+        return false;
+      }
     if (myFile.length()!=0) return false;
     return true;
+  }
+
+  public ArrayList<MazeHighScore> getEmptyScoreList(){
+    ArrayList<MazeHighScore> myEmptyList = new ArrayList<>();
+    return myEmptyList;
   }
 
 
