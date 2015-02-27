@@ -22,6 +22,8 @@ public class MazeTimerBar extends JPanel{
     private JButton newButton;
     private JButton solveButton;
     private JButton instructButton;
+    private JButton pauseButton;
+    private JButton scoresButton;
     private long startTime;
     private long stopTime;
     private long elapsed=0;
@@ -29,7 +31,7 @@ public class MazeTimerBar extends JPanel{
     private Timer t;
     private MazeGui parentMazeGui;
     private MazeInstructGui instructGui;
-    
+    private HighScoreTable highScores;
     /** Constructor for default MazeTimerBar
 	@param parent The parent MazeGui instance that created this
      */
@@ -38,6 +40,7 @@ public class MazeTimerBar extends JPanel{
 	this.parentMazeGui=parent;
 
 	this.timerField = new JTextField("00:00:000");
+	this.timerField.setEditable(false);
 	this.add(this.timerField);
 
 	this.newButton = new JButton("New");
@@ -63,7 +66,14 @@ public class MazeTimerBar extends JPanel{
 
 		}
 	    });
-
+	this.scoresButton = new JButton("High Scores");
+	this.add(this.scoresButton);
+	this.scoresButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e){
+			highScores = new HighScoreTable();
+		}
+	    });
+	
 	this.timerFormat = new SimpleDateFormat("mm:ss:SSS");
     }
 
@@ -105,6 +115,12 @@ public class MazeTimerBar extends JPanel{
 	t.stop();
 	this.stopTime = System.currentTimeMillis();
 	return this.stopTime-this.startTime;
+    }
+	
+    public void resumeTimer(){
+	this.startTime = System.currentTimeMillis() - getTimeElapsed();
+	t.start();	
+	return;
     }
 
     /** Returns total time elapsed as displayed on the timer.
