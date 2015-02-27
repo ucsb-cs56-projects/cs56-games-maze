@@ -452,13 +452,14 @@ public class MazeGui implements ActionListener{
 	message+="Would you like to save this score to this maze?\n";
 	int choice = JOptionPane.showConfirmDialog(frame, message, "Victory",JOptionPane.YES_NO_OPTION);
 	if(choice == JOptionPane.YES_OPTION){
+    String name = JOptionPane.showInputDialog(this.frame,"Enter Name","Enter your name:");
     //prompt user and write to file
     int returnVal = fc.showSaveDialog(this.frame);
     if(returnVal == JFileChooser.APPROVE_OPTION){
       File file = fc.getSelectedFile();
       FileOutputStream fout;
       ObjectOutputStream oout;
-      String name = JOptionPane.showInputDialog(this.frame,"Enter Name","Enter your name:");
+
     try{
       fout = new FileOutputStream(file);
       oout = new ObjectOutputStream(fout);
@@ -475,26 +476,23 @@ public class MazeGui implements ActionListener{
       fout.close();
     } catch(IOException ioe){ ioe.printStackTrace(); }
 
-    try{
-      HighScoreSaver mySaver = new HighScoreSaver("ABCDEF.ser"); // CTOR
+  }
+  try{
+    HighScoreSaver mySaver = new HighScoreSaver("ABCDEF.ser"); // CTOR
 
-      ArrayList<MazeHighScore> currentScoreList = new ArrayList<MazeHighScore>();
-        if (mySaver.hasEmptyFile()==false)  // if the .ser file=empty, then don't read
-          currentScoreList = mySaver.getHighScoreList();
+    ArrayList<MazeHighScore> currentScoreList = new ArrayList<MazeHighScore>();
+    if (mySaver.hasEmptyFile()==false)  // if the .ser file=empty, then don't read
+    currentScoreList = mySaver.getHighScoreList();
 
-      currentScoreList.add(new MazeHighScore(name,realTime));
-      mySaver.writeHighScoreList(currentScoreList);
+    currentScoreList.add(new MazeHighScore(name,realTime));
+    mySaver.writeHighScoreList(currentScoreList);
 
+    System.out.println("Top Player: "+currentScoreList.get(0).getName()+ " with Score: "+currentScoreList.get(0).getTime());
+    System.out.println("Arr Size= "+currentScoreList.size());
 
-      System.out.println("Top Player: "+currentScoreList.get(0).getName()+ " with Score: "+currentScoreList.get(0).getTime());
-      System.out.println("Arr Size= "+currentScoreList.size());
+  }catch(IOException ioe){ ioe.printStackTrace(); }
+  
 
-
-
-		}catch(IOException ioe){ ioe.printStackTrace(); }
-
-
-	}
 	this.player=null;
 }}
 
