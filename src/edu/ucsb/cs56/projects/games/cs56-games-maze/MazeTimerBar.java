@@ -23,6 +23,7 @@ public class MazeTimerBar extends JPanel{
     private JButton solveButton;
     private JButton instructButton;
     private JButton pauseButton;
+    private JButton scoresButton;
     private long startTime;
     private long stopTime;
     private long elapsed=0;
@@ -62,6 +63,13 @@ public class MazeTimerBar extends JPanel{
 	this.instructButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e){
 		    instructGui = new MazeInstructGui();
+
+		}
+	    });
+	this.scoresButton = new JButton("High Scores");
+	this.add(this.scoresButton);
+	this.scoresButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e){
 
 		}
 	    });
