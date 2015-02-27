@@ -43,10 +43,12 @@ public class HighScoreTable{
 	frame.setVisible(true);
 	frame.setSize(300,300);
 
-	String rowData[][] = new String[highScores.size()][2];
+	int size = highScores.size();
+
+	String rowData[][] = new String[size][size];
 	String columnNames[] = { "Name", "Time", "Score"};
 
-	for(int count = 0; count < highScores.size(); count++){
+	for(int count = 0; count < size; count++){
 		MazeHighScore currentHighScore = highScores.get(count);
 		rowData[count][0] = currentHighScore.getName();
 		rowData[count][1] = Long.toString(currentHighScore.getTime());
