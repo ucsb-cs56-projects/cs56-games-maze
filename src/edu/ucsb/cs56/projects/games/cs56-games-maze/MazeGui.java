@@ -16,7 +16,8 @@ import java.io.*;
    @author Evan West
    @author Logan Ortega
    @author Richard Wang
-   @version 2/24/14 for proj1, cs56, W14
+   @author Zak Blake
+   @version 2/26/15 for proj1, cs56, W15
 */
 
 public class MazeGui implements ActionListener{
@@ -341,6 +342,8 @@ public class MazeGui implements ActionListener{
 	}
     }
 
+
+
     /** Will reveal maze if necessary and show solution
      */
     public void solveMaze() {
@@ -449,18 +452,35 @@ public class MazeGui implements ActionListener{
 	message+="Would you like to save this score to this maze?\n";
 	int choice = JOptionPane.showConfirmDialog(frame, message, "Victory",JOptionPane.YES_NO_OPTION);
 	if(choice == JOptionPane.YES_OPTION){
-		try{
+    //prompt user and write to file
+    int returnVal = fc.showSaveDialog(this.frame);
+    if(returnVal == JFileChooser.APPROVE_OPTION){
+      File file = fc.getSelectedFile();
+      FileOutputStream fout;
+      ObjectOutputStream oout;
       String name = JOptionPane.showInputDialog(this.frame,"Enter Name","Enter your name:");
+    try{
+      fout = new FileOutputStream(file);
+      oout = new ObjectOutputStream(fout);
+      this.timerBar.setTimeElapsed(realTime);
+      if(this.gameSave == null){
+        this.gameSave = new MazeGameSave(this.grid, this.oldSettings);
+      }
+
+      gameSave.addHighScore(new MazeHighScore(name, realTime));
+      gameSave.setTimeElapsed(0);
+      gameSave.resetPlayer();
+      oout.writeObject(gameSave);
+      oout.close();
+      fout.close();
+    } catch(IOException ioe){ ioe.printStackTrace(); }
+
+    try{
       HighScoreSaver mySaver = new HighScoreSaver("ABCDEF.ser"); // CTOR
 
-    //if (mySaver.hasEmptyFile())
-      //  ArrayList<MazeHighScore> currentScoreList = mySaver.getEmptyScoreList();
-      //else
-        ArrayList<MazeHighScore> currentScoreList = new ArrayList<MazeHighScore>();
+      ArrayList<MazeHighScore> currentScoreList = new ArrayList<MazeHighScore>();
         if (mySaver.hasEmptyFile()==false)  // if the .ser file=empty, then don't read
           currentScoreList = mySaver.getHighScoreList();
-
-        System.out.println(">>> REACHED");
 
       currentScoreList.add(new MazeHighScore(name,realTime));
       mySaver.writeHighScoreList(currentScoreList);
@@ -470,14 +490,13 @@ public class MazeGui implements ActionListener{
       System.out.println("Arr Size= "+currentScoreList.size());
 
 
-      //display Scoreboard here
 
 		}catch(IOException ioe){ ioe.printStackTrace(); }
 
 
 	}
 	this.player=null;
-    }
+}}
 
     /** Maps current player movement keys to an action
 	@param a Action object to map all keys to
