@@ -1,11 +1,13 @@
 package edu.ucsb.cs56.projects.games.cs56_games_maze;
 
 import java.io.Serializable;
+import java.util.*;
 
 /** Class that holds data for  one maze score.
     Holds no references to maze object, so must be associated with by something else.
 
     @author Evan West
+    @author Zakary Blake
     @version CS56 S13 UCSB
  */
 public class MazeHighScore implements Serializable, Comparable<MazeHighScore>{
@@ -26,7 +28,7 @@ public class MazeHighScore implements Serializable, Comparable<MazeHighScore>{
     public String getName(){
 	return this.name;
     }
-    
+
     /** @return Time in milliseconds of this score */
     public long getTime(){
 	return this.time;
@@ -37,10 +39,16 @@ public class MazeHighScore implements Serializable, Comparable<MazeHighScore>{
     */
     @Override
     public int compareTo(MazeHighScore other){
-	if (other==null){
-	    throw new NullPointerException();
-	}
+	     if (other==null){
+	        throw new NullPointerException();
+	       }
 	Long otherTime = new Long(other.getTime());
 	return -1*otherTime.compareTo(this.time);
     }
+}
+// compare class for use in HighScoreSaver.java
+class MazeScoreCompare implements Comparator<MazeHighScore> {
+  public int compare(MazeHighScore ms1, MazeHighScore ms2){
+    return ms1.compareTo(ms2);
+  }
 }
