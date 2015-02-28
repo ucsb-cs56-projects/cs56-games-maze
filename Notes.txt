@@ -6,4 +6,7 @@ Ideas for improvement
 - save games and load them from .ser files in app instead of on computer (may fix the load bug we currently have)
 - develop a system for ranking maze difficulty so players can be ranked against eachother
 
+- go back through our code, clean and comment it
+
+
 Other Notes
