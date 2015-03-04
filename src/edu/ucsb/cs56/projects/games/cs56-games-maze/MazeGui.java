@@ -468,7 +468,7 @@ public class MazeGui implements ActionListener{
         this.gameSave = new MazeGameSave(this.grid, this.oldSettings);
       }
 
-      gameSave.addHighScore(new MazeHighScore(name, realTime));
+      gameSave.addHighScore(new MazeHighScore(name, realTime, settings.rows, settings.cols));
       gameSave.setTimeElapsed(0);
       gameSave.resetPlayer();
       oout.writeObject(gameSave);
@@ -478,13 +478,13 @@ public class MazeGui implements ActionListener{
 
   }
   try{
-    HighScoreSaver mySaver = new HighScoreSaver("ABCDEF.ser"); // CTOR
+    HighScoreSaver mySaver = new HighScoreSaver("HighScores.ser"); // CTOR
 
     ArrayList<MazeHighScore> currentScoreList = new ArrayList<MazeHighScore>();
     if (mySaver.hasEmptyFile()==false)  // if the .ser file=empty, then don't read
     currentScoreList = mySaver.getHighScoreList();
 
-    currentScoreList.add(new MazeHighScore(name,realTime));
+    currentScoreList.add(new MazeHighScore(name,realTime,settings.rows,settings.cols));
     mySaver.writeHighScoreList(currentScoreList);
 
     System.out.println("Top Player: "+currentScoreList.get(0).getName()+ " with Score: "+currentScoreList.get(0).getTime());

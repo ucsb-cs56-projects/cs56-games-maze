@@ -94,7 +94,7 @@ public class HighScoreSaver{
       return null;
     }finally{
       osi.close();
-      System.out.println("Successfully returning Arraylist");
+      System.out.println("Successfully returning Arraylist of size " + savedScores.size());
       return savedScores;
     }
 
