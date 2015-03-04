@@ -17,6 +17,7 @@ public class MazeHighScore implements Serializable, Comparable<MazeHighScore>{
     private long time;
     private double rows;
     private double cols;
+    private int score;
 
     /** Constructor for high score
 	@param name Name string to associate with score (prompted from player)
@@ -47,6 +48,11 @@ public class MazeHighScore implements Serializable, Comparable<MazeHighScore>{
     return this.cols;
     }
 
+    public int getScore(){
+        score = ((int)(((rows * cols)/time)*1000000));
+        return score;
+    }
+
 
     /** Override to allow comparison of scores, smallest time is first
 	@param other Another MazeHighScore object to compare this one to
@@ -59,6 +65,15 @@ public class MazeHighScore implements Serializable, Comparable<MazeHighScore>{
 	Long otherTime = new Long(other.getTime());
 	return -1*otherTime.compareTo(this.time);
     }
+
+    public static Comparator<MazeHighScore> ScoreCompare = new Comparator<MazeHighScore>() {
+    public int compare(MazeHighScore s1, MazeHighScore s2) {
+
+        int score1 = s1.getScore();
+        int score2 = s2.getScore();
+        return score2 - score1;
+    }};
+
 }
 // compare class for use in HighScoreSaver.java
 class MazeScoreCompare implements Comparator<MazeHighScore> {

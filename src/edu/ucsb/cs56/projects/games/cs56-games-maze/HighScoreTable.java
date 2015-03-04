@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.io.File;
 import java.lang.Exception;
 import java.io.*;
+import java.util.Comparator;
+import java.util.Collections;
 
 /**
    Class where the JTable for the High Score table is created.
@@ -37,7 +39,7 @@ public class HighScoreTable{
     	e.printStackTrace();
     }
 
-
+    Collections.sort(highScores, MazeHighScore.ScoreCompare);
 
 	//initialize JFrame: set visible and size
 	JFrame frame = new JFrame("High Scores");
@@ -60,9 +62,7 @@ public class HighScoreTable{
 		String time = String.format("%02d:%02d:%02d", minute, second, millis % 10);
 
 		//Compute Score
-		double mazeRows = currentHighScore.getRows();
-		double mazeCols = currentHighScore.getCols();
-		int intScore = ((int)(((mazeRows * mazeCols)/millis)*1000000));
+		int intScore = currentHighScore.getScore();
 		String score = String.format("%5d", intScore);
 		
 		rowData[count][1] = time;
