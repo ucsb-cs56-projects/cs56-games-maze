@@ -25,6 +25,7 @@ public class HighScoreTable{
 
 	private HighScoreSaver scoreSaver;
 	private ArrayList<MazeHighScore> highScores;
+	private boolean emptyFile = false;
 
     public HighScoreTable() {
 
@@ -33,8 +34,11 @@ public class HighScoreTable{
 
     try{
     	if(scoreSaver.hasEmptyFile() != true) { highScores = scoreSaver.getHighScoreList();}
-    	else System.out.println("No file to read");
-    }catch(IOException e){
+    	else {
+    		highScores = new ArrayList<MazeHighScore>();
+    		emptyFile = true;
+    	}
+    } catch(IOException e){
     	System.err.println("read file error");
     	e.printStackTrace();
     }
@@ -45,13 +49,14 @@ public class HighScoreTable{
 	JFrame frame = new JFrame("High Scores");
 	frame.setVisible(true);
 	frame.setSize(300,300);
-	
+
 	int size = highScores.size();
 	if(size > 10) { size = 10; }
 
 	String rowData[][] = new String[10][10];
 	String columnNames[] = { "Name", "Time", "Score"};
 
+	if(!emptyFile) {
 	for(int count = 0; count < size; count++){
 		MazeHighScore currentHighScore = highScores.get(count);
 		rowData[count][0] = currentHighScore.getName();
@@ -68,6 +73,7 @@ public class HighScoreTable{
 		rowData[count][1] = time;
 		rowData[count][2] = score;
 	}
+	}
 	JTable table = new JTable(rowData, columnNames);
 
 	JScrollPane scrollPane = new JScrollPane(table);
@@ -75,10 +81,5 @@ public class HighScoreTable{
     frame.setSize(400, 250);
     frame.setVisible(true);
 
-    }
-
-
-
-
-
-}
+    
+}}
