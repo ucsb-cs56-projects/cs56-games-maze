@@ -8,20 +8,25 @@ import java.util.*;
 
     @author Evan West
     @author Zakary Blake
+    @author Victor Porter
     @version CS56 S13 UCSB
  */
 public class MazeHighScore implements Serializable, Comparable<MazeHighScore>{
 
     private String name;
     private long time;
+    private double rows;
+    private double cols;
 
     /** Constructor for high score
 	@param name Name string to associate with score (prompted from player)
 	@param time Time in milliseconds that player took to complete the maze
     */
-    public MazeHighScore(String name, long time){
+    public MazeHighScore(String name, long time, int rows, int columns){
 	this.name=name;
 	this.time=time;
+    this.rows=rows;
+    this.cols=columns;
     }
 
     /** @return Name associated with the high score */
@@ -33,6 +38,15 @@ public class MazeHighScore implements Serializable, Comparable<MazeHighScore>{
     public long getTime(){
 	return this.time;
     }
+
+    public double getRows(){
+    return this.rows;
+    }
+
+    public double getCols(){
+    return this.cols;
+    }
+
 
     /** Override to allow comparison of scores, smallest time is first
 	@param other Another MazeHighScore object to compare this one to
