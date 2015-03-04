@@ -51,14 +51,21 @@ public class HighScoreTable{
 	for(int count = 0; count < size; count++){
 		MazeHighScore currentHighScore = highScores.get(count);
 		rowData[count][0] = currentHighScore.getName();
-		rowData[count][1] = Long.toString(currentHighScore.getTime());
-		rowData[count][2] = "100";
+		
+		long millis = currentHighScore.getTime();
+		long second = (millis / 1000) % 60;
+		long minute = (millis / (1000 * 60)) % 60;
+
+		String time = String.format("%02d:%02d:%02d", minute, second, millis % 10);
+		
+		rowData[count][1] = time;
+		rowData[count][2] = time;
 	}
 	JTable table = new JTable(rowData, columnNames);
 
 	JScrollPane scrollPane = new JScrollPane(table);
     frame.add(scrollPane, BorderLayout.CENTER);
-    frame.setSize(300, 150);
+    frame.setSize(400, 250);
     frame.setVisible(true);
 
     }
