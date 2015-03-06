@@ -14,7 +14,7 @@ import java.io.Serializable;
    The markers for a cell can be used in any way desired by classes that wish to work with a
    MazeGrid. For example, markers can be used to save information about which Cells have been
    visited or for marking the solution to the maze (as MazeGenerator does). MazeComponent decides how each Cell marker
-   of a Cell gets drawn. 
+   of a Cell gets drawn.
 
    @author Jakob Staahl
    @author Evan West
@@ -74,7 +74,7 @@ public class MazeGrid implements Serializable{
     /**
        Get a list of all the unvisited cells directly touching one of the four sides
        of this Cell a.
-       
+
        @param a the cell whose adjacent unvisited cells we are interested in
        @return an ArrayList of the adjacent unvisited cells, null if there are none
     */
@@ -90,17 +90,17 @@ public class MazeGrid implements Serializable{
 	// return ret. return null if ret is empty
 	return ret.size() > 0 ? ret : null;
     }
-	    
+
     /**
        Carves a new path from Cell a to Cell b, saving the information of newly opened walls in each
        cell in the 2D short array. Assumes cells a and b are adjacent
-       
+
        @param a the cell the path is being carved from
        @param b the cell the path is being carved to
     */
     public void carvePath(Cell a, Cell b) {
 	short dir = direction(a, b);
-	this.grid[a.row][a.col] = (short)(this.grid[a.row][a.col] | dir);  // Cell a gains the direction 
+	this.grid[a.row][a.col] = (short)(this.grid[a.row][a.col] | dir);  // Cell a gains the direction
 	this.grid[b.row][b.col] = (short)(directionInverse(dir)); // Cell b gets the inverse direction
     }
 
@@ -125,7 +125,7 @@ public class MazeGrid implements Serializable{
     /**
        Used for getting the inverse of direction dir:
        example: the inverse of MazeGrid.DIR_LEFT is MazeGrid.DIR_RIGHT and vice versa
-      
+
        @param dir the direction of which we are getting the inverse
        @return the oppositve direction of dir
     */
@@ -174,13 +174,13 @@ public class MazeGrid implements Serializable{
     }
 
     /**
-       Gets the progressive reveal radius 
+       Gets the progressive reveal radius
        @return progRevealRadius of type int
     */
     public int getProgRevealRadius() {
 	return progRevealRadius;
     }
-    
+
     /**
        @return true if this cell has been carved to or from (has any opened walls), false otherwise
     */
@@ -191,7 +191,7 @@ public class MazeGrid implements Serializable{
 
     /** @return the number of cols in this MazeGrid */
     public int getCols() { return this.cols; }
-    
+
     /**
        Returns the short information pertaining to the directions in which this Cell has open walls,
        a.k.a. the directions in which one cran travel from this Cell. Assumes Cell a is in this grid
@@ -225,7 +225,15 @@ public class MazeGrid implements Serializable{
     */
     public void unmarkCell(Cell a, short marker) {
 	this.grid[a.row][a.col] = (short)(this.grid[a.row][a.col] & ~marker);
+}
+
+    public void unmarkFinish(){
+      unmarkCell(finish,MazeGrid.MARKER4);
     }
+
+
+
+
 
     /**
     For debugging, returns short value of cell
@@ -245,7 +253,7 @@ public class MazeGrid implements Serializable{
     public boolean hasMarker(Cell a, short marker) {
 	return ((this.grid[a.row][a.col] & marker) != 0);
     }
-    
+
 
     /**
        Marks cells 0,0 and opposite corner as start and finish, respectively
@@ -265,7 +273,7 @@ public class MazeGrid implements Serializable{
     public boolean isAtFinish(Cell a){
 	return a.equals(this.finish);
     }
-    
+
     /**
        Set this Marker for cells within radius or a
        @param a the Cell of interest
@@ -294,7 +302,7 @@ public class MazeGrid implements Serializable{
 	for(int i=0; i<cols; ++i){
 	    for(int j=0; j<rows; ++j){
 		if(Math.sqrt(Math.pow(a.col-i,2)+Math.pow(a.row-j,2))<radius){
-		    //if (!hasMarker(new Cell(j,i),MazeGrid.MARKER5)) {;} 
+		    //if (!hasMarker(new Cell(j,i),MazeGrid.MARKER5)) {;}
 		    //else unmarkCell(new Cell(j,i),marker);
 		    unmarkCell(new Cell(j,i),marker);
 		}
@@ -303,7 +311,7 @@ public class MazeGrid implements Serializable{
     }
 
     /**
-       Remove hidden marker (MARKER5) from cells alread visited, 
+       Remove hidden marker (MARKER5) from cells alread visited,
        including cells within the progRevealRadius
        @param gameSave the MazeGameSave object used to reference the grid of interest
     */
@@ -315,9 +323,9 @@ public class MazeGrid implements Serializable{
     }
 
 
-    /** 
+    /**
 	Save the coordinates of MARKER4 (visible) cells.
-	@param a the Cell coordinate that is to be saved for load 
+	@param a the Cell coordinate that is to be saved for load
 	with progressive reveal enabled
     */
     public void revealedCells(Cell a) {
@@ -339,9 +347,9 @@ public class MazeGrid implements Serializable{
        Marks player position on grid, then reveals cells if necessary as per progressiveReveal settings
      */
     public void updatePlayerPosition(){
-	this.markCell(player.getPosition(), MazeGrid.MARKER4); 
+	this.markCell(player.getPosition(), MazeGrid.MARKER4);
 	if(this.progReveal) {
-	    this.unmarkCellsInRadius(this.player.getPosition(), 
+	    this.unmarkCellsInRadius(this.player.getPosition(),
 				     this.progRevealRadius, MazeGrid.MARKER5);
 	    if(gameSave != null) unmarkVisitedCoordinates(gameSave);
 	}
@@ -349,8 +357,8 @@ public class MazeGrid implements Serializable{
 	if (!this.revealedCoordinates.contains(this.player.getPosition()))
 	    this.revealedCells(this.player.getPosition());
 
-	
-	
+
+
     }
 
     /** @param MazePlayer to associate with this grid */
