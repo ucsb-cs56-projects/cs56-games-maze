@@ -6,7 +6,7 @@ Instructions:
        A : left
        S : down
        D : right
-
+3)Pause the game by pressing the 'P' key
 -------------------------------------------------------------
 If stuck:
    1) click on 'Solve' for the correct path to the maze
