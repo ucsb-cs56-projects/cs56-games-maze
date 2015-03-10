@@ -52,6 +52,7 @@ public class HighScoreSaver{
   }
   /**
     Checks that the file tied to this saver is not empty
+    @return true if the file is empty
   */
   public boolean hasEmptyFile(){
     if (myFile==null)
