@@ -54,12 +54,13 @@ public class HighScoreTable{
 	if(size > 10) { size = 10; }
 
 	String rowData[][] = new String[10][10];
-	String columnNames[] = { "Name", "Time", "Score"};
+	String columnNames[] = { "Name", "Maze Area", "Time", "Score"};
 
 	if(!emptyFile) {
 	for(int count = 0; count < size; count++){
 		MazeHighScore currentHighScore = highScores.get(count);
 		rowData[count][0] = currentHighScore.getName();
+		rowData[count][1] = String.format("%.0f",currentHighScore.getRows()*currentHighScore.getCols());
 
 		long millis = currentHighScore.getTime();
 		long second = (millis / 1000) % 60;
@@ -70,8 +71,8 @@ public class HighScoreTable{
 		int intScore = currentHighScore.getScore();
 		String score = String.format("%5d", intScore);
 		
-		rowData[count][1] = time;
-		rowData[count][2] = score;
+		rowData[count][2] = time;
+		rowData[count][3] = score;
 	}
 	}
 	JTable table = new JTable(rowData, columnNames);
