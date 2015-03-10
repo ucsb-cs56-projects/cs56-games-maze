@@ -335,7 +335,7 @@ public class MazeGui implements ActionListener{
 	    frame.setVisible(true);
 	    this.player=game.getPlayer();
 	    if(game.hasHighScores()){
-		JOptionPane.showMessageDialog(this.frame, "This maze was completed in:\n "+game.getHighScore().getTime()/1000.0+" by "+game.getHighScore().getName()+" \n Can you do better?");
+		JOptionPane.showMessageDialog(this.frame,gameSave.getAllScoresString()+"Press OK to begin!");
 	    }
 	    if (settings.progReveal) run(true);
 	    else run();
@@ -445,13 +445,24 @@ public class MazeGui implements ActionListener{
 	timerBar.stopTimer();
 	realTime = timerBar.getTimeElapsed();
 	String message = "Congratulations, you won!\nIt took you "+player.getNumMoves()+" moves and "+realTime/1000.0+" seconds.\n";
-	if(this.gameSave != null && this.gameSave.hasHighScores() && realTime==0){
-	    if(realTime<gameSave.getHighScore().getTime()){
-		message+="You beat "+gameSave.getHighScore().getName()+" with "+gameSave.getHighScore().getTime()/1000.0+"\n";
+	if(this.gameSave != null && this.gameSave.hasHighScores() ){
+
+
+
+	    if(realTime<gameSave.getHighScore().getTime()){ // beat the saved score
+		    message+="New High Score! You beat "+gameSave.getHighScore().getName()+" with "+gameSave.getHighScore().getTime()/1000.0+"\n";
+
 	    }
+      else{ // did not beat saved score
+        message+="Not as good as "+gameSave.getHighScore().getName()+" with "+gameSave.getHighScore().getTime()/1000.0+"\n";
+
+      }
+      message+=gameSave.getAllScoresString();
 	}
+
 	message+="Would you like to save this score to this maze?\n";
 	int choice = JOptionPane.showConfirmDialog(frame, message, "Victory",JOptionPane.YES_NO_OPTION);
+
 	if(choice == JOptionPane.YES_OPTION){
     String name = JOptionPane.showInputDialog(this.frame,"Enter Name","Enter your name:");
     //prompt user and write to file
@@ -461,35 +472,36 @@ public class MazeGui implements ActionListener{
       FileOutputStream fout;
       ObjectOutputStream oout;
 
-    try{
-      fout = new FileOutputStream(file);
-      oout = new ObjectOutputStream(fout);
-      this.timerBar.setTimeElapsed(realTime);
-      if(this.gameSave == null){
-        this.gameSave = new MazeGameSave(this.grid, this.oldSettings);
-      }
+        try{ // Save Game object
+            fout = new FileOutputStream(file);
+            oout = new ObjectOutputStream(fout);
+            this.timerBar.setTimeElapsed(realTime);
+            if(this.gameSave == null){
+              this.gameSave = new MazeGameSave(this.grid, this.oldSettings);
+            }
 
       gameSave.addHighScore(new MazeHighScore(name, realTime, settings.rows, settings.cols));
       gameSave.setTimeElapsed(0);
       gameSave.resetPlayer();
+      // show saved scores
+      System.out.println("All Scores saved on this maze:");
+      System.out.println(gameSave.getAllScoresString());
+
       oout.writeObject(gameSave);
       oout.close();
       fout.close();
     } catch(IOException ioe){ ioe.printStackTrace(); }
 
   }
-  try{
+  try{ // save high score to create table
     HighScoreSaver mySaver = new HighScoreSaver("HighScores.ser"); // CTOR
 
     ArrayList<MazeHighScore> currentScoreList = new ArrayList<MazeHighScore>();
-    if (mySaver.hasEmptyFile()==false)  // if the .ser file=empty, then don't read
-    currentScoreList = mySaver.getHighScoreList();
-
+    if (mySaver.hasEmptyFile()==false) { // if the .ser file=empty, then don't read
+      currentScoreList = mySaver.getHighScoreList();
+    }
     currentScoreList.add(new MazeHighScore(name,realTime,settings.rows,settings.cols));
     mySaver.writeHighScoreList(currentScoreList);
-
-    System.out.println("Top Player: "+currentScoreList.get(0).getName()+ " with Score: "+currentScoreList.get(0).getTime());
-    System.out.println("Arr Size= "+currentScoreList.size());
 
   }catch(IOException ioe){ ioe.printStackTrace(); }
 

@@ -21,14 +21,17 @@ public class HighScoreSaver{
   File myFile=null;
   ArrayList<MazeHighScore> savedScores;
 
+  /**
+  Constructor that is tied to the file it is created with
+  */
   HighScoreSaver(String filename){ // CTOR
     myFile = new File(filename);
   }
 
-  // write method for clearing the arraylist, write to an empty file...(empty file is creating null pointer exception)
-
-
-  // pass this function an arraylist and it will write the objects to .ser file
+  /**
+  pass this function an arraylist and it will write the objects to .ser file
+  @param scoreList is serialized to a file
+  */
   public boolean writeHighScoreList(ArrayList<MazeHighScore> scoreList) throws IOException{
     FileOutputStream outstream = null;
     ObjectOutputStream oso = null;
@@ -47,7 +50,9 @@ public class HighScoreSaver{
         }
 
   }
-
+  /**
+    Checks that the file tied to this saver is not empty
+  */
   public boolean hasEmptyFile(){
     if (myFile==null)
       {
@@ -57,8 +62,9 @@ public class HighScoreSaver{
     if (myFile.length()!=0) return false;
     return true;
   }
-
-  // returns all the scores read from the .ser file in an array
+  /**
+    Deserializes scores from a file into a returned arrayList
+  */
   public ArrayList<MazeHighScore> getHighScoreList() throws IOException{
     //
     MazeHighScore tempHighScore;
@@ -67,9 +73,7 @@ public class HighScoreSaver{
 
 
     try{
-      System.out.println(">BEGIN");
       instream = new FileInputStream(myFile);
-      System.out.println(">END");
       osi = new ObjectInputStream(instream);
       savedScores = new ArrayList<MazeHighScore>();
       // read high scores until exception
@@ -84,17 +88,13 @@ public class HighScoreSaver{
               break; // exit while loop
           }
         }
-        // at this point, we should have an arraylist of MazeHighScore objects
-        // time to sort
-        //MazeScoreCompare mazeScoreCompare = new MazeScoreCompare();
-        //Collections.sort(savedScores,mazeScoreCompare); // sort call
+
 
     }catch(IOException e){
-      System.err.println("read file error");
+      e.printStackTrace();
       return null;
     }finally{
       osi.close();
-      System.out.println("Successfully returning Arraylist of size " + savedScores.size());
       return savedScores;
     }
 

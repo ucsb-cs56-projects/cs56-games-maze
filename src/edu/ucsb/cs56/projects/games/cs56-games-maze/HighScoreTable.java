@@ -27,6 +27,10 @@ public class HighScoreTable{
 	private ArrayList<MazeHighScore> highScores;
 	private boolean emptyFile = false;
 
+		/**
+		Constructor to Display Window with Table of high Scores on all mazes
+		*/
+
     public HighScoreTable() {
 
     scoreSaver = new HighScoreSaver("HighScores.ser");
@@ -57,22 +61,22 @@ public class HighScoreTable{
 	String columnNames[] = { "Name", "Time", "Score"};
 
 	if(!emptyFile) {
-	for(int count = 0; count < size; count++){
-		MazeHighScore currentHighScore = highScores.get(count);
-		rowData[count][0] = currentHighScore.getName();
+		for(int count = 0; count < size; count++){
+			MazeHighScore currentHighScore = highScores.get(count);
+			rowData[count][0] = currentHighScore.getName();
 
-		long millis = currentHighScore.getTime();
-		long second = (millis / 1000) % 60;
-		long minute = (millis / (1000 * 60)) % 60;
-		String time = String.format("%02d:%02d:%02d", minute, second, millis % 10);
+			long millis = currentHighScore.getTime();
+			long second = (millis / 1000) % 60;
+			long minute = (millis / (1000 * 60)) % 60;
+			String time = String.format("%02d:%02d:%02d", minute, second, millis % 10);
 
-		//Compute Score
-		int intScore = currentHighScore.getScore();
-		String score = String.format("%5d", intScore);
-		
-		rowData[count][1] = time;
-		rowData[count][2] = score;
-	}
+			//Compute Score
+			int intScore = currentHighScore.getScore();
+			String score = String.format("%5d", intScore);
+
+			rowData[count][1] = time;
+			rowData[count][2] = score;
+		}
 	}
 	JTable table = new JTable(rowData, columnNames);
 
@@ -81,5 +85,5 @@ public class HighScoreTable{
     frame.setSize(400, 250);
     frame.setVisible(true);
 
-    
+
 }}
