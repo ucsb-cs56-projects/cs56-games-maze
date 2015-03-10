@@ -322,7 +322,8 @@ public class MazeGui implements ActionListener{
 	    //settingsDialog.getPanel().writeback();//
 	    newMaze();
 	}
-	else{
+	else{ // restore the settings of an old game, instead with a new player and
+        // 0 elapsed time
 	    timerBar.stopTimer();
 	    frame.remove(mc);
 	    this.settings=game.getSettings();
@@ -376,7 +377,7 @@ public class MazeGui implements ActionListener{
 	    AbstractButton button = (AbstractButton)e.getSource();
 	    settings.progReveal=button.getModel().isSelected();
 	}
-	else if("save".equals(e.getActionCommand())){
+	else if("save".equals(e.getActionCommand())){ // user chooses to save mid-game
 	    timerBar.stopTimer();
 	    realTime = timerBar.getTimeElapsed(); // records ACTUAL time when save button is pressed
 	    //prompt user and write to file
@@ -413,7 +414,7 @@ public class MazeGui implements ActionListener{
 					      "Maze Saved", JOptionPane.INFORMATION_MESSAGE);
 	    }
 	}
-	else if("load".equals(e.getActionCommand())){
+	else if("load".equals(e.getActionCommand())){ // user selects to load a game
 	    int returnVal = fc.showOpenDialog(this.frame);
 	    if(returnVal == JFileChooser.APPROVE_OPTION){
 		File file = fc.getSelectedFile();
@@ -425,10 +426,9 @@ public class MazeGui implements ActionListener{
 		    MazeGameSave game = (MazeGameSave)oin.readObject();
 		    oin.close();
 		    fin.close();
-        game.getGrid().unmarkFinish(); // remove old player (bugfix)
+        game.getGrid().unmarkFinish(); // remove old player
 		    this.gameSave = game;
 		    newMaze(game); // this "restarts" the game from load point
-		    // newMaze(); // this creates a "new" game, like the button advertises
 		}
 		catch(IOException | ClassNotFoundException ex){
 		    System.err.println("Invalid file specified.");
@@ -436,7 +436,7 @@ public class MazeGui implements ActionListener{
 	    }
 	}
 
-    }
+}
 
     /** Call when user has successfully navigated the maze.
 	Eventually want to show win dialog.
@@ -444,18 +444,15 @@ public class MazeGui implements ActionListener{
     private void wonMaze(){
 	timerBar.stopTimer();
 	realTime = timerBar.getTimeElapsed();
-	String message = "Congratulations, you won!\nIt took you "+player.getNumMoves()+" moves and "+realTime/1000.0+" seconds.\n";
-	if(this.gameSave != null && this.gameSave.hasHighScores() ){
+	String message = "Congratulations, you won!\nIt took you " +player.getNumMoves()+" moves and "+realTime/1000.0+" seconds.\n";
 
-
-
+  // check if the user loaded a maze or if it was new
+  if(this.gameSave != null && this.gameSave.hasHighScores() ){
 	    if(realTime<gameSave.getHighScore().getTime()){ // beat the saved score
-		    message+="New High Score! You beat "+gameSave.getHighScore().getName()+" by "+(gameSave.getHighScore().getTime()-realTime)/1000.0+" s.\n";
-
+		    message+="New High Score! You beat "+gameSave.getHighScore().getName()+ " by "+(gameSave.getHighScore().getTime()-realTime)/1000.0+" s.\n";
 	    }
       else{ // did not beat saved score
-        message+="Not as good as "+gameSave.getHighScore().getName()+" with "+gameSave.getHighScore().getTime()/1000.0+"\n";
-
+        message+="Not as good as "+gameSave.getHighScore().getName()+" with"+gameSave.getHighScore().getTime()/1000.0+"\n";
       }
       message+=gameSave.getAllScoresString();
 	}
@@ -472,7 +469,7 @@ public class MazeGui implements ActionListener{
       FileOutputStream fout;
       ObjectOutputStream oout;
 
-        try{ // Save Game object
+        try{ // Save Game object to file
             fout = new FileOutputStream(file);
             oout = new ObjectOutputStream(fout);
             this.timerBar.setTimeElapsed(realTime);
@@ -483,15 +480,16 @@ public class MazeGui implements ActionListener{
       gameSave.addHighScore(new MazeHighScore(name, realTime, settings.rows, settings.cols));
       gameSave.setTimeElapsed(0);
       gameSave.resetPlayer();
-
       oout.writeObject(gameSave);
       oout.close();
       fout.close();
+
     } catch(IOException ioe){ ioe.printStackTrace(); }
 
   }
-  try{ // save high score to create table
-    HighScoreSaver mySaver = new HighScoreSaver("HighScores.ser"); // CTOR
+
+  try{ // save high score to for table creation
+    HighScoreSaver mySaver = new HighScoreSaver("HighScores.ser");
 
     ArrayList<MazeHighScore> currentScoreList = new ArrayList<MazeHighScore>();
     if (mySaver.hasEmptyFile()==false) { // if the .ser file=empty, then don't read
@@ -506,19 +504,17 @@ public class MazeGui implements ActionListener{
   String message2 = "Try this maze again?";
   int choice2 = JOptionPane.showConfirmDialog(frame, message2, "Victory",JOptionPane.YES_NO_OPTION);
   if (choice2 == JOptionPane.YES_OPTION){
-    gameSave.getGrid().unmarkFinish();
-    if(gameSave!=null){
-      newMaze(gameSave);
+      gameSave.getGrid().unmarkFinish();
+      if(gameSave!=null){
+      newMaze(gameSave); // reload them to the beginning of the maze
     }
   }
   else { // user chooses not to play again
     JOptionPane.showMessageDialog(this.frame,"Press 'New' to start a new maze!");
-
     this.player=null;
   }
-}
+} // end of block (user chooses to save)
 else{ // The user does not choose to save the game
-
   JOptionPane.showMessageDialog(this.frame,"Press 'New' to start a new maze!");
   this.player=null;
 }

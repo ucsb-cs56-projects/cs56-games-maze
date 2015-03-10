@@ -27,6 +27,9 @@ public class HighScoreTable{
 	private ArrayList<MazeHighScore> highScores;
 	private boolean emptyFile = false;
 
+	/**
+		Create and display high score window
+	*/
 	public HighScoreTable() {
 
 		scoreSaver = new HighScoreSaver("HighScores.ser");

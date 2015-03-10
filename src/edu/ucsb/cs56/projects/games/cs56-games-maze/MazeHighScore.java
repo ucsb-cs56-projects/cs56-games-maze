@@ -39,15 +39,15 @@ public class MazeHighScore implements Serializable, Comparable<MazeHighScore>{
     public long getTime(){
 	return this.time;
     }
-
+    /** @return the number of Rows in this game */
     public double getRows(){
     return this.rows;
     }
-
+    /** @return the number of Columns in this game */
     public double getCols(){
     return this.cols;
     }
-
+    /** @return the score of this game */
     public int getScore(){
         score = ((int)(((rows * cols)/time)*1000000));
         return score;
