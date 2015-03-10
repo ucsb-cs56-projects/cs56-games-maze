@@ -18,17 +18,8 @@ import java.io.InputStreamReader;
 public class MazeInstructGui{
     public MazeInstructGui(){
 
-	//initialize JFrame: set visible and size
-	JFrame frame = new JFrame("Instructions");
-	frame.setVisible(true);
-	frame.setSize(300,300);
+  String rules="";
 
-	//create JTextArea
-	JTextArea rules = new JTextArea(50,40);
-	
-
-	//try catch block
-	//for reading the instructions from a file names instructions.txt in current directory
 	try{
 	    String line; //String in textarea
 	    String fString = "./src/edu/ucsb/cs56/projects/games/cs56-games-maze/instructions.txt"; //String of file name
@@ -38,30 +29,15 @@ public class MazeInstructGui{
 
 	    //keep adding to textbox until null (no more text in txt file)
 	    while(( line = br.readLine()) != null){
-		rules.append(line + "\n");
+		rules+=line + "\n";
 	    }
 	}catch(Exception e){
 	    //print out which directory user is currently in for debugging purposes
 	    System.out.println("no such file exists in " + System.getProperty("user.dir") + " \n exception message: " + e);
 	}
 
-	
-	//format the textArea
-	rules.setEditable(false);
-	rules.setLineWrap(true);
-	rules.setWrapStyleWord(true);
-	//add JScrollPane
-	JScrollPane scroller = new JScrollPane(rules);
-	scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-	scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-	frame.add(scroller);
-
+  JOptionPane.showMessageDialog(new JFrame(),rules);
 
     }
-
-
-
-
 
 }
