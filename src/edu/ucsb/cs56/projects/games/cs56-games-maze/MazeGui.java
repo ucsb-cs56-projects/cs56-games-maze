@@ -92,7 +92,7 @@ public class MazeGui implements ActionListener{
 	this.frame = new JFrame();
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	frame.setTitle("Maze Game");
-	
+
 	//initialize timer/controls bar
 	this.timerBar = new MazeTimerBar(this);
 	frame.add(timerBar, BorderLayout.SOUTH);
@@ -425,6 +425,7 @@ public class MazeGui implements ActionListener{
 		    MazeGameSave game = (MazeGameSave)oin.readObject();
 		    oin.close();
 		    fin.close();
+        game.getGrid().unmarkFinish(); // remove old player (bugfix)
 		    this.gameSave = game;
 		    newMaze(game); // this "restarts" the game from load point
 		    // newMaze(); // this creates a "new" game, like the button advertises
@@ -491,7 +492,7 @@ public class MazeGui implements ActionListener{
     System.out.println("Arr Size= "+currentScoreList.size());
 
   }catch(IOException ioe){ ioe.printStackTrace(); }
-  
+
 
 	this.player=null;
 }}
@@ -552,12 +553,12 @@ public class MazeGui implements ActionListener{
 			frame.add(pauseArea);
 		    }
 		    frame.repaint();
-		    frame.setVisible(true);		    
+		    frame.setVisible(true);
 		    if(!isPaused) isPaused = true;
 		    else isPaused = false;
 		    return;
 		}
-		    
+
 	    mc.repaint();
 	    if(grid.isAtFinish(player.getPosition())) wonMaze();
 	    }
@@ -568,5 +569,5 @@ public class MazeGui implements ActionListener{
 	}
     }
 
-    
+
 }
