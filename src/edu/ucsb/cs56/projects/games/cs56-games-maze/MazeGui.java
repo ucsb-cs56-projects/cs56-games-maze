@@ -483,9 +483,6 @@ public class MazeGui implements ActionListener{
       gameSave.addHighScore(new MazeHighScore(name, realTime, settings.rows, settings.cols));
       gameSave.setTimeElapsed(0);
       gameSave.resetPlayer();
-      // show saved scores
-      System.out.println("All Scores saved on this maze:");
-      System.out.println(gameSave.getAllScoresString());
 
       oout.writeObject(gameSave);
       oout.close();
@@ -505,9 +502,27 @@ public class MazeGui implements ActionListener{
 
   }catch(IOException ioe){ ioe.printStackTrace(); }
 
+  // prompt user to try again
+  String message2 = "Try this maze again?";
+  int choice2 = JOptionPane.showConfirmDialog(frame, message2, "Victory",JOptionPane.YES_NO_OPTION);
+  if (choice2 == JOptionPane.YES_OPTION){
+    gameSave.getGrid().unmarkFinish();
+    if(gameSave!=null){
+      newMaze(gameSave);
+    }
+  }
+  else { // user chooses not to play again
+    JOptionPane.showMessageDialog(this.frame,"Press 'New' to start a new maze!");
 
-	this.player=null;
-}}
+    this.player=null;
+  }
+}
+else{ // The user does not choose to save the game
+
+  JOptionPane.showMessageDialog(this.frame,"Press 'New' to start a new maze!");
+  this.player=null;
+}
+}
 
     /** Maps current player movement keys to an action
 	@param a Action object to map all keys to
