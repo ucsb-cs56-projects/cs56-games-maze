@@ -450,7 +450,7 @@ public class MazeGui implements ActionListener{
 
 
 	    if(realTime<gameSave.getHighScore().getTime()){ // beat the saved score
-		    message+="New High Score! You beat "+gameSave.getHighScore().getName()+" by "+(gameSave.getHighScore().getTime()-realTime)/1000.0+"\n";
+		    message+="New High Score! You beat "+gameSave.getHighScore().getName()+" by "+(gameSave.getHighScore().getTime()-realTime)/1000.0+" s.\n";
 
 	    }
       else{ // did not beat saved score
