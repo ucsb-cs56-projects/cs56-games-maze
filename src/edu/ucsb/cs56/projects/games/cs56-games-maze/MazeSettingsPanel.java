@@ -259,4 +259,12 @@ public class MazeSettingsPanel extends JPanel{
 	updateFieldValues();
 	super.paintComponent(g);
     }
+
+    public String getRows(){
+    	return rowsField.getText();
+    }
+
+    public String getColumns(){
+    	return colsField.getText();
+    }
 }
