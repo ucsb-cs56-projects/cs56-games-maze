@@ -1,12 +1,12 @@
 Instructions:
 -------------------------------------------------------------
 1)Starting from the top left corner
-2)Move towards the bottom right corner (final destination) using the WASD keys...
-       W : up 
+2)Move towards the finish using the WASD keys
+       W : up
        A : left
        S : down
        D : right
-
+3)Pause the game by pressing the 'P' key
 -------------------------------------------------------------
 If stuck:
    1) click on 'Solve' for the correct path to the maze
@@ -14,4 +14,11 @@ If stuck:
 When complete:
      1) You can play again by selecting 'New'
      2) Or close out of the window to quit
+
+Select 'Save' from the menu to save progress through a maze
+
+Select 'Load' from the menu:
+  1) return to an incomplete maze to finish it
+  2) return to a completed maze to beat the high score
+
 -------------------------------------------------------------

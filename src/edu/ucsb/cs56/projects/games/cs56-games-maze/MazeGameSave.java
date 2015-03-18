@@ -30,7 +30,6 @@ public class MazeGameSave implements Serializable{
 	this(grid,settings,new MazePlayer(grid),0);
     }
 
-
     /** Constructor for save game object, stores player position
 	@param grid Object representing the maze layout grid
 	@param settings Settings which the grid must be played with
@@ -45,6 +44,7 @@ public class MazeGameSave implements Serializable{
 	this.scores = new ArrayList<MazeHighScore>();
 	this.timeElapsed=timeElapsed;
     }
+
 
     /** Adds a new score for this maze, then resorts array of scores so high score always on top
 	@param s Score to add to this save game
@@ -90,6 +90,24 @@ public class MazeGameSave implements Serializable{
 	    return this.scores.get(0);
 	else
 	    return null;
+    }
+
+    /**
+      @return String of saved scores
+    */
+    public String getAllScoresString(){
+      //this.sortScores();
+
+      String result="\nMaze ScoreBoard\n";
+
+      for(MazeHighScore thisScore:this.scores){
+        int i=1;
+        result = result + i++ +". "+ thisScore.getName() + "  " + thisScore.getTime()/1000.0+  " s.\n";
+
+      }
+      result +="\n";
+      return result;
+
     }
 
     /**
