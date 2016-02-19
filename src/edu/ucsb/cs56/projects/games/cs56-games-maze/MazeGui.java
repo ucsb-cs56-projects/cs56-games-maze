@@ -60,8 +60,7 @@ public class MazeGui implements ActionListener{
 		     AudioInputStream audio;
                     String music = "UpbeatFunk.wav";
                     try{
-                        audio = AudioSystem.getAudioInputStream(new File(music)\
-.getAbsoluteFile());
+                        audio = AudioSystem.getAudioInputStream(new File(music).getAbsoluteFile());
                         try
                             {
                                 Clip clip = AudioSystem.getClip();
