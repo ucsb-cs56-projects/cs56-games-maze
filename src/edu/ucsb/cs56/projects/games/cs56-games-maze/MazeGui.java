@@ -6,6 +6,11 @@ import java.awt.*;
 import java.beans.*;
 import java.util.ArrayList;
 
+// Music stuff
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 import java.io.*;
 
 
@@ -52,6 +57,30 @@ public class MazeGui implements ActionListener{
 	SwingUtilities.invokeLater(new Runnable(){
 		public void run(){
 		    new MazeGui(args).run();
+		     AudioInputStream audio;
+                    String music = "UpbeatFunk.wav";
+                    try{
+                        audio = AudioSystem.getAudioInputStream(new File(music)\
+.getAbsoluteFile());
+                        try
+                            {
+                                Clip clip = AudioSystem.getClip();
+                                clip.open(audio);
+                                clip.start();
+                            }
+                        catch(Exception er)
+                            {
+                                System.err.println("bad boi");
+                            }
+                    }
+                    catch(Exception e)
+                        {
+                            System.err.println("bad file");
+                        }
+
+                    new MazeGui(args).run();
+
+                    
 		}
 	    });
     }
