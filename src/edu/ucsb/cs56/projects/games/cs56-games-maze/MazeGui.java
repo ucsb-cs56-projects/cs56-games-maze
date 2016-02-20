@@ -186,6 +186,11 @@ public class MazeGui implements ActionListener{
         cbMenuItem2.addActionListener(this);
         menu.add(cbMenuItem2);
 	menu.addSeparator();
+        JCheckBoxMenuItem cbMenuItem3 = new JCheckBoxMenuItem("Memory Mode");
+        cbMenuItem3.setActionCommand("memory_mode");
+        cbMenuItem3.addActionListener(this);
+        menu.add(cbMenuItem3);
+        menu.addSeparator();
 	JMenuItem menuItem = new JMenuItem("Settings");
 	menuItem.setActionCommand("settings");
 	menuItem.addActionListener(this);
@@ -269,7 +274,7 @@ public class MazeGui implements ActionListener{
 			    }
 			    else {
 				grid.updatePlayerPosition();
-				mc.repaint();
+				mc.repaint();		
 			    }
 			}
 		    }
@@ -447,6 +452,10 @@ public class MazeGui implements ActionListener{
 	    AbstractButton button = (AbstractButton)e.getSource();
 	    settings.inverseMode=button.getModel().isSelected();
 	}
+        else if("memory_mode".equals(e.getActionCommand())){
+            AbstractButton button = (AbstractButton)e.getSource();
+            settings.memoryMode=button.getModel().isSelected();
+        }
 	else if("save".equals(e.getActionCommand())){ // user chooses to save mid-game
 	    timerBar.stopTimer();
 	    realTime = timerBar.getTimeElapsed(); // records ACTUAL time when save button is pressed
@@ -707,7 +716,13 @@ public class MazeGui implements ActionListener{
 
 
 		}
-		mc.repaint();
+		if(settings.memoryMode){
+		    if (player.getNumMoves()%5==0)
+			mc.repaint();
+		}
+		else
+		    mc.repaint();
+		     
 		if(grid.isAtFinish(player.getPosition())) wonMaze();
 	    }
 	    

@@ -225,7 +225,7 @@ public class MazeGrid implements Serializable{
     */
     public void unmarkCell(Cell a, short marker) {
 	this.grid[a.row][a.col] = (short)(this.grid[a.row][a.col] & ~marker);
-}
+    }
 
     /**
       remove the PLAYER marker from a grid, when the player is at the finish
@@ -235,7 +235,12 @@ public class MazeGrid implements Serializable{
     }
 
 
-
+    public void unmarkPlayerSquare(){
+	unmarkCell(player.getPosition(), MARKER4);
+    }
+    public void markPlayerSquare(){
+	markCell(player.getPosition(), MARKER4);
+    }
 
 
     /**
