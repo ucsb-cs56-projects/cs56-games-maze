@@ -120,6 +120,8 @@ public class MazeGui implements ActionListener{
 	this.oldSettings = new MazeSettings(); // instantiate MazeSettings object to hold settings to be serialized
 	this.gameSave = null; // for cmd line purposes, say that the game is new and has no saved game attributed to it
 	// check for command line arguments, initialize variables accordingly
+
+
 	if (args.length != 0 && args.length != 2 && args.length != 5 && args.length != 9) {
 	    System.out.println("Improper number of command line arguments: " + args.length);
 	    System.out.println("Type ant run for proper usage.");
@@ -178,6 +180,11 @@ public class MazeGui implements ActionListener{
 	cbMenuItem.setActionCommand("prog_reveal");
 	cbMenuItem.addActionListener(this);
 	menu.add(cbMenuItem);
+	menu.addSeparator();
+        JCheckBoxMenuItem cbMenuItem2 = new JCheckBoxMenuItem("Inverse Mode");
+        cbMenuItem2.setActionCommand("inverse_mode");
+        cbMenuItem2.addActionListener(this);
+        menu.add(cbMenuItem2);
 	menu.addSeparator();
 	JMenuItem menuItem = new JMenuItem("Settings");
 	menuItem.setActionCommand("settings");
@@ -436,6 +443,10 @@ public class MazeGui implements ActionListener{
 	    AbstractButton button = (AbstractButton)e.getSource();
 	    settings.progReveal=button.getModel().isSelected();
 	}
+	else if("inverse_mode".equals(e.getActionCommand())){
+	    AbstractButton button = (AbstractButton)e.getSource();
+	    settings.inverseMode=button.getModel().isSelected();
+	}
 	else if("save".equals(e.getActionCommand())){ // user chooses to save mid-game
 	    timerBar.stopTimer();
 	    realTime = timerBar.getTimeElapsed(); // records ACTUAL time when save button is pressed
@@ -583,18 +594,34 @@ public class MazeGui implements ActionListener{
 	@param a Action object to map all keys to
     */
     private void remapPlayerKeys(Action a){
-	InputMap inputMap = ((JPanel)this.frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-	inputMap.put(KeyStroke.getKeyStroke("W"),"player_up");
-	inputMap.put(KeyStroke.getKeyStroke("S"),"player_down");
-	inputMap.put(KeyStroke.getKeyStroke("A"),"player_left");
-	inputMap.put(KeyStroke.getKeyStroke("D"),"player_right");
-	inputMap.put(KeyStroke.getKeyStroke("P"),"pause_game");
-	ActionMap actionmap = ((JPanel)this.frame.getContentPane()).getActionMap();
-	actionmap.put("player_up",a);
-	actionmap.put("player_down",a);
-	actionmap.put("player_left",a);
-	actionmap.put("player_right",a);
-	actionmap.put("pause_game",a);
+	if(settings.inverseMode){
+	    InputMap inputMap = ((JPanel)this.frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+	    inputMap.put(KeyStroke.getKeyStroke("S"),"player_up");
+	    inputMap.put(KeyStroke.getKeyStroke("W"),"player_down");
+	    inputMap.put(KeyStroke.getKeyStroke("D"),"player_left");
+	    inputMap.put(KeyStroke.getKeyStroke("A"),"player_right");
+	    inputMap.put(KeyStroke.getKeyStroke("P"),"pause_game");
+	    ActionMap actionmap = ((JPanel)this.frame.getContentPane()).getActionMap();
+	    actionmap.put("player_up",a);
+	    actionmap.put("player_down",a);
+	    actionmap.put("player_left",a);
+	    actionmap.put("player_right",a);
+	    actionmap.put("pause_game",a);
+	}
+	else {
+	    InputMap inputMap = ((JPanel)this.frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+	    inputMap.put(KeyStroke.getKeyStroke("W"),"player_up");
+	    inputMap.put(KeyStroke.getKeyStroke("S"),"player_down");
+	    inputMap.put(KeyStroke.getKeyStroke("A"),"player_left");
+	    inputMap.put(KeyStroke.getKeyStroke("D"),"player_right");
+	    inputMap.put(KeyStroke.getKeyStroke("P"),"pause_game");
+	    ActionMap actionmap = ((JPanel)this.frame.getContentPane()).getActionMap();
+	    actionmap.put("player_up",a);
+	    actionmap.put("player_down",a);
+	    actionmap.put("player_left",a);
+	    actionmap.put("player_right",a);
+	    actionmap.put("pause_game",a);
+	}
     }
 
     /** Action object that responds to player move keyboard inputs
@@ -606,45 +633,84 @@ public class MazeGui implements ActionListener{
 	    new JTextArea("\n\n\n       GAME PAUSED:\n\n    Press 'P' to Resume");
 	public void actionPerformed(ActionEvent e){
 	    if(player!=null){
-		switch(e.getActionCommand()){
-		case "w":
-		    if(isPaused == false) {player.move(MazeGrid.DIR_UP);}
-		    break;
-		case"s":
-		    if(isPaused == false) {player.move(MazeGrid.DIR_DOWN);}
-		    break;
-		case "a":
-		    if(isPaused == false) {player.move(MazeGrid.DIR_LEFT);}
-		    break;
-		case "d":
-		    if(isPaused == false) {player.move(MazeGrid.DIR_RIGHT);}
-		    break;
-		case "p":
-		    pauseArea.setEditable(false);
-		    pauseArea.setFont(font);
-		    //Game is Paused
-		    if (isPaused == true){
-			frame.remove(pauseArea);
-			frame.add(mc);
-			timerBar.resumeTimer();
+		if(!settings.inverseMode){
+		    switch(e.getActionCommand()){
+		    case "w":
+			if(isPaused == false) {player.move(MazeGrid.DIR_UP);}
+			break;
+		    case"s":
+			if(isPaused == false) {player.move(MazeGrid.DIR_DOWN);}
+			break;
+		    case "a":
+			if(isPaused == false) {player.move(MazeGrid.DIR_LEFT);}
+			break;
+		    case "d":
+			if(isPaused == false) {player.move(MazeGrid.DIR_RIGHT);}
+			break;
+		    case "p":
+			pauseArea.setEditable(false);
+			pauseArea.setFont(font);
+			//Game is Paused
+			if (isPaused == true){
+			    frame.remove(pauseArea);
+			    frame.add(mc);
+			    timerBar.resumeTimer();
+			}
+			//Game is not Paused
+			else {
+			    timerBar.stopTimer();
+			    frame.remove(mc);
+			    frame.add(pauseArea);
+			}
+			frame.repaint();
+			frame.setVisible(true);
+			if(!isPaused) isPaused = true;
+			else isPaused = false;
+			return;
 		    }
-		    //Game is not Paused
-		    else {
-			timerBar.stopTimer();
-			frame.remove(mc);
-			frame.add(pauseArea);
-		    }
-		    frame.repaint();
-		    frame.setVisible(true);
-		    if(!isPaused) isPaused = true;
-		    else isPaused = false;
-		    return;
 		}
+		else{
+                    switch(e.getActionCommand()){
+                    case "s":
+                        if(isPaused == false) {player.move(MazeGrid.DIR_UP);}
+                        break;
+                    case "w":
+                        if(isPaused == false) {player.move(MazeGrid.DIR_DOWN);}
+                        break;
+                    case "d":
+                        if(isPaused == false) {player.move(MazeGrid.DIR_LEFT);}
+                        break;
+                    case "a":
+                        if(isPaused == false) {player.move(MazeGrid.DIR_RIGHT);}
+                        break;
+                    case "p":
+                        pauseArea.setEditable(false);
+                        pauseArea.setFont(font);
+                        //Game is Paused                                                                                                
+                        if (isPaused == true){
+                            frame.remove(pauseArea);
+                            frame.add(mc);
+                            timerBar.resumeTimer();
+                        }
+                        //Game is not Paused                                                                                            
+                        else {
+                            timerBar.stopTimer();
+                            frame.remove(mc);
+                            frame.add(pauseArea);
+                        }
+                        frame.repaint();
+                        frame.setVisible(true);
+                        if(!isPaused) isPaused = true;
+                        else isPaused = false;
+                        return;
+                    }
 
+
+		}
 		mc.repaint();
 		if(grid.isAtFinish(player.getPosition())) wonMaze();
 	    }
-
+	    
 	    else{
 		System.err.println("NULL player!");
 	    }

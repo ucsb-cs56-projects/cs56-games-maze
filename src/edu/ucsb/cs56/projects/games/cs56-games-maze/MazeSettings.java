@@ -25,6 +25,7 @@ public class MazeSettings implements Serializable
     public int endCol;
     public int genType;
     public boolean progReveal;
+    public boolean inverseMode;
     public int progRevealRadius;
     public boolean progDraw;
     public int progDrawSpeed;
@@ -44,6 +45,7 @@ public class MazeSettings implements Serializable
 	this.endCol=cols-1;
 	this.genType=1;
 	this.progReveal=false;
+	this.inverseMode=false;
 	this.progRevealRadius=3;
 	this.progDraw=true;
 	this.progDrawSpeed=10;
@@ -63,6 +65,7 @@ public class MazeSettings implements Serializable
 	this.endRow=other.endRow;
 	this.endCol=other.endCol;
 	this.genType=other.genType;
+	this.inverseMode = other.inverseMode;
 	this.progReveal=other.progReveal;
 	this.progRevealRadius=other.progRevealRadius;
 	this.progDraw=other.progDraw;
