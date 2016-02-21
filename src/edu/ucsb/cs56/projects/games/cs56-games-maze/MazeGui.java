@@ -43,7 +43,8 @@ public class MazeGui implements ActionListener{
     private Action playerMoveAction;
     private MazeGameSave gameSave;
     private long realTime;
-    
+    private JMenu shapeMenu;
+    private boolean rect = true;
     private int colorMode = 0;
     
     private JFileChooser fc;
@@ -217,32 +218,44 @@ public class MazeGui implements ActionListener{
 	colorItem.addActionListener(this);
 	cGroup.add(colorItem);
 	colorMenu.add(colorItem);
-	
 	colorItem = new JRadioButtonMenuItem("Cool");
 	colorItem.setActionCommand("cool_color");
 	colorItem.addActionListener(this);
 	cGroup.add(colorItem);
 	colorMenu.add(colorItem);
-	
 	colorItem = new JRadioButtonMenuItem("Warm");
 	colorItem.setActionCommand("warm_color");
 	colorItem.addActionListener(this);
 	cGroup.add(colorItem);
 	colorMenu.add(colorItem);
-	
 	colorItem = new JRadioButtonMenuItem("Dark");
 	colorItem.setActionCommand("dark_color");
 	colorItem.addActionListener(this);
 	cGroup.add(colorItem);
 	colorMenu.add(colorItem);
-	
 	this.menuBar.add(this.colorMenu);
+	
+	this.shapeMenu = new JMenu("Shapes");
+	ButtonGroup sGroup = new ButtonGroup();
+	JRadioButtonMenuItem sItem = new JRadioButtonMenuItem("Rectangle");
+	sItem.setSelected(true);
+	sItem.setActionCommand("rect_shape");
+	sItem.addActionListener(this);
+	sGroup.add(sItem);
+	shapeMenu.add(sItem);
+	
+	sItem = new JRadioButtonMenuItem("Circle");
+	sItem.setActionCommand("circle_shape");
+	sItem.addActionListener(this);
+	sGroup.add(sItem);
+	shapeMenu.add(sItem);
+	this.menuBar.add(this.shapeMenu);
 	
 	frame.setJMenuBar(this.menuBar);
 
 	// initialize the MazeGrid, MazeComponent, and MazeGenerator
 	this.grid = new MazeGrid(settings.rows, settings.cols);
-	this.mc = new MazeComponent(grid, settings.cellWidth, colorMode);
+	this.mc = new MazeComponent(grid, settings.cellWidth, colorMode,rect);
 	if(colorMode == 0)
 	    frame.getContentPane().setBackground(Color.white);
 	else if(colorMode == 1)
@@ -407,7 +420,7 @@ public class MazeGui implements ActionListener{
 	this.oldSettings=new MazeSettings(settings);
 	//settingsDialog.getPanel().writeback();//
 	this.grid = new MazeGrid(settings.rows, settings.cols);
-	this.mc = new MazeComponent(grid, settings.cellWidth,colorMode);
+	this.mc = new MazeComponent(grid, settings.cellWidth,colorMode,rect);
 	mc.setVisible(true);
 if(colorMode == 0)
 	    frame.getContentPane().setBackground(Color.white);
@@ -461,7 +474,7 @@ if(colorMode == 0)
 	    frame.remove(mc);
 	    this.settings=game.getSettings();
 	    this.grid=game.getGrid();
-	    this.mc=new MazeComponent(grid, settings.cellWidth,colorMode);
+	    this.mc=new MazeComponent(grid, settings.cellWidth,colorMode,rect);
 	    if(colorMode == 0)
 		frame.getContentPane().setBackground(Color.white);
 	    else if(colorMode == 1)
@@ -547,6 +560,14 @@ if(colorMode == 0)
 	else if("dark_color".equals(e.getActionCommand())){
 	    AbstractButton button = (AbstractButton)e.getSource();   
 	    colorMode = 3;
+	}
+	else if("rect_shape".equals(e.getActionCommand())){
+	    AbstractButton button = (AbstractButton)e.getSource();
+	    this.rect = true;
+	}
+	else if("circle_shape".equals(e.getActionCommand())){
+	    AbstractButton button = (AbstractButton)e.getSource();
+	    this.rect = false;
 	}
 	else if("save".equals(e.getActionCommand())){ // user chooses to save mid-game
 	    timerBar.stopTimer();

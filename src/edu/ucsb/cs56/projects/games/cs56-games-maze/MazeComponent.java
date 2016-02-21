@@ -19,20 +19,22 @@ public class MazeComponent extends JComponent implements MouseListener{
     private MazeGrid grid;
     private int cellWidth;    
     private int colorMode;
+    private boolean rect;
     /**
        Construct a MazeComponent to draw this MazeGrid grid, with the width of each
        Cell being drawn at cellWidth pixels wide and tall
        @param grid the MazeGrid this MazeComponent will be drawing
        @param cellWidth the width and height to draw each Cell
     */
-    public MazeComponent(MazeGrid grid, int cellWidth, int inputColor) {
+    public MazeComponent(MazeGrid grid, int cellWidth, int inputColor, boolean r) {
 	this.colorMode = inputColor;
 	this.grid = grid;
 	this.cellWidth = cellWidth;
 	addMouseListener(this);
 	this.setFocusable(true);
+	this.rect = r;
     }
-
+    
     /**
        Method in JComponent overrided to draw this MazeGrid
     */
@@ -218,7 +220,10 @@ public class MazeComponent extends JComponent implements MouseListener{
 	else if(colorMode == 3)
 	    g2.setColor(Color.white);
 	//g2.fill(new Rectangle2D.Float(this.cellWidth*a.col, this.cellWidth*a.row, this.cellWidth, this.cellWidth));
-	g2.fill(new Ellipse2D.Double(this.cellWidth*a.col + (0.4*this.cellWidth)-1, this.cellWidth*a.row + (0.4*this.cellWidth)-1, 0.4*this.cellWidth,0.4*this.cellWidth));
+	if(rect == true)
+	    g2.fill(new Rectangle2D.Double(this.cellWidth*a.col + (0.4*this.cellWidth)-1, this.cellWidth*a.row + (0.4*this.cellWidth)-1, 0.4*this.cellWidth,0.4*this.cellWidth));
+	else
+	    g2.fill(new Ellipse2D.Double(this.cellWidth*a.col + (0.4*this.cellWidth)-1, this.cellWidth*a.row + (0.4*this.cellWidth)-1, 0.4*this.cellWidth,0.4*this.cellWidth));
     }
 
     /** Sets MazeGrid associated with this MazeComponent
