@@ -82,13 +82,24 @@ public class MazeComponent extends JComponent implements MouseListener{
 	if(this.grid.hasMarker(a, MazeGrid.MARKER4)){ //player
 	    this.paintMarker4(g2, a);
 	}
-
+	
 	// paint the walls of the Cell
 	short directions = this.grid.getCellDirections(a);
-	g2.setColor(Color.BLACK);
-	if(colorMode == 3)
+	if(colorMode == 0)
+	    g2.setColor(Color.BLACK);
+	else if(colorMode == 1)
+	    {
+		Color c = new Color(46,139,87);	
+		g2.setColor(c);
+	    }
+	else if(colorMode == 2)
+	    {
+		Color c = new Color(176,23,31);
+		g2.setColor(c);
+	    }
+	else if(colorMode == 3)
 	    g2.setColor(Color.white);
-
+	
 	if ((directions & MazeGrid.DIR_RIGHT) == 0) {
 	    Line2D.Float wall = new Line2D.Float(this.cellWidth*a.col + this.cellWidth-1,
 						 this.cellWidth*a.row + 0,
@@ -123,19 +134,22 @@ public class MazeComponent extends JComponent implements MouseListener{
        How MazeGrid.MARKER1 should be painted. Change this if you want marker1 to be painted differently.
     */
     private void paintMarker1(Graphics2D g2, Cell a) {
-	g2.setColor(Color.RED);
-	/*
+	
 	if(colorMode == 0)
-	    g2.setColor(Color.YELLOW);
+	    g2.setColor(Color.RED);
 	else if(colorMode == 1)
-	    g2.setColor(Color.GREEN);
+	    {
+		Color c = new Color(255,182,193);
+		g2.setColor(c);
+	    }
 	else if(colorMode == 2)
-	    g2.setColor(Color.magenta);
+	    {
+		Color c = new Color(255,153,255);
+		g2.setColor(c);
+	    }
 	else if(colorMode == 3)
-	    g2.setColor(Color.gray);
-	*/
-	if(colorMode == 3)
-	    g2.setColor(Color.YELLOW);
+	    g2.setColor(Color.CYAN);
+	
 	g2.fill(new Rectangle2D.Float(this.cellWidth*a.col, this.cellWidth*a.row, this.cellWidth, this.cellWidth));
 
 	//g2.fill(new Rectangle2D.Double(this.cellWidth*a.col + (0.4*this.cellWidth)-1,this.cellWidth*a.row + (0.4*this.cellWidth)-1,0.4*this.cellWidth,0.4*this.cellWidth));
@@ -145,19 +159,21 @@ public class MazeComponent extends JComponent implements MouseListener{
        How MazeGrid.MARKER2 should be painted. Change this if you want marker2 to be painted differently.
     */
     private void paintMarker2(Graphics2D g2, Cell a) {
-	g2.setColor(Color.CYAN);
-	/*
-	  if(colorMode == 0)
-	  g2.setColor(Color.YELLOW);
-	  else if(colorMode == 1)
-	  g2.setColor(Color.GREEN);
-	    else if(colorMode == 2)
-	g2.setColor(Color.magenta);
-	    else if(colorMode == 3)
-	g2.setColor(Color.gray);
-	*/
-	if(colorMode == 3)
-	    g2.setColor(Color.green);
+	if(colorMode == 0)
+	    g2.setColor(Color.CYAN);
+	else if(colorMode == 1)
+	    {
+		Color c = new Color(173,255,46);
+		g2.setColor(c);
+	    }
+	else if(colorMode == 2)
+	    {	    
+		Color c = new Color(58,213,254);
+		g2.setColor(c);
+	    }
+	else if(colorMode == 3)
+	    g2.setColor(Color.RED);
+	
 	g2.fill(new Rectangle2D.Float(this.cellWidth*a.col, this.cellWidth*a.row, this.cellWidth, this.cellWidth));
 	//g2.fill(new Rectangle2D.Double(this.cellWidth*a.col + (0.4*this.cellWidth)-1, this.cellWidth*a.row + (0.4*this.cellWidth)-1, 0.4*this.cellWidth,0.4*this.cellWidth));
     }
@@ -168,14 +184,19 @@ public class MazeComponent extends JComponent implements MouseListener{
     private void paintMarker3(Graphics2D g2, Cell a) {
 	if(colorMode == 0)
 	    g2.setColor(Color.YELLOW);
-	/*
 	else if(colorMode == 1)
-	    g2.setColor(Color.GREEN);
+	    {
+		g2.setColor(Color.YELLOW);
+	    }
 	else if(colorMode == 2)
-	    g2.setColor(Color.magenta);
-	*/
+	    {
+		g2.setColor(Color.YELLOW);
+	    }
 	else if(colorMode == 3)
-	    g2.setColor(Color.blue);
+	    {
+		Color c = new Color (128,0,128);
+		g2.setColor(c);
+	    }
 	g2.fill(new Rectangle2D.Float(this.cellWidth*a.col, this.cellWidth*a.row, this.cellWidth, this.cellWidth));
     }
     
@@ -185,16 +206,19 @@ public class MazeComponent extends JComponent implements MouseListener{
     private void paintMarker4(Graphics2D g2, Cell a) {
 	if(colorMode == 0)
 	    g2.setColor(Color.BLACK);
-	/*
 	else if(colorMode == 1)
-	    g2.setColor(Color.GREEN);
+	    {
+		Color c = new Color(238,154,0);
+		g2.setColor(c);
+	    }
 	else if(colorMode == 2)
-	    g2.setColor(Color.magenta);
-	*/
+	    {
+		g2.setColor(Color.red);
+	    }		
 	else if(colorMode == 3)
 	    g2.setColor(Color.white);
 	//g2.fill(new Rectangle2D.Float(this.cellWidth*a.col, this.cellWidth*a.row, this.cellWidth, this.cellWidth));
-	g2.fill(new Rectangle2D.Double(this.cellWidth*a.col + (0.4*this.cellWidth)-1, this.cellWidth*a.row + (0.4*this.cellWidth)-1, 0.4*this.cellWidth,0.4*this.cellWidth));
+	g2.fill(new Ellipse2D.Double(this.cellWidth*a.col + (0.4*this.cellWidth)-1, this.cellWidth*a.row + (0.4*this.cellWidth)-1, 0.4*this.cellWidth,0.4*this.cellWidth));
     }
 
     /** Sets MazeGrid associated with this MazeComponent

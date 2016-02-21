@@ -243,7 +243,19 @@ public class MazeGui implements ActionListener{
 	// initialize the MazeGrid, MazeComponent, and MazeGenerator
 	this.grid = new MazeGrid(settings.rows, settings.cols);
 	this.mc = new MazeComponent(grid, settings.cellWidth, colorMode);
-	if(colorMode == 3)
+	if(colorMode == 0)
+	    frame.getContentPane().setBackground(Color.white);
+	else if(colorMode == 1)
+	    {
+		Color c = new Color(0, 191, 255);
+		frame.getContentPane().setBackground(c);
+	    }
+	else if(colorMode == 2)
+	    {
+		Color c = new Color (238,201,0);
+		frame.getContentPane().setBackground(c);
+	    }
+	else if(colorMode == 3)
 	    frame.getContentPane().setBackground(Color.black);
 	frame.add(mc);
 	frame.pack();
@@ -397,7 +409,19 @@ public class MazeGui implements ActionListener{
 	this.grid = new MazeGrid(settings.rows, settings.cols);
 	this.mc = new MazeComponent(grid, settings.cellWidth,colorMode);
 	mc.setVisible(true);
-	if(colorMode == 3)
+if(colorMode == 0)
+	    frame.getContentPane().setBackground(Color.white);
+	else if(colorMode == 1)
+	    {
+		Color c = new Color(0, 191, 255);
+		frame.getContentPane().setBackground(c);
+	    }
+	else if(colorMode == 2)
+	    {
+		Color c = new Color (238,201,0);
+		frame.getContentPane().setBackground(c);
+	    }
+	else if(colorMode == 3)
 	    frame.getContentPane().setBackground(Color.black);	
 	frame.add(mc);
         frame.pack();
@@ -438,7 +462,19 @@ public class MazeGui implements ActionListener{
 	    this.settings=game.getSettings();
 	    this.grid=game.getGrid();
 	    this.mc=new MazeComponent(grid, settings.cellWidth,colorMode);
-	    if(colorMode == 3)
+	    if(colorMode == 0)
+		frame.getContentPane().setBackground(Color.white);
+	    else if(colorMode == 1)
+		{
+		    Color c = new Color(0, 191, 255);
+		    frame.getContentPane().setBackground(c);
+		}
+	    else if(colorMode == 2)
+		{
+		    Color c = new Color (238,201,0);
+		    frame.getContentPane().setBackground(c);
+		}
+	    else if(colorMode == 3)
 		frame.getContentPane().setBackground(Color.black);
 	    timerBar.setTimeElapsed(game.getTimeElapsed());
 	    mc.setVisible(true);
