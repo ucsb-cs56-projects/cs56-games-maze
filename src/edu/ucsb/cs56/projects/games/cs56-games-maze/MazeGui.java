@@ -31,6 +31,7 @@ public class MazeGui implements ActionListener{
     private JFrame frame;
     private JMenuBar menuBar;
     private JMenu menu;
+    private JMenu colorMenu;
     private MazeTimerBar timerBar;
     private MazeGrid grid;
     private MazeComponent mc;
@@ -42,9 +43,9 @@ public class MazeGui implements ActionListener{
     private Action playerMoveAction;
     private MazeGameSave gameSave;
     private long realTime;
-
-
-
+    
+    private int colorMode = 0;
+    
     private JFileChooser fc;
     private javax.swing.filechooser.FileFilter fileFilter;
     private MazeSettingsDialog settingsDialog;
@@ -150,11 +151,11 @@ public class MazeGui implements ActionListener{
 	this.frame = new JFrame();
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	frame.setTitle("Maze Game");
-
+	
 	//initialize timer/controls bar
 	this.timerBar = new MazeTimerBar(this);
 	frame.add(timerBar, BorderLayout.SOUTH);
-
+	
 	//initialize menu bar and menus
 	this.menuBar = new JMenuBar();
 	this.menu = new JMenu("Menu");
@@ -195,7 +196,7 @@ public class MazeGui implements ActionListener{
 	menuItem.setActionCommand("settings");
 	menuItem.addActionListener(this);
 	menu.add(menuItem);
-
+	
 	menuItem = new JMenuItem("Save...");
 	menuItem.setActionCommand("save");
 	menuItem.addActionListener(this);
@@ -207,12 +208,43 @@ public class MazeGui implements ActionListener{
 	menu.add(menuItem);
 
 	this.menuBar.add(this.menu);
-
+	
+	this.colorMenu = new JMenu("Colors");
+	ButtonGroup cGroup = new ButtonGroup();
+	JRadioButtonMenuItem colorItem = new JRadioButtonMenuItem("Default");
+	colorItem.setSelected(true);
+	colorItem.setActionCommand("default_color");
+	colorItem.addActionListener(this);
+	cGroup.add(colorItem);
+	colorMenu.add(colorItem);
+	
+	colorItem = new JRadioButtonMenuItem("Cool");
+	colorItem.setActionCommand("cool_color");
+	colorItem.addActionListener(this);
+	cGroup.add(colorItem);
+	colorMenu.add(colorItem);
+	
+	colorItem = new JRadioButtonMenuItem("Warm");
+	colorItem.setActionCommand("warm_color");
+	colorItem.addActionListener(this);
+	cGroup.add(colorItem);
+	colorMenu.add(colorItem);
+	
+	colorItem = new JRadioButtonMenuItem("Dark");
+	colorItem.setActionCommand("dark_color");
+	colorItem.addActionListener(this);
+	cGroup.add(colorItem);
+	colorMenu.add(colorItem);
+	
+	this.menuBar.add(this.colorMenu);
+	
 	frame.setJMenuBar(this.menuBar);
 
 	// initialize the MazeGrid, MazeComponent, and MazeGenerator
 	this.grid = new MazeGrid(settings.rows, settings.cols);
-	this.mc = new MazeComponent(grid, settings.cellWidth);
+	this.mc = new MazeComponent(grid, settings.cellWidth, colorMode);
+	if(colorMode == 3)
+	    frame.getContentPane().setBackground(Color.black);
 	frame.add(mc);
 	frame.pack();
 	frame.setVisible(true);
@@ -235,7 +267,6 @@ public class MazeGui implements ActionListener{
 	fileFilter = new FileNameExtensionFilter("MazeGame saves (*.mzgs)", "mzgs");
 	fc.addChoosableFileFilter(fileFilter);
 	fc.setFileFilter(fileFilter);
-
     }
 
 
@@ -251,11 +282,14 @@ public class MazeGui implements ActionListener{
 	    if(drawTimer!=null)
 		drawTimer.stop();
 	    drawTimer = new Timer(1, new ActionListener() {
+
 		    int i=0;
 		    public void actionPerformed(ActionEvent e){
 			++i;
 			if(mg.step() && i%(settings.progDrawSpeed)==0)
-			    frame.repaint();
+			    {			    
+				frame.repaint();
+			    }
 			else if(i%(settings.progDrawSpeed)==0){
 			    //done drawing
 			    ((Timer)e.getSource()).stop();
@@ -297,7 +331,7 @@ public class MazeGui implements ActionListener{
 	    }
 	}
     }
-
+    
     /**
        An alternative to the no-arg run() method that deals with
        the case of using newGame(game) where game had progressive
@@ -314,18 +348,20 @@ public class MazeGui implements ActionListener{
 		    public void actionPerformed(ActionEvent e){
 			++i;
 			if(mg.step() && i%(settings.progDrawSpeed)==0)
-			    frame.repaint();
-			else if(i%(settings.progDrawSpeed)==0){
-			    //done drawing
-			    ((Timer)e.getSource()).stop();
-			    timerBar.startTimer();
-			    grid.markStartFinish(new Cell(settings.startRow,settings.startCol),new Cell(settings.endRow,settings.endCol));
-			    if(settings.progReveal) {
-				if (gameSave != null) gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
-			    }
-			    else {
-				grid.updatePlayerPosition();
-				mc.repaint();
+			    {
+				frame.repaint();
+			     }
+			 else if(i%(settings.progDrawSpeed)==0){
+			     //done drawing
+			     ((Timer)e.getSource()).stop();
+			     timerBar.startTimer();
+			     grid.markStartFinish(new Cell(settings.startRow,settings.startCol),new Cell(settings.endRow,settings.endCol));
+			     if(settings.progReveal) {
+				 if (gameSave != null) gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
+			     }
+			     else {
+				 grid.updatePlayerPosition();
+				 mc.repaint();
 			    }
 			}
 		    }
@@ -359,8 +395,10 @@ public class MazeGui implements ActionListener{
 	this.oldSettings=new MazeSettings(settings);
 	//settingsDialog.getPanel().writeback();//
 	this.grid = new MazeGrid(settings.rows, settings.cols);
-	this.mc = new MazeComponent(grid, settings.cellWidth);
+	this.mc = new MazeComponent(grid, settings.cellWidth,colorMode);
 	mc.setVisible(true);
+	if(colorMode == 3)
+	    frame.getContentPane().setBackground(Color.black);	
 	frame.add(mc);
         frame.pack();
 	frame.setVisible(true);
@@ -399,7 +437,9 @@ public class MazeGui implements ActionListener{
 	    frame.remove(mc);
 	    this.settings=game.getSettings();
 	    this.grid=game.getGrid();
-	    this.mc=new MazeComponent(grid, settings.cellWidth);
+	    this.mc=new MazeComponent(grid, settings.cellWidth,colorMode);
+	    if(colorMode == 3)
+		frame.getContentPane().setBackground(Color.black);
 	    timerBar.setTimeElapsed(game.getTimeElapsed());
 	    mc.setVisible(true);
 	    frame.add(mc);
@@ -456,6 +496,22 @@ public class MazeGui implements ActionListener{
             AbstractButton button = (AbstractButton)e.getSource();
             settings.memoryMode=button.getModel().isSelected();
         }
+	else if("default_color".equals(e.getActionCommand())){
+	    AbstractButton button = (AbstractButton)e.getSource();   
+	    colorMode = 0;
+	}
+	else if("cool_color".equals(e.getActionCommand())){
+	    AbstractButton button = (AbstractButton)e.getSource();   
+	    colorMode = 1;
+	}
+	else if("warm_color".equals(e.getActionCommand())){
+	    AbstractButton button = (AbstractButton)e.getSource();   
+	    colorMode = 2;
+	}
+	else if("dark_color".equals(e.getActionCommand())){
+	    AbstractButton button = (AbstractButton)e.getSource();   
+	    colorMode = 3;
+	}
 	else if("save".equals(e.getActionCommand())){ // user chooses to save mid-game
 	    timerBar.stopTimer();
 	    realTime = timerBar.getTimeElapsed(); // records ACTUAL time when save button is pressed
@@ -707,8 +763,8 @@ public class MazeGui implements ActionListener{
                             frame.remove(mc);
                             frame.add(pauseArea);
                         }
-                        frame.repaint();
-                        frame.setVisible(true);
+			frame.repaint();
+			frame.setVisible(true);
                         if(!isPaused) isPaused = true;
                         else isPaused = false;
                         return;
@@ -731,6 +787,4 @@ public class MazeGui implements ActionListener{
 	    }
 	}
     }
-
-
 }
