@@ -225,7 +225,7 @@ public class MazeGrid implements Serializable{
     */
     public void unmarkCell(Cell a, short marker) {
 	this.grid[a.row][a.col] = (short)(this.grid[a.row][a.col] & ~marker);
-}
+    }
 
     /**
       remove the PLAYER marker from a grid, when the player is at the finish
@@ -235,7 +235,12 @@ public class MazeGrid implements Serializable{
     }
 
 
-
+    public void unmarkPlayerSquare(){
+	unmarkCell(player.getPosition(), MARKER4);
+    }
+    public void markPlayerSquare(){
+	markCell(player.getPosition(), MARKER4);
+    }
 
 
     /**
@@ -335,9 +340,14 @@ public class MazeGrid implements Serializable{
 	revealedCoordinates.add(a);
     }
 
+    public void removeAllCells(){
+	//for(int i=0; i<revealedCoordinates.size(); i++)
+	revealedCoordinates.clear();
+    }
+
     /** Enable progressiveReveal mode, progressively removes doNotDraw markers in proximity to player as player moves
 	@param p MazePlayer around which to reveal the grid
-	@param progRevealRadius the radius around the player to reveal
+        markCellsInRadius(new Cell(0,0),this.rows+this.cols,MazeGrid.MARKER5);	@param progRevealRadius the radius around the player to reveal
      */
     public void setProgReveal(MazePlayer p, int progRevealRadius){
 	this.progReveal=true;
@@ -352,14 +362,22 @@ public class MazeGrid implements Serializable{
     public void updatePlayerPosition(){
 	this.markCell(player.getPosition(), MazeGrid.MARKER4);
 	if(this.progReveal) {
+	    //somehow clean the board  here
+	    //@@@
+	    this.removeAllCells();
+	    markCellsInRadius(this.player.getPosition(), this.rows+this.cols, MazeGrid.MARKER5);
 	    this.unmarkCellsInRadius(this.player.getPosition(),
-				     this.progRevealRadius, MazeGrid.MARKER5);
+	    				     this.progRevealRadius, MazeGrid.MARKER5);
+	    
+	    //markCellsInRadius(this.player.getPosition(),this.progRevealRadius,MazeGrid.MARKER5);
+            //unmarkCellsInRadius(this.player.getPosition(), progRevealRadius, MazeGrid.MARKER5);
+
 	    if(gameSave != null) unmarkVisitedCoordinates(gameSave);
 	}
 	// save coordinates of visited cells
 	if (!this.revealedCoordinates.contains(this.player.getPosition()))
 	    this.revealedCells(this.player.getPosition());
-
+	
 
 
     }
