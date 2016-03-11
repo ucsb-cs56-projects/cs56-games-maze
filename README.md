@@ -1,5 +1,10 @@
 # cs56-games-maze
 
+CS56 W16 Note:
+* If running locally, the music works fine
+* If exporting the graphics remotely, the music will not play
+
+
 A program that generates a solvable rectangular maze at random. 
 
 Before W14:
