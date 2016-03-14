@@ -1,5 +1,10 @@
 # cs56-games-maze
 
+CS56 W16 Note:
+* If running locally, the music works fine
+* If exporting the graphics remotely, the music will not play
+
+
 A program that generates a solvable rectangular maze at random. 
 
 Before W14:
@@ -8,7 +13,22 @@ Before W14:
 
 After W14:
 * [Javadoc page] (http://www.cs.ucsb.edu/~loganortega/cs56/W14/loganortega/cs56-games-maze/javadoc)
-* 
+
+W16 Final Remarks
+* We've added game mdoes and new customization options
+* Game Modes:
+ * Updated progressive reveal
+  * The user's previous path is now hidden
+ * Inverse Mode
+  * Player's controls are inverted
+ * Memory Mode
+  * The player's position will update after five movement inputs
+* Customization (Options in the tool bar)
+ * User has four color schemes to choose from
+ * User can choose between being a rectangle and circle
+* We've added fun, engaging music
+* Final Remarks:
+ * Majority of code is handled in MazeGui.java, in order to add different game features such as two players or an enemy, a more more object oriented approach would be needed. Thus, next year's students should look into refactoring much of the code.
 
 project history
 ===============
