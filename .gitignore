@@ -9,3 +9,6 @@
 *~
 
 # Javadoc Directory #
+
+# IDEA files #
+.idea/workspace.xml
