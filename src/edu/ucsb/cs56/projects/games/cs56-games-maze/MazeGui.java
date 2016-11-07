@@ -280,7 +280,7 @@ public class MazeGui implements ActionListener{
 	grid.setPlayer(player);
 
 	//set up player keybinds
-	this.playerMoveAction = new KeyBoardAction();
+	this.playerMoveAction = new KeyBoardAction("stub");
 	remapPlayerKeys(this.playerMoveAction);
 
 	//init settings Dialog
@@ -453,7 +453,7 @@ if(colorMode == 0)
 	this.player = new MazePlayer(this.grid, new Cell(settings.startRow,settings.startCol));
 
 
-	Action playerMoveAction = new KeyBoardAction();
+	Action playerMoveAction = new KeyBoardAction("stub");
 	//settingsDialog.getPanel().writeback();//
 	run();
     }
@@ -716,6 +716,11 @@ if(colorMode == 0)
 	@param a Action object to map all keys to
     */
     private void remapPlayerKeys(Action a){
+        KeyBoardAction upKBA = new KeyBoardAction("up");
+        KeyBoardAction downKBA = new KeyBoardAction("down");
+        KeyBoardAction leftKBA = new KeyBoardAction("left");
+        KeyBoardAction rightKBA = new KeyBoardAction("right");
+        KeyBoardAction pauseKBA = new KeyBoardAction("pause");
 	if(settings.inverseMode){
 	    InputMap inputMap = ((JPanel)this.frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
 	    inputMap.put(KeyStroke.getKeyStroke("S"),"player_up");
@@ -733,22 +738,32 @@ if(colorMode == 0)
 	else {
 	    InputMap inputMap = ((JPanel)this.frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
 	    inputMap.put(KeyStroke.getKeyStroke("W"),"player_up");
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "player_up");
 	    inputMap.put(KeyStroke.getKeyStroke("S"),"player_down");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "player_down");
 	    inputMap.put(KeyStroke.getKeyStroke("A"),"player_left");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "player_left");
 	    inputMap.put(KeyStroke.getKeyStroke("D"),"player_right");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "player_right");
 	    inputMap.put(KeyStroke.getKeyStroke("P"),"pause_game");
 	    ActionMap actionmap = ((JPanel)this.frame.getContentPane()).getActionMap();
-	    actionmap.put("player_up",a);
-	    actionmap.put("player_down",a);
-	    actionmap.put("player_left",a);
-	    actionmap.put("player_right",a);
-	    actionmap.put("pause_game",a);
+	    actionmap.put("player_up", upKBA);
+	    actionmap.put("player_down",downKBA);
+	    actionmap.put("player_left",leftKBA);
+	    actionmap.put("player_right",rightKBA);
+	    actionmap.put("pause_game",pauseKBA);
 	}
     }
 
     /** Action object that responds to player move keyboard inputs
      */
     class KeyBoardAction extends AbstractAction{
+        String cmd;
+        public void setCmd(String c) { this.cmd = c; }
+        public String getCmd() { return this.cmd; }
+        public KeyBoardAction(String c) {
+            cmd = c;
+        }
 	public boolean isPaused = false;
 	Font font = new Font("Verdana", Font.BOLD, 30);
 	JTextArea pauseArea =
@@ -756,20 +771,21 @@ if(colorMode == 0)
 	public void actionPerformed(ActionEvent e){
 	    if(player!=null){
 		if(!settings.inverseMode){
-		    switch(e.getActionCommand()){
-		    case "w":
+            System.out.println(e.toString());
+		    switch(this.cmd){
+		    case "up":
 			if(isPaused == false) {player.move(MazeGrid.DIR_UP);}
 			break;
-		    case"s":
+		    case"down":
 			if(isPaused == false) {player.move(MazeGrid.DIR_DOWN);}
 			break;
-		    case "a":
+		    case "left":
 			if(isPaused == false) {player.move(MazeGrid.DIR_LEFT);}
 			break;
-		    case "d":
+		    case "right":
 			if(isPaused == false) {player.move(MazeGrid.DIR_RIGHT);}
 			break;
-		    case "p":
+		    case "pause":
 			pauseArea.setEditable(false);
 			pauseArea.setFont(font);
 			//Game is Paused
