@@ -4,6 +4,7 @@ import javax.swing.filechooser.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.beans.*;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import java.io.*;
@@ -16,6 +17,10 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 /**
    Class where the MazeGui is constructed.  This is also the main class and contains the main method
    @author Jake Staahl
@@ -102,6 +107,10 @@ public class MazeGui implements ActionListener{
 		e.printStackTrace();
 		throw new RuntimeException("Sound: Line Unavailable Exception Error: " + e);
 	    }
+	    catch (Exception e) {
+            System.out.println("Unpredicted exception");
+            e.printStackTrace();
+        }
 	    // play, stop, loop the sound clip
 	}
 	public void play(){
@@ -298,8 +307,21 @@ public class MazeGui implements ActionListener{
     /** Stepwise generates and displays maze
      */
     public void run() {
-	//	Sound soundPlayer = new Sound("Music/the_wave.mp3");
-	//	soundPlayer.play();
+		//Sound soundPlayer = new Sound("UpbeatFunk.wav");
+		//soundPlayer.play();
+
+        /*
+        try {
+            JFXPanel fxPanel = new JFXPanel();
+            String bip = "the_wave.mp3";
+            Media hit = new Media(Paths.get("UpbeatFunk.wav").toUri().toString());
+            MediaPlayer mediaPlayer = new MediaPlayer(hit);
+            mediaPlayer.play();
+        } catch (Exception e) {
+            System.out.println("Not playing sound");
+            System.out.println(e.toString());
+        }
+        */
 		    
 	// generate the maze in steps if asked (rather than all at once using MazeGenerator.generate())
 	// repaint() in between each step to watch it grow
@@ -669,7 +691,7 @@ if(colorMode == 0)
 			this.gameSave = new MazeGameSave(this.grid, this.oldSettings);
 		    }
 
-		    gameSave.addHighScore(new MazeHighScore(name, realTime, settings.rows, settings.cols));
+		    gameSave.addHighScore(new MazeHighScore(name, realTime, settings.rows, settings.cols, player.getNumMoves()));
 		    gameSave.setTimeElapsed(0);
 		    gameSave.resetPlayer();
 		    oout.writeObject(gameSave);
@@ -687,7 +709,7 @@ if(colorMode == 0)
 		if (mySaver.hasEmptyFile()==false) { // if the .ser file=empty, then don't read
 		    currentScoreList = mySaver.getHighScoreList();
 		}
-		currentScoreList.add(new MazeHighScore(name,realTime,settings.rows,settings.cols));
+		currentScoreList.add(new MazeHighScore(name,realTime,settings.rows,settings.cols, player.getNumMoves()));
 		mySaver.writeHighScoreList(currentScoreList);
 
 	    }catch(IOException ioe){ ioe.printStackTrace(); }
@@ -771,7 +793,6 @@ if(colorMode == 0)
 	public void actionPerformed(ActionEvent e){
 	    if(player!=null){
 		if(!settings.inverseMode){
-            System.out.println(e.toString());
 		    switch(this.cmd){
 		    case "up":
 			if(isPaused == false) {player.move(MazeGrid.DIR_UP);}
