@@ -80,6 +80,8 @@ public class HighScoreTable{
 		}
 		JTable table = new JTable(rowData, columnNames);
 
+		table.getTableHeader().setReorderingAllowed(false);
+
 		JScrollPane scrollPane = new JScrollPane(table);
 		frame.add(scrollPane, BorderLayout.CENTER);
 		frame.setSize(400, 250);
