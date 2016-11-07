@@ -768,6 +768,7 @@ if(colorMode == 0)
 	    inputMap.put(KeyStroke.getKeyStroke("D"),"player_right");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "player_right");
 	    inputMap.put(KeyStroke.getKeyStroke("P"),"pause_game");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "pause_game");
 	    ActionMap actionmap = ((JPanel)this.frame.getContentPane()).getActionMap();
 	    actionmap.put("player_up", upKBA);
 	    actionmap.put("player_down",downKBA);

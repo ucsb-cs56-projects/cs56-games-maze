@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f14e74a1-6700-4a71-9202-9f6924f48f53" name="Default" comment="">
+    <list default="true" id="f14e74a1-6700-4a71-9202-9f6924f48f53" name="Default" comment="Fixed issue #39(shifting columns)">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/HighScores.ser" afterPath="$PROJECT_DIR$/HighScores.ser" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/cs56-games-maze/HighScoreTable.java" afterPath="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/cs56-games-maze/HighScoreTable.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/cs56-games-maze/MazeGui.java" afterPath="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/cs56-games-maze/MazeGui.java" />
     </list>
     <ignored path="cs56-games-maze.iws" />
@@ -28,23 +28,13 @@
       <file leaf-file-name="MazeGui.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/cs56-games-maze/MazeGui.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="128">
-              <caret line="307" column="7" selection-start-line="307" selection-start-column="7" selection-end-line="307" selection-end-column="7" />
+            <state relative-caret-position="254">
+              <caret line="770" column="81" selection-start-line="770" selection-start-column="81" selection-end-line="770" selection-end-column="81" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#27287#27288#0" expanded="true" />
-                <element signature="e#27318#27319#0" expanded="true" />
+                <element signature="e#27413#27414#0" expanded="true" />
+                <element signature="e#27444#27445#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="HighScoreTable.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/cs56-games-maze/HighScoreTable.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="742">
-              <caret line="75" column="0" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -63,13 +53,14 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/cs56-games-maze/HighScoreTable.java" />
+        <option value="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/cs56-games-maze/MazeHighScore.java" />
         <option value="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/cs56-games-maze/MazeGui.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="20" />
-    <option name="y" value="43" />
+    <option name="x" value="23" />
+    <option name="y" value="44" />
     <option name="width" value="1400" />
     <option name="height" value="812" />
   </component>
@@ -432,11 +423,25 @@
       <option name="project" value="LOCAL" />
       <updated>1478491804852</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Fixed issue #39(shifting columns)">
+      <created>1478494901310</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1478494901310</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Fixed issue #40(score generation)">
+      <created>1478495407554</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1478495407554</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="20" y="43" width="1400" height="812" extended-state="0" />
+    <frame x="23" y="44" width="1400" height="812" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -478,7 +483,9 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Added arrow key support" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added arrow key support" />
+    <MESSAGE value="Fixed issue #39(shifting columns)" />
+    <MESSAGE value="Fixed issue #40(score generation)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed issue #40(score generation)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -505,14 +512,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/cs56-games-maze/HighScoreSaver.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="83" column="0" selection-start-line="83" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/cs56-games-maze/MazeHighScore.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="27" column="19" selection-start-line="27" selection-start-column="19" selection-end-line="27" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/cs56-games-maze/MazeGui.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="128">
-          <caret line="307" column="7" selection-start-line="307" selection-start-column="7" selection-end-line="307" selection-end-column="7" />
+        <state relative-caret-position="254">
+          <caret line="770" column="81" selection-start-line="770" selection-start-column="81" selection-end-line="770" selection-end-column="81" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#27287#27288#0" expanded="true" />
-            <element signature="e#27318#27319#0" expanded="true" />
+            <element signature="e#27413#27414#0" expanded="true" />
+            <element signature="e#27444#27445#0" expanded="true" />
           </folding>
         </state>
       </provider>
