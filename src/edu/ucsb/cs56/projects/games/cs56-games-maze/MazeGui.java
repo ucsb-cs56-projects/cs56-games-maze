@@ -81,15 +81,15 @@ public class MazeGui implements ActionListener{
 	    // from a wave File
 	    try {
 		File file = new File(fileName);
-		if (file.exists()) {
-		    AudioInputStream sound = AudioSystem.getAudioInputStream(file);
-		    // load the sound into memory (a Clip)
-		    clip = AudioSystem.getClip();
-		    clip.open(sound);
-		}
-		else {
-		    throw new RuntimeException("Sound: file not found: " + fileName);
-		}
+			if (file.exists()) {
+				System.out.println(file.getAbsolutePath());
+				AudioInputStream sound = AudioSystem.getAudioInputStream(file);
+				// load the sound into memory (a Clip)
+				clip = AudioSystem.getClip();
+				clip.open(sound);
+			} else {
+				throw new RuntimeException("Sound: file not found: " + fileName);
+			}
 	    }
 	    catch (MalformedURLException e) {
 		e.printStackTrace();
@@ -307,8 +307,8 @@ public class MazeGui implements ActionListener{
     /** Stepwise generates and displays maze
      */
     public void run() {
-		//Sound soundPlayer = new Sound("UpbeatFunk.wav");
-		//soundPlayer.play();
+		Sound soundPlayer = new Sound("casiobeat.wav");
+		soundPlayer.loop();
 
         /*
         try {
