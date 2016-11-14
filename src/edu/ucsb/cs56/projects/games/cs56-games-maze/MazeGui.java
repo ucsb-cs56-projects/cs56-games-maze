@@ -18,9 +18,6 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 /**
    Class where the MazeGui is constructed.  This is also the main class and contains the main method
    @author Jake Staahl
@@ -51,6 +48,7 @@ public class MazeGui implements ActionListener{
     private JMenu shapeMenu;
     private boolean rect = true;
     private int colorMode = 0;
+    private int controlKey;
     
     private JFileChooser fc;
     private javax.swing.filechooser.FileFilter fileFilter;
@@ -196,6 +194,12 @@ public class MazeGui implements ActionListener{
         cbMenuItem2.setActionCommand("inverse_mode");
         cbMenuItem2.addActionListener(this);
         menu.add(cbMenuItem2);
+
+        JCheckBoxMenuItem rcMenuItem = new JCheckBoxMenuItem("Random Controls");
+        rcMenuItem.setActionCommand("random_controls");
+        rcMenuItem.addActionListener(this);
+        menu.add(rcMenuItem);
+
 	menu.addSeparator();
         JCheckBoxMenuItem cbMenuItem3 = new JCheckBoxMenuItem("Memory Mode");
         cbMenuItem3.setActionCommand("memory_mode");
@@ -563,6 +567,11 @@ if(colorMode == 0)
 	    AbstractButton button = (AbstractButton)e.getSource();
 	    settings.inverseMode=button.getModel().isSelected();
 	}
+	else if("random_controls".equals(e.getActionCommand())){
+        AbstractButton button = (AbstractButton)e.getSource();
+        controlKey = ((int) (Math.random()*4)) + 1;
+        settings.randomControls=button.getModel().isSelected();
+    }
         else if("memory_mode".equals(e.getActionCommand())){
             AbstractButton button = (AbstractButton)e.getSource();
             settings.memoryMode=button.getModel().isSelected();
@@ -792,20 +801,27 @@ if(colorMode == 0)
 	JTextArea pauseArea =
 	    new JTextArea("\n\n\n       GAME PAUSED:\n\n    Press 'P' to Resume");
 	public void actionPerformed(ActionEvent e){
+        byte[] directions = {MazeGrid.DIR_UP, MazeGrid.DIR_DOWN, MazeGrid.DIR_LEFT, MazeGrid.DIR_RIGHT};
 	    if(player!=null){
+            if (settings.randomControls) {
+                byte[] oldDirections = directions.clone();
+                for (int i=0; i<4; i++) {
+                    directions[i] = oldDirections[(controlKey + i) % 4];
+                }
+            }
 		if(!settings.inverseMode){
 		    switch(this.cmd){
 		    case "up":
-			if(isPaused == false) {player.move(MazeGrid.DIR_UP);}
+			if(isPaused == false) {player.move(directions[0]);}
 			break;
 		    case"down":
-			if(isPaused == false) {player.move(MazeGrid.DIR_DOWN);}
+			if(isPaused == false) {player.move(directions[1]);}
 			break;
 		    case "left":
-			if(isPaused == false) {player.move(MazeGrid.DIR_LEFT);}
+			if(isPaused == false) {player.move(directions[2]);}
 			break;
 		    case "right":
-			if(isPaused == false) {player.move(MazeGrid.DIR_RIGHT);}
+			if(isPaused == false) {player.move(directions[3]);}
 			break;
 		    case "pause":
 			pauseArea.setEditable(false);
