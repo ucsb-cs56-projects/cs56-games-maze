@@ -4,6 +4,7 @@ import javax.swing.filechooser.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.beans.*;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import java.io.*;
@@ -16,6 +17,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+
 /**
    Class where the MazeGui is constructed.  This is also the main class and contains the main method
    @author Jake Staahl
@@ -46,6 +48,7 @@ public class MazeGui implements ActionListener{
     private JMenu shapeMenu;
     private boolean rect = true;
     private int colorMode = 0;
+    private int controlKey;
     
     private JFileChooser fc;
     private javax.swing.filechooser.FileFilter fileFilter;
@@ -76,15 +79,15 @@ public class MazeGui implements ActionListener{
 	    // from a wave File
 	    try {
 		File file = new File(fileName);
-		if (file.exists()) {
-		    AudioInputStream sound = AudioSystem.getAudioInputStream(file);
-		    // load the sound into memory (a Clip)
-		    clip = AudioSystem.getClip();
-		    clip.open(sound);
-		}
-		else {
-		    throw new RuntimeException("Sound: file not found: " + fileName);
-		}
+			if (file.exists()) {
+				System.out.println(file.getAbsolutePath());
+				AudioInputStream sound = AudioSystem.getAudioInputStream(file);
+				// load the sound into memory (a Clip)
+				clip = AudioSystem.getClip();
+				clip.open(sound);
+			} else {
+				throw new RuntimeException("Sound: file not found: " + fileName);
+			}
 	    }
 	    catch (MalformedURLException e) {
 		e.printStackTrace();
@@ -102,6 +105,10 @@ public class MazeGui implements ActionListener{
 		e.printStackTrace();
 		throw new RuntimeException("Sound: Line Unavailable Exception Error: " + e);
 	    }
+	    catch (Exception e) {
+            System.out.println("Unpredicted exception");
+            e.printStackTrace();
+        }
 	    // play, stop, loop the sound clip
 	}
 	public void play(){
@@ -187,6 +194,12 @@ public class MazeGui implements ActionListener{
         cbMenuItem2.setActionCommand("inverse_mode");
         cbMenuItem2.addActionListener(this);
         menu.add(cbMenuItem2);
+
+        JCheckBoxMenuItem rcMenuItem = new JCheckBoxMenuItem("Random Controls");
+        rcMenuItem.setActionCommand("random_controls");
+        rcMenuItem.addActionListener(this);
+        menu.add(rcMenuItem);
+
 	menu.addSeparator();
         JCheckBoxMenuItem cbMenuItem3 = new JCheckBoxMenuItem("Memory Mode");
         cbMenuItem3.setActionCommand("memory_mode");
@@ -280,7 +293,7 @@ public class MazeGui implements ActionListener{
 	grid.setPlayer(player);
 
 	//set up player keybinds
-	this.playerMoveAction = new KeyBoardAction();
+	this.playerMoveAction = new KeyBoardAction("stub");
 	remapPlayerKeys(this.playerMoveAction);
 
 	//init settings Dialog
@@ -298,8 +311,21 @@ public class MazeGui implements ActionListener{
     /** Stepwise generates and displays maze
      */
     public void run() {
-	//	Sound soundPlayer = new Sound("Music/the_wave.mp3");
-	//	soundPlayer.play();
+		Sound soundPlayer = new Sound("casiobeat.wav");
+		soundPlayer.loop();
+
+        /*
+        try {
+            JFXPanel fxPanel = new JFXPanel();
+            String bip = "the_wave.mp3";
+            Media hit = new Media(Paths.get("UpbeatFunk.wav").toUri().toString());
+            MediaPlayer mediaPlayer = new MediaPlayer(hit);
+            mediaPlayer.play();
+        } catch (Exception e) {
+            System.out.println("Not playing sound");
+            System.out.println(e.toString());
+        }
+        */
 		    
 	// generate the maze in steps if asked (rather than all at once using MazeGenerator.generate())
 	// repaint() in between each step to watch it grow
@@ -453,7 +479,7 @@ if(colorMode == 0)
 	this.player = new MazePlayer(this.grid, new Cell(settings.startRow,settings.startCol));
 
 
-	Action playerMoveAction = new KeyBoardAction();
+	Action playerMoveAction = new KeyBoardAction("stub");
 	//settingsDialog.getPanel().writeback();//
 	run();
     }
@@ -541,6 +567,11 @@ if(colorMode == 0)
 	    AbstractButton button = (AbstractButton)e.getSource();
 	    settings.inverseMode=button.getModel().isSelected();
 	}
+	else if("random_controls".equals(e.getActionCommand())){
+        AbstractButton button = (AbstractButton)e.getSource();
+        controlKey = ((int) (Math.random()*4)) + 1;
+        settings.randomControls=button.getModel().isSelected();
+    }
         else if("memory_mode".equals(e.getActionCommand())){
             AbstractButton button = (AbstractButton)e.getSource();
             settings.memoryMode=button.getModel().isSelected();
@@ -669,7 +700,7 @@ if(colorMode == 0)
 			this.gameSave = new MazeGameSave(this.grid, this.oldSettings);
 		    }
 
-		    gameSave.addHighScore(new MazeHighScore(name, realTime, settings.rows, settings.cols));
+		    gameSave.addHighScore(new MazeHighScore(name, realTime, settings.rows, settings.cols, player.getNumMoves()));
 		    gameSave.setTimeElapsed(0);
 		    gameSave.resetPlayer();
 		    oout.writeObject(gameSave);
@@ -687,7 +718,7 @@ if(colorMode == 0)
 		if (mySaver.hasEmptyFile()==false) { // if the .ser file=empty, then don't read
 		    currentScoreList = mySaver.getHighScoreList();
 		}
-		currentScoreList.add(new MazeHighScore(name,realTime,settings.rows,settings.cols));
+		currentScoreList.add(new MazeHighScore(name,realTime,settings.rows,settings.cols, player.getNumMoves()));
 		mySaver.writeHighScoreList(currentScoreList);
 
 	    }catch(IOException ioe){ ioe.printStackTrace(); }
@@ -716,6 +747,11 @@ if(colorMode == 0)
 	@param a Action object to map all keys to
     */
     private void remapPlayerKeys(Action a){
+        KeyBoardAction upKBA = new KeyBoardAction("up");
+        KeyBoardAction downKBA = new KeyBoardAction("down");
+        KeyBoardAction leftKBA = new KeyBoardAction("left");
+        KeyBoardAction rightKBA = new KeyBoardAction("right");
+        KeyBoardAction pauseKBA = new KeyBoardAction("pause");
 	if(settings.inverseMode){
 	    InputMap inputMap = ((JPanel)this.frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
 	    inputMap.put(KeyStroke.getKeyStroke("S"),"player_up");
@@ -733,43 +769,61 @@ if(colorMode == 0)
 	else {
 	    InputMap inputMap = ((JPanel)this.frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
 	    inputMap.put(KeyStroke.getKeyStroke("W"),"player_up");
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "player_up");
 	    inputMap.put(KeyStroke.getKeyStroke("S"),"player_down");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "player_down");
 	    inputMap.put(KeyStroke.getKeyStroke("A"),"player_left");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "player_left");
 	    inputMap.put(KeyStroke.getKeyStroke("D"),"player_right");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "player_right");
 	    inputMap.put(KeyStroke.getKeyStroke("P"),"pause_game");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "pause_game");
 	    ActionMap actionmap = ((JPanel)this.frame.getContentPane()).getActionMap();
-	    actionmap.put("player_up",a);
-	    actionmap.put("player_down",a);
-	    actionmap.put("player_left",a);
-	    actionmap.put("player_right",a);
-	    actionmap.put("pause_game",a);
+	    actionmap.put("player_up", upKBA);
+	    actionmap.put("player_down",downKBA);
+	    actionmap.put("player_left",leftKBA);
+	    actionmap.put("player_right",rightKBA);
+	    actionmap.put("pause_game",pauseKBA);
 	}
     }
 
     /** Action object that responds to player move keyboard inputs
      */
     class KeyBoardAction extends AbstractAction{
+        String cmd;
+        public void setCmd(String c) { this.cmd = c; }
+        public String getCmd() { return this.cmd; }
+        public KeyBoardAction(String c) {
+            cmd = c;
+        }
 	public boolean isPaused = false;
 	Font font = new Font("Verdana", Font.BOLD, 30);
 	JTextArea pauseArea =
 	    new JTextArea("\n\n\n       GAME PAUSED:\n\n    Press 'P' to Resume");
 	public void actionPerformed(ActionEvent e){
+        byte[] directions = {MazeGrid.DIR_UP, MazeGrid.DIR_DOWN, MazeGrid.DIR_LEFT, MazeGrid.DIR_RIGHT};
 	    if(player!=null){
+            if (settings.randomControls) {
+                byte[] oldDirections = directions.clone();
+                for (int i=0; i<4; i++) {
+                    directions[i] = oldDirections[(controlKey + i) % 4];
+                }
+            }
 		if(!settings.inverseMode){
-		    switch(e.getActionCommand()){
-		    case "w":
-			if(isPaused == false) {player.move(MazeGrid.DIR_UP);}
+		    switch(this.cmd){
+		    case "up":
+			if(isPaused == false) {player.move(directions[0]);}
 			break;
-		    case"s":
-			if(isPaused == false) {player.move(MazeGrid.DIR_DOWN);}
+		    case"down":
+			if(isPaused == false) {player.move(directions[1]);}
 			break;
-		    case "a":
-			if(isPaused == false) {player.move(MazeGrid.DIR_LEFT);}
+		    case "left":
+			if(isPaused == false) {player.move(directions[2]);}
 			break;
-		    case "d":
-			if(isPaused == false) {player.move(MazeGrid.DIR_RIGHT);}
+		    case "right":
+			if(isPaused == false) {player.move(directions[3]);}
 			break;
-		    case "p":
+		    case "pause":
 			pauseArea.setEditable(false);
 			pauseArea.setFont(font);
 			//Game is Paused
