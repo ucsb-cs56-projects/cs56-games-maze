@@ -11,3 +11,5 @@
 # Javadoc Directory #
 javadoc/
 *.iml
+.idea/
+out/
