@@ -17,24 +17,25 @@ public class MazeHighScore implements Serializable, Comparable<MazeHighScore>{
     private long time;
     private double rows;
     private double cols;
+    private int moves;
     private int score;
 
     /** Constructor for high score
 	@param name Name string to associate with score (prompted from player)
 	@param time Time in milliseconds that player took to complete the maze
     */
-    public MazeHighScore(String name, long time, int rows, int columns){
+    public MazeHighScore(String name, long time, int rows, int columns, int moves){
 	this.name=name;
 	this.time=time;
     this.rows=rows;
     this.cols=columns;
+    this.moves=moves;
     }
 
     /** @return Name associated with the high score */
     public String getName(){
 	return this.name;
     }
-
     /** @return Time in milliseconds of this score */
     public long getTime(){
 	return this.time;
@@ -47,9 +48,11 @@ public class MazeHighScore implements Serializable, Comparable<MazeHighScore>{
     public double getCols(){
     return this.cols;
     }
+    /** @return the number of moves the player has made in this game */
+    public int getMoves() { return this.moves; }
     /** @return the score of this game */
     public int getScore(){
-        score = ((int)(((rows * cols)/time)*1000000));
+        score = ((int)(((rows * cols)/(time + moves))*10000000));
         return score;
     }
 

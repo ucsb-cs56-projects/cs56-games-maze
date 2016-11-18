@@ -1,0 +1,17 @@
+other improvements:
+
+fix the load bug - 
+    	after loading a saved game, when the "new" game 
+	button is pressed the timebar starts from the previous.
+	UPDATE: this is much more comprehensive than previously
+	expected. whenever a game is loaded, the load status dominates
+	accessibility to the program. in other words, the timebar starts
+	from the load time and settings cannot be altered. 
+fix after save bug - 
+    	after the game is saved, the saved maze is 
+	erased, the frame is left blank and the user is left without 
+	direction.
+put in a end column/end row check - 
+       the user can mistakenly put the end grid location out of bounds 
+       from the maze. this should not be able to happen. 
+
