@@ -10,3 +10,4 @@
 
 # Javadoc Directory #
 javadoc/
+*.iml
