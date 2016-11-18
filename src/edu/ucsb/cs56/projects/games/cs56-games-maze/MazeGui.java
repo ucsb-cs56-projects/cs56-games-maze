@@ -32,6 +32,7 @@ public class MazeGui implements ActionListener{
 
     private JFrame frame;
     private JMenuBar menuBar;
+    private HomeScreen homeScreen;
     private JMenu menu;
     private JMenu colorMenu;
     private MazeTimerBar timerBar;
@@ -39,6 +40,7 @@ public class MazeGui implements ActionListener{
     private MazeComponent mc;
     private MazeGenerator mg;
     private MazePlayer player;
+    
     private Timer drawTimer;
     private MazeSettings settings;
     private MazeSettings oldSettings;
@@ -62,7 +64,8 @@ public class MazeGui implements ActionListener{
     public static void main(final String[] args){
 	SwingUtilities.invokeLater(new Runnable(){
 		public void run(){
-		    new MazeGui(args).run();
+		    //new MazeGui(args).run();
+            new HomeScreen(args).start();
 		}
 		
 	    });
@@ -283,6 +286,8 @@ public class MazeGui implements ActionListener{
 	    }
 	else if(colorMode == 3)
 	    frame.getContentPane().setBackground(Color.black);
+
+
 	frame.add(mc);
 	frame.pack();
 	frame.setVisible(true);
@@ -314,18 +319,6 @@ public class MazeGui implements ActionListener{
 		Sound soundPlayer = new Sound("casiobeat.wav");
 		soundPlayer.loop();
 
-        /*
-        try {
-            JFXPanel fxPanel = new JFXPanel();
-            String bip = "the_wave.mp3";
-            Media hit = new Media(Paths.get("UpbeatFunk.wav").toUri().toString());
-            MediaPlayer mediaPlayer = new MediaPlayer(hit);
-            mediaPlayer.play();
-        } catch (Exception e) {
-            System.out.println("Not playing sound");
-            System.out.println(e.toString());
-        }
-        */
 		    
 	// generate the maze in steps if asked (rather than all at once using MazeGenerator.generate())
 	// repaint() in between each step to watch it grow
@@ -898,4 +891,29 @@ if(colorMode == 0)
 	    }
 	}
     }
+
+    /*class HomeScreen extends JPanel {
+        JLabel title = new JLabel();
+        JButton startButton = new JButton();
+        JButton instructionsButton = new JButton();
+
+		public HomeScreen() {
+			startButton.addActionListener((e) -> {
+				System.out.println("stub for startbutton");
+                frame.remove(this);
+                frame.add(mc);
+                frame.pack();
+			});
+			instructionsButton.addActionListener((e) -> {
+				System.out.println("stub for instruction button");
+			});
+            this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+            title.setText("CS56 Maze Game");
+            this.add(title);
+            startButton.setText("Start");
+            this.add(startButton);
+            instructionsButton.setText("Instructions");
+            this.add(instructionsButton);
+		}
+    }*/
 }
