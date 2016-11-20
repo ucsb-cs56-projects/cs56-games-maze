@@ -1,6 +1,10 @@
 package edu.ucsb.cs56.projects.games.cs56_games_maze;
 
 import javax.swing.*;
+import java.awt.image.*;
+import java.io.*;
+import javax.swing.border.EmptyBorder;
+import javax.imageio.*;
 import java.awt.*;
 
 /**
@@ -18,8 +22,13 @@ public class HomeScreen extends JPanel {
     public HomeScreen(String[] args) {
         arguments = args;
 
+        ImageIcon buttonImg = new ImageIcon("button.jpg");
         title = new JLabel();
-        startButton = new JButton();
+
+        startButton = new JButton(buttonImg);
+        startButton.setContentAreaFilled(false);
+        startButton.setBorderPainted(false);
+        startButton.setBorder(new EmptyBorder(20, 20, 50, 25));
         instructionsButton = new JButton();
 
         startButton.addActionListener((e) -> {
@@ -31,14 +40,12 @@ public class HomeScreen extends JPanel {
         instructionsButton.addActionListener((e) -> {
             System.out.println("stub for instruction button");
         });
-        this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         title.setText("CS56 Maze Game");
-        this.add(title);
-        startButton.setText("Start");
-        this.add(startButton);
+        this.setLayout(new BorderLayout());
+        //startButton.setLocation(150, 350);
+        this.add(startButton, BorderLayout.SOUTH);
         instructionsButton.setText("Instructions");
-        this.add(instructionsButton);
-        this.setPreferredSize(new Dimension(500, 300));
+        this.setPreferredSize(new Dimension(480, 480));
     }
 
     public void start() {
@@ -48,6 +55,19 @@ public class HomeScreen extends JPanel {
         frame.add(this, BorderLayout.CENTER);
         frame.pack();
         frame.setVisible(true);
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        BufferedImage img = null;
+        try {
+            img = ImageIO.read(new File("homebackground2.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            //System.out.println("failed. "+ f.listFiles());
+        }
+        g.drawImage(img, 0, 0, 480, 480, null);
     }
 
 }
