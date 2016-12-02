@@ -14,6 +14,16 @@ Before W14:
 After W14:
 * [Javadoc page] (http://www.cs.ucsb.edu/~loganortega/cs56/W14/loganortega/cs56-games-maze/javadoc)
 
+F16 Final Remarks
+* We've added music, arrow key controls, random controls mode, home screen, and bug fixes
+* Most of the logic is still in MazeGui.java.  You may want to refactor this to use a more elegant approach
+* For example, the controls should probably encapsulated in another class
+* In general, there are way too many inner classes.  You may want to make these into actual classes for a more logical organization
+* The MazeGui constructor is *huge*.  All the setup stuff happening there should be moved to another method or class
+* If you're going to edit the key bindings, make sure you know how the ActionMap and stuff work(yes, it looks like the key binding are declared twice.  They're both necessary)
+* There aren't any major bugs that we noticed, but a lot of the buttons in the menu don't do anything
+* General advice: make your changes in very very small increments, testing the program after each change.  You never know when an innocuous-looking change will break everything 
+
 W16 Final Remarks
 * We've added game mdoes and new customization options
 * Game Modes:
