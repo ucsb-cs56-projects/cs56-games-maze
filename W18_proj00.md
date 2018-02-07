@@ -1,6 +1,6 @@
-Benson Chu
-
-Willy Tu
+### Winter 2018
+* Benson Chu
+* Willy Tu
 
 ### Project Description:
 
