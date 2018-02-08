@@ -285,8 +285,9 @@ public class MazeGui implements ActionListener {
         } else if (colorMode == 2) {
             Color c = new Color(238, 201, 0);
             frame.getContentPane().setBackground(c);
-        } else if (colorMode == 3)
+        } else if (colorMode == 3) {
             frame.getContentPane().setBackground(Color.black);
+        }
 
 
         frame.add(mc);
@@ -313,12 +314,12 @@ public class MazeGui implements ActionListener {
         fc.setFileFilter(fileFilter);
     }
 
+    public Sound soundPlayer = new Sound("casiobeat.wav");
 
     /**
      * Stepwise generates and displays maze
      */
     public void run() {
-        Sound soundPlayer = new Sound("casiobeat.wav");
         soundPlayer.loop();
 
 
@@ -461,7 +462,7 @@ public class MazeGui implements ActionListener {
 
 
         Action playerMoveAction = new KeyBoardAction("stub");
-        //settingsDialog.getPanel().writeback();//
+        //settingsDialog.getPanel().writeback();
         run();
     }
 
@@ -526,6 +527,8 @@ public class MazeGui implements ActionListener {
      * Callback for menu choice changes
      */
     public void actionPerformed(ActionEvent e) {
+        int newColorMode = colorMode;
+
         if ("multi_chain_gen".equals(e.getActionCommand())) {
             settings.genType = MazeGui.MULTI_CHAIN_GEN;
         } else if ("alt_step_gen".equals(e.getActionCommand())) {
@@ -621,6 +624,28 @@ public class MazeGui implements ActionListener {
                     ex.printStackTrace();
                 }
             }
+        }
+
+        /*
+            Auto update for the background colors.
+         */
+        if (newColorMode != colorMode) {
+            this.mc.setColorMode(colorMode);
+
+            if (colorMode == 0)
+                frame.getContentPane().setBackground(Color.white);
+            else if (colorMode == 1) {
+                Color c = new Color(0, 191, 255);
+                frame.getContentPane().setBackground(c);
+            } else if (colorMode == 2) {
+                Color c = new Color(238, 201, 0);
+                frame.getContentPane().setBackground(c);
+            } else if (colorMode == 3) {
+                frame.getContentPane().setBackground(Color.black);
+            }
+
+            this.mc.repaint();
+
         }
 
     }
@@ -853,7 +878,10 @@ public class MazeGui implements ActionListener {
                 } else
                     mc.repaint();
 
-                if (grid.isAtFinish(player.getPosition())) wonMaze();
+                if (grid.isAtFinish(player.getPosition())) {
+                    mc.repaint();
+                    wonMaze();
+                }
             } else {
                 System.err.println("NULL player!");
             }

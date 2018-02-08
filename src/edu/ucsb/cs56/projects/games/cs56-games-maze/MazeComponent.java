@@ -210,6 +210,11 @@ public class MazeComponent extends JComponent implements MouseListener {
             g2.fill(new Ellipse2D.Double(this.cellWidth * a.col + (0.4 * this.cellWidth) - 1, this.cellWidth * a.row + (0.4 * this.cellWidth) - 1, 0.4 * this.cellWidth, 0.4 * this.cellWidth));
     }
 
+
+    public void setColorMode(int colorMode){
+        this.colorMode = colorMode;
+    }
+
     /**
      * Sets MazeGrid associated with this MazeComponent
      *
