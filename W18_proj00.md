@@ -62,6 +62,9 @@ the functionality of the program.
 
 ### Current Code
 
+Class are well divided for the most part but the MazeGui.java is really largee. Maybe can be divided up a little bit more. Manny inner class in
+MazeGui.java.
+
 ### Test Coverage
 
 
