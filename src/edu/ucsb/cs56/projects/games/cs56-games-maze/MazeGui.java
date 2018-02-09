@@ -4,8 +4,6 @@ import javax.swing.*;
 import javax.swing.filechooser.*;
 import java.awt.event.*;
 import java.awt.*;
-import java.beans.*;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import java.io.*;
@@ -34,7 +32,7 @@ public class MazeGui implements ActionListener {
 
     private JFrame frame;
     private JMenuBar menuBar;
-    private HomeScreen homeScreen;
+    private edu.ucsb.cs56.projects.games.cs56_games_maze.HomeScreen homeScreen;
     private JMenu menu;
     private JMenu colorMenu;
     private MazeTimerBar timerBar;
@@ -816,59 +814,57 @@ public class MazeGui implements ActionListener {
                     for (int i = 0; i < 4; i++) {
                         directions[i] = oldDirections[(controlKey + i) % 4];
                     }
-                } else {
-                    if (!isPaused) {
-                        switch (this.cmd) {
-                            case "up":
-                                if (!inverse) {
-                                    player.move(directions[0]);
-                                } else {
-                                    player.move(directions[1]);
-                                }
-                                break;
-                            case "down":
-                                if (!inverse) {
-                                    player.move(directions[1]);
-                                } else {
-                                    player.move(directions[0]);
-                                }
-                                break;
-                            case "left":
-                                if (!inverse) {
-                                    player.move(directions[2]);
-                                } else {
-                                    player.move(directions[3]);
-                                }
-                                break;
-                            case "right":
-                                if (!inverse) {
-                                    player.move(directions[3]);
-                                } else {
-                                    player.move(directions[2]);
-                                }
-                                break;
-                        }
-                    } else {
-                        if (this.cmd.equals("pause")) {
-                            pauseArea.setEditable(false);
-                            pauseArea.setFont(font);
-                            //Game is Paused
-                            if (isPaused) {
-                                frame.remove(pauseArea);
-                                frame.add(mc);
-                                timerBar.resumeTimer();
+                }
+                if (!isPaused) {
+                    switch (this.cmd) {
+                        case "up":
+                            if (!inverse) {
+                                player.move(directions[0]);
+                            } else {
+                                player.move(directions[1]);
                             }
-                            //Game is not Paused
-                            else {
-                                timerBar.stopTimer();
-                                frame.remove(mc);
-                                frame.add(pauseArea);
+                            break;
+                        case "down":
+                            if (!inverse) {
+                                player.move(directions[1]);
+                            } else {
+                                player.move(directions[0]);
                             }
-                            frame.repaint();
-                            frame.setVisible(true);
-                            isPaused = !isPaused;
-                            return;
+                            break;
+                        case "left":
+                            if (!inverse) {
+                                player.move(directions[2]);
+                            } else {
+                                player.move(directions[3]);
+                            }
+                            break;
+                        case "right":
+                            if (!inverse) {
+                                player.move(directions[3]);
+                            } else {
+                                player.move(directions[2]);
+                            }
+                            break;
+                    }
+                    if (this.cmd.equals("pause")) {
+                        pauseArea.setEditable(false);
+                        pauseArea.setFont(font);
+                        //Game is Paused
+                        if (isPaused) {
+                            frame.remove(pauseArea);
+                            frame.add(mc);
+                            timerBar.resumeTimer();
                         }
+                        //Game is not Paused
+                        else {
+                            timerBar.stopTimer();
+                            frame.remove(mc);
+                            frame.add(pauseArea);
+                        }
+                        frame.repaint();
+                        frame.setVisible(true);
+                        isPaused = !isPaused;
+                        return;
                     }
                 }
 

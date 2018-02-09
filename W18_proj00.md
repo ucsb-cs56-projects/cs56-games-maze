@@ -40,7 +40,7 @@ where to be found in the readme. All the new features of the program should be l
 the functionality of the program.
 
 ### build.xml
-  The targets all have descriptions and are easy to understand what all the targets does.
+  The targets all have descriptions and are easy to understand what all the targets do.
 	
 ### Current Issues
   There are enough issues to earn 1000 points. The instruction and expectation of the issues are clear and easy to understand.
@@ -62,9 +62,11 @@ the functionality of the program.
 
 ### Current Code
 
-Class are well divided for the most part but the MazeGui.java is really largee. Maybe can be divided up a little bit more. Manny inner class in
-MazeGui.java.
+Current code is well organized and documented. Class names are coherent enough to understand because you can get a feel of what's in the classes. Classes are neatly divided for the most part but the MazeGui.java is really large. Maybe can be divided up a little bit more. Manny inner class in
+MazeGui.java. Easy to read and understand, no current problems with interpreting the classes.
+
 
 ### Test Coverage
+Only has test coverage for the basic functionality of the grid, but no other tests covered for any other features.
 
 
