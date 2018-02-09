@@ -40,7 +40,7 @@ where to be found in the readme. All the new features of the program should be l
 the functionality of the program.
 
 ### build.xml
-  The targets all have descriptions and are easy to understand what all the targets does.
+  The targets all have descriptions and are easy to understand what all the targets do.
 	
 ### Current Issues
   There are enough issues to earn 1000 points. The instruction and expectation of the issues are clear and easy to understand.
@@ -62,10 +62,16 @@ the functionality of the program.
 
 ### Current Code
 
-The code is organized very nicely and the classes are divided so that it is fairly easy to find the any parts of the code.
-Other than MazeGui.java, every class is very concise and easy to understand. The MazeGui,java is the main
-class file where everything is set up.
+The current code is well organized and documented. Class names are coherent enough to understand 
+because you can get a feel of what's in the classes. Each method's name are clear enough
+ to understand it's purpose in the code and functionality. It is obvious how all the classes relate
+to each other just by its name. Classes are neatly divided for the most part, but the MazeGui.java 
+is really large. MazeGui.java is mostly setting up the gui, but other than that all the other classes 
+are clean and easy to understand.
+
 
 ### Test Coverage
+There exist a minimum amount of test coverage only for the basic functionality of the maze such as the grids, 
+player directions, and player movements. However, all the newer features do not have any test coverage for it.
 
 
