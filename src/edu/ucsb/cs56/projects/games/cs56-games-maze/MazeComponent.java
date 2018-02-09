@@ -211,7 +211,7 @@ public class MazeComponent extends JComponent implements MouseListener {
     }
 
 
-    public void setColorMode(int colorMode){
+    public void setColorMode(int colorMode) {
         this.colorMode = colorMode;
     }
 

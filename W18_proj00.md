@@ -62,8 +62,9 @@ the functionality of the program.
 
 ### Current Code
 
-Class are well divided for the most part but the MazeGui.java is really largee. Maybe can be divided up a little bit more. Manny inner class in
-MazeGui.java.
+The code is organized very nicely and the classes are divided so that it is fairly easy to find the any parts of the code.
+Other than MazeGui.java, every class is very concise and easy to understand. The MazeGui,java is the main
+class file where everything is set up.
 
 ### Test Coverage
 
