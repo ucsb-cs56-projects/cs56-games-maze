@@ -63,11 +63,13 @@ the functionality of the program.
 ### Current Code
 
 The current code is well organized and documented. Class names are coherent enough to understand 
-because you can get a feel of what's in the classes. Each method's name are clear enough
- to understand it's purpose in the code and functionality. It is obvious how all the classes relate
-to each other just by its name. Classes are neatly divided for the most part, but the MazeGui.java 
-is really large. MazeGui.java is mostly setting up the gui, but other than that all the other classes 
-are clean and easy to understand.
+because of the naming convention each has. It is obvious how all the classes relate to each other just by looking at 
+each class's name. Each method's name is clear enough to understand the code's purpose and/or functionality. Classes 
+are neatly divided for the most part, but the MazeGui.java is really large. The MazeGui.java is somewhat unclear because 
+it mostly consists of setting up the gui. In the MazeGui.java class, there is a Sound class that involves running music 
+in the game as well as a KeyBoardAction class that handles the keyboard controls for the game. other than that all the 
+other classes are clean and easy to understand.
+
 
 
 ### Test Coverage
