@@ -4,27 +4,31 @@
 
 ### Project Description:
 
-The project is a maze game that provide users with a randomly generated maze to play with. The users 
-can also customize the maze to have a unique way of playing the maze.
+The project is a maze game that provides users with a randomly generated maze to play with. The users can traverse through 
+the maze by either using the WASD keys or the arrow keys on their keyboards. The goal is to reach the end of the maze, 
+indicated by a colored square object located at the bottom right of the entire maze. The users are able to customize the 
+maze via color themes and keyboard modes to have a unique way of playing the game. 
 
 ### Current User Stories:
 
 * As a user, I can save my score for the maze run so that I can compare it to my previous score or to 
 other players.
 
-* As a user, I can check the solution of the maze from the starting so that I know the way to get out of the mze.
+* As a user, I can check the solution of the maze from the start so that I know the way to get out of the maze.
 	
-* As a user, I can load up a saved game so that I can re-watch my or other people's maze run
+* As a user, I can load up a saved game so that I can re-watch my personal run or another person's maze run
 
-* As a user, I can look up the instruction of the game so that I know the control for the maze game.
+* As a user, I can look up the instructions of the game so that I know the controls for the maze game.
 	
 * As a user, I can change the color of the board to other default colors so that it looks better to play on.
+
+* As a user, I can vary the dimensions of the maze in the settings option to either increase or decrease the maze's difficulty.
 	
 ### Software:
 
-  The program runs well with little to no functional bug. The main issues of the program are the user interfaces, 
-but other than that no large issues. The program randomly generates a maze of a given size that can be change in 
-the game setting. User can use either WASD or the arrow keys to control the player  avatar ti reach the the of the 
+  The program runs well with little to no functional bugs. The main issues of the program are the user interfaces, 
+but other than that no large issues. The program randomly generates a maze of a given size that can be changed in 
+the game settings. Users can use either WASD or the arrow keys to control the player's avatar to reach the end of the 
 maze. The game provides a few different ways to play the game such as inverse control, random control, and memory mode.
 	
 ### New User Stories:
@@ -40,7 +44,7 @@ where to be found in the readme. All the new features of the program should be l
 the functionality of the program.
 
 ### build.xml
-  The targets all have descriptions and are easy to understand what all the targets do.
+  The targets all have descriptions that describe what they do and are easy to understand.
 	
 ### Current Issues
   There are enough issues to earn 1000 points. The instruction and expectation of the issues are clear and easy to understand.
@@ -66,14 +70,14 @@ The current code is well organized and documented. Class names are coherent enou
 because of the naming convention each has. It is obvious how all the classes relate to each other just by looking at 
 each class's name. Each method's name is clear enough to understand the code's purpose and/or functionality. Classes 
 are neatly divided for the most part, but the MazeGui.java is really large. The MazeGui.java is somewhat unclear because 
-it mostly consists of setting up the gui. In the MazeGui.java class, there is a Sound class that involves running music 
+it mostly consists of setting up the gui. Within the MazeGui.java class is a Sound class that involves running music 
 in the game as well as a KeyBoardAction class that handles the keyboard controls for the game. other than that all the 
 other classes are clean and easy to understand.
 
 
 
 ### Test Coverage
-There exist a minimum amount of test coverage only for the basic functionality of the maze such as the grids, 
+There exists a minimum amount of test coverage only for the basic functionality of the maze such as the grids, 
 player directions, and player movements. However, all the newer features do not have any test coverage for it.
 
 
