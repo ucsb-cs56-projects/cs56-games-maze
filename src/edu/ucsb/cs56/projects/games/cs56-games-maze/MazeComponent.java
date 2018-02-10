@@ -215,6 +215,10 @@ public class MazeComponent extends JComponent implements MouseListener {
         this.colorMode = colorMode;
     }
 
+    public void setShape(boolean rect){
+        this.rect = rect;
+    }
+
     /**
      * Sets MazeGrid associated with this MazeComponent
      *
