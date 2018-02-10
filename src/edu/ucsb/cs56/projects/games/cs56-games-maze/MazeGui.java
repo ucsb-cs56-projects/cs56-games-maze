@@ -52,6 +52,11 @@ public class MazeGui implements ActionListener {
     private int colorMode = 0;
     private int controlKey;
 
+
+    private boolean isPaused = false;
+    private JTextArea pauseArea;
+
+
     private JFileChooser fc;
     private javax.swing.filechooser.FileFilter fileFilter;
     private MazeSettingsDialog settingsDialog;
@@ -274,10 +279,24 @@ public class MazeGui implements ActionListener {
 
         frame.setJMenuBar(this.menuBar);
 
+        //init settings Dialog
+        settingsDialog = new MazeSettingsDialog(settings, this);
+        settingsDialog.setLocationRelativeTo(frame);
+
+        //init file chooser window
+        fc = new JFileChooser();
+        fileFilter = new FileNameExtensionFilter("MazeGame saves (*.mzgs)", "mzgs");
+        fc.addChoosableFileFilter(fileFilter);
+        fc.setFileFilter(fileFilter);
+
+
+        remapPlayerKeys();
 
         // initialize the MazeGrid, MazeComponent, and MazeGenerator
         this.grid = new MazeGrid(settings.rows, settings.cols);
         this.mc = new MazeComponent(grid, settings.cellWidth, colorMode, rect);
+        mc.setVisible(true);
+
         if (colorMode == 0)
             frame.getContentPane().setBackground(Color.white);
         else if (colorMode == 1) {
@@ -291,6 +310,10 @@ public class MazeGui implements ActionListener {
         }
 
 
+
+        pauseArea = new JTextArea("\n\n\n       GAME PAUSED:\n\n    Press 'P' to Resume");
+
+
         frame.add(mc);
         frame.pack();
         frame.setVisible(true);
@@ -302,19 +325,6 @@ public class MazeGui implements ActionListener {
 
         //set up player keybinds
         this.playerMoveAction = new KeyBoardAction("stub");
-
-
-        remapPlayerKeys(this.playerMoveAction);
-
-        //init settings Dialog
-        settingsDialog = new MazeSettingsDialog(settings, this);
-        settingsDialog.setLocationRelativeTo(frame);
-
-        //init file chooser window
-        fc = new JFileChooser();
-        fileFilter = new FileNameExtensionFilter("MazeGame saves (*.mzgs)", "mzgs");
-        fc.addChoosableFileFilter(fileFilter);
-        fc.setFileFilter(fileFilter);
     }
 
     public Sound soundPlayer = new Sound("casiobeat.wav");
@@ -324,7 +334,6 @@ public class MazeGui implements ActionListener {
      */
     public void run() {
         soundPlayer.loop();
-
 
         // generate the maze in steps if asked (rather than all at once using MazeGenerator.generate())
         // repaint() in between each step to watch it grow
@@ -429,9 +438,8 @@ public class MazeGui implements ActionListener {
     public void newMaze() {
         timerBar.stopTimer();
 
-        if(mc != null){
-            frame.remove(mc);
-        }
+        frame.remove(pauseArea);
+        frame.remove(mc);
 
         this.gameSave = null;
         this.oldSettings = new MazeSettings(settings);
@@ -471,6 +479,7 @@ public class MazeGui implements ActionListener {
 
         this.playerMoveAction = new KeyBoardAction("stub");
         //settingsDialog.getPanel().writeback();
+
         run();
     }
 
@@ -536,7 +545,7 @@ public class MazeGui implements ActionListener {
      * Callback for menu choice changes
      */
     public void actionPerformed(ActionEvent e) {
-        int newColorMode = colorMode;
+        boolean shapeColorChange = false;
 
         if ("multi_chain_gen".equals(e.getActionCommand())) {
             settings.genType = MazeGui.MULTI_CHAIN_GEN;
@@ -565,18 +574,23 @@ public class MazeGui implements ActionListener {
         } else if ("cool_color".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
             colorMode = 1;
+            shapeColorChange = true;
         } else if ("warm_color".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
             colorMode = 2;
+            shapeColorChange = true;
         } else if ("dark_color".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
             colorMode = 3;
+            shapeColorChange = true;
         } else if ("rect_shape".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
             this.rect = true;
+            shapeColorChange = true;
         } else if ("circle_shape".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
             this.rect = false;
+            shapeColorChange = true;
         } else if ("save".equals(e.getActionCommand())) { // user chooses to save mid-game
             timerBar.stopTimer();
             realTime = timerBar.getTimeElapsed(); // records ACTUAL time when save button is pressed
@@ -638,8 +652,9 @@ public class MazeGui implements ActionListener {
         /*
             Auto update for the background colors.
          */
-        if (newColorMode != colorMode) {
+        if (shapeColorChange) {
             this.mc.setColorMode(colorMode);
+            this.mc.setShape(rect);
 
             if (colorMode == 0)
                 frame.getContentPane().setBackground(Color.white);
@@ -748,14 +763,17 @@ public class MazeGui implements ActionListener {
      *
      * @param a Action object to map all keys to
      */
-    private void remapPlayerKeys(Action a) {
+    private void remapPlayerKeys() {
         KeyBoardAction upKBA = new KeyBoardAction("up");
         KeyBoardAction downKBA = new KeyBoardAction("down");
         KeyBoardAction leftKBA = new KeyBoardAction("left");
         KeyBoardAction rightKBA = new KeyBoardAction("right");
         KeyBoardAction pauseKBA = new KeyBoardAction("pause");
+
+        InputMap inputMap = ((JPanel) this.frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionmap = ((JPanel) this.frame.getContentPane()).getActionMap();
+
         if (settings.inverseMode) {
-            InputMap inputMap = ((JPanel) this.frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
             inputMap.put(KeyStroke.getKeyStroke("S"), "player_up");
             inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "player_up");
             inputMap.put(KeyStroke.getKeyStroke("W"), "player_down");
@@ -766,14 +784,12 @@ public class MazeGui implements ActionListener {
             inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "player_right");
             inputMap.put(KeyStroke.getKeyStroke("P"), "pause_game");
             inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "pause_game");
-            ActionMap actionmap = ((JPanel) this.frame.getContentPane()).getActionMap();
             actionmap.put("player_up", downKBA);
             actionmap.put("player_down", upKBA);
             actionmap.put("player_left", rightKBA);
             actionmap.put("player_right", leftKBA);
             actionmap.put("pause_game", pauseKBA);
         } else {
-            InputMap inputMap = ((JPanel) this.frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
             inputMap.put(KeyStroke.getKeyStroke("W"), "player_up");
             inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "player_up");
             inputMap.put(KeyStroke.getKeyStroke("S"), "player_down");
@@ -784,7 +800,6 @@ public class MazeGui implements ActionListener {
             inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "player_right");
             inputMap.put(KeyStroke.getKeyStroke("P"), "pause_game");
             inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "pause_game");
-            ActionMap actionmap = ((JPanel) this.frame.getContentPane()).getActionMap();
             actionmap.put("player_up", upKBA);
             actionmap.put("player_down", downKBA);
             actionmap.put("player_left", leftKBA);
@@ -811,19 +826,15 @@ public class MazeGui implements ActionListener {
             cmd = c;
         }
 
-        public boolean isPaused = false;
         Font font = new Font("Verdana", Font.BOLD, 30);
 
-        /**
-         * Pause Screen
-         */
-        JTextArea pauseArea =
-                new JTextArea("\n\n\n       GAME PAUSED:\n\n    Press 'P' to Resume");
+
 
         public void actionPerformed(ActionEvent e) {
             boolean inverse = settings.inverseMode;
             byte[] directions = {MazeGrid.DIR_UP, MazeGrid.DIR_DOWN, MazeGrid.DIR_LEFT, MazeGrid.DIR_RIGHT};
-            System.out.println("ok");
+
+
             if (this.cmd.equals("pause")) {
 
                 pauseArea.setEditable(false);
@@ -832,26 +843,24 @@ public class MazeGui implements ActionListener {
                 if (isPaused) {
                     soundPlayer.loop();
                     frame.remove(pauseArea);
-                    frame.add(mc);
+                    //frame.add(mc);
                     timerBar.resumeTimer();
                 }
                 else {
                     soundPlayer.stop();
                     timerBar.stopTimer();
-                    frame.remove(mc);
+                    //frame.remove(mc);
                     frame.add(pauseArea);
                 }
+
                 frame.repaint();
                 frame.setVisible(true);
-                if(isPaused){
-                    isPaused = false;
-                }else{
-                    isPaused = true;
-                }
+                isPaused = !isPaused;
                 return;
             }
 
-            if (player != null && !isPaused) {
+            if (player != null) {
+
                 if (settings.randomControls) {
                     byte[] oldDirections = directions.clone();
                     for (int i = 0; i < 4; i++) {
@@ -861,8 +870,6 @@ public class MazeGui implements ActionListener {
                 if (!isPaused) {
                     switch (this.cmd) {
                         case "up":
-                            //soundPlayer.loop();
-
                             if (!inverse) {
                                 player.move(directions[0]);
                             } else {
@@ -870,7 +877,6 @@ public class MazeGui implements ActionListener {
                             }
                             break;
                         case "down":
-                            //soundPlayer.stop();
                             if (!inverse) {
                                 player.move(directions[1]);
                             } else {
