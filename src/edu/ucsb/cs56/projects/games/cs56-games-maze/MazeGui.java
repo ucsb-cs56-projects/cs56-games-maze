@@ -571,6 +571,7 @@ public class MazeGui implements ActionListener {
         } else if ("default_color".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
             colorMode = 0;
+            shapeColorChange = true;
         } else if ("cool_color".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
             colorMode = 1;
