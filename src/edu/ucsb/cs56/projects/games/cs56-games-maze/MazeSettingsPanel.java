@@ -220,17 +220,17 @@ public class MazeSettingsPanel extends JPanel {
         this.settings.startCol = Integer.parseInt(startColField.getText());
 
         // check to ensure the final maze location is within the bounds of the maze
-        if (Integer.parseInt(endRowField.getText()) > this.settings.rows) {
+        //if (Integer.parseInt(endRowField.getText()) > this.settings.rows) {
             this.settings.endRow = (this.settings.rows - 1);
-        } else {
-            this.settings.endRow = Integer.parseInt(endRowField.getText());
-        }
+        //} else {
+        //    this.settings.endRow = Integer.parseInt(endRowField.getText());
+        //}
 
-        if (Integer.parseInt(endColField.getText()) > this.settings.cols) {
+        //if (Integer.parseInt(endColField.getText()) > this.settings.cols) {
             this.settings.endCol = (this.settings.cols - 1);
-        } else {
-            this.settings.endCol = Integer.parseInt(endColField.getText());
-        }
+        //} else {
+        //    this.settings.endCol = Integer.parseInt(endColField.getText());
+        //}
 
         this.settings.progRevealRadius = Integer.parseInt(progRevealRadiusField.getText());
         this.settings.progDraw = progDrawCB.isSelected();
