@@ -6,9 +6,10 @@ import java.awt.event.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-import java.io.*;
+import javax.imageio.*;
+import java.awt.image.*;
 
-import java.io.File;
+import java.io.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import javax.sound.sampled.AudioInputStream;
@@ -313,15 +314,53 @@ public class MazeGui implements ActionListener {
 
 
         pauseArea = new JTextArea("\n\n\n       GAME PAUSED:\n\n    Press 'P' to Resume");
+        pauseArea.setEditable(false);
+        pauseArea.setFont(new Font("Verdana", Font.BOLD, 30));
 
         pause = new JPanel(){
             public void paintComponent(Graphics g){
+                int max = 0;
+                int min = 0;
+
                 super.paintComponent(g);
 
-                g.setColor(Color.red);
-                g.fillOval(0, 0, 100,100);
+
+                if(settings.rows > settings.cols){
+                    max = settings.cellWidth*settings.rows;
+                    min = settings.cellWidth*settings.cols;
+                }else{
+                    max = settings.cellWidth*settings.cols;
+                    min = settings.cellWidth*settings.rows;
+                }
+
+                g.setColor(Color.BLACK);
+                g.fillRect(0, 0, max,max);
+
+
+                BufferedImage img = null;
+                try {
+                    img = ImageIO.read(new File("PauseScreen.jpg"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    //System.out.println("failed. "+ f.listFiles());
+                }
+
+                if(max == min){
+                    g.drawImage(img, 0, 0, max, max, null);
+                }else{
+                    if(settings.rows > settings.cols){
+                        g.drawImage(img, 0, (max - min) / 2, min, min, null);
+                    }else{
+                        g.drawImage(img, (max - min) / 2, 0, min, min, null);
+                    }
+
+                }
+
             }
         };
+
+        pause.setLayout(new BoxLayout(pause, BoxLayout.PAGE_AXIS));
+        //pause.add(fc);
 
 
         frame.add(mc);
@@ -840,8 +879,6 @@ public class MazeGui implements ActionListener {
             cmd = c;
         }
 
-        Font font = new Font("Verdana", Font.BOLD, 30);
-
         public void actionPerformed(ActionEvent e) {
             boolean inverse = settings.inverseMode;
             byte[] directions = {MazeGrid.DIR_UP, MazeGrid.DIR_DOWN, MazeGrid.DIR_LEFT, MazeGrid.DIR_RIGHT};
@@ -849,8 +886,7 @@ public class MazeGui implements ActionListener {
 
             if (this.cmd.equals("pause")) {
 
-                pauseArea.setEditable(false);
-                pauseArea.setFont(font);
+
 
                 if (isPaused) {
                     soundPlayer.loop();
