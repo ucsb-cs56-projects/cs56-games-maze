@@ -55,7 +55,6 @@ public class MazeGui implements ActionListener {
 
 
     private boolean isPaused = false;
-    private JTextArea pauseArea;
 
     private JPanel pause;
 
@@ -63,6 +62,8 @@ public class MazeGui implements ActionListener {
     private JFileChooser fc;
     private javax.swing.filechooser.FileFilter fileFilter;
     private MazeSettingsDialog settingsDialog;
+
+    public static final int MIN_WIDTH = 400;
 
     public static final int MULTI_CHAIN_GEN = 1;
     public static final int ALT_STEP_GEN = 2;
@@ -173,6 +174,7 @@ public class MazeGui implements ActionListener {
 
         // initialize the JFrame
         this.frame = new JFrame();
+        frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTitle("Maze Game");
 
@@ -312,11 +314,6 @@ public class MazeGui implements ActionListener {
             frame.getContentPane().setBackground(Color.black);
         }
 
-
-        pauseArea = new JTextArea("\n\n\n       GAME PAUSED:\n\n    Press 'P' to Resume");
-        pauseArea.setEditable(false);
-        pauseArea.setFont(new Font("Verdana", Font.BOLD, 30));
-
         pause = new JPanel(){
             public void paintComponent(Graphics g){
                 int max = 0;
@@ -324,14 +321,24 @@ public class MazeGui implements ActionListener {
 
                 super.paintComponent(g);
 
-
-                if(settings.rows > settings.cols){
-                    max = settings.cellWidth*settings.rows;
-                    min = settings.cellWidth*settings.cols;
+                if(settings.cols*settings.cellWidth < MIN_WIDTH){
+                    if(settings.cols > settings.rows){
+                        max = MIN_WIDTH;
+                        min = settings.rows*(MIN_WIDTH/settings.cols);
+                    }else{
+                        max = settings.rows*(MIN_WIDTH/settings.cols);
+                        min = MIN_WIDTH;
+                    }
                 }else{
-                    max = settings.cellWidth*settings.cols;
-                    min = settings.cellWidth*settings.rows;
+                    if(settings.rows > settings.cols){
+                        max = settings.cellWidth*settings.rows;
+                        min = settings.cellWidth*settings.cols;
+                    }else{
+                        max = settings.cellWidth*settings.cols;
+                        min = settings.cellWidth*settings.rows;
+                    }
                 }
+
 
                 g.setColor(Color.BLACK);
                 g.fillRect(0, 0, max,max);
@@ -365,6 +372,7 @@ public class MazeGui implements ActionListener {
 
         frame.add(mc);
         frame.pack();
+
         frame.setVisible(true);
         this.mg = new MultipleChainGenerator(grid, settings.genChainLength, settings.genChainLengthFlux);
 
@@ -487,7 +495,6 @@ public class MazeGui implements ActionListener {
     public void newMaze() {
         timerBar.stopTimer();
 
-        frame.remove(pauseArea);
         frame.remove(pause);
         isPaused = false;
         frame.remove(mc);
@@ -496,7 +503,13 @@ public class MazeGui implements ActionListener {
         this.oldSettings = new MazeSettings(settings);
         //settingsDialog.getPanel().writeback();//
         this.grid = new MazeGrid(settings.rows, settings.cols);
-        this.mc = new MazeComponent(grid, settings.cellWidth, colorMode, rect);
+
+        if(settings.cols*settings.cellWidth >= MIN_WIDTH){
+            this.mc = new MazeComponent(grid, settings.cellWidth, colorMode, rect);
+        }else{
+            this.mc = new MazeComponent(grid, MIN_WIDTH/settings.cols, colorMode, rect);
+        }
+
         mc.setVisible(true);
 
         if (colorMode == 0)
@@ -884,13 +897,14 @@ public class MazeGui implements ActionListener {
             byte[] directions = {MazeGrid.DIR_UP, MazeGrid.DIR_DOWN, MazeGrid.DIR_LEFT, MazeGrid.DIR_RIGHT};
 
 
+
+
             if (this.cmd.equals("pause")) {
 
 
 
                 if (isPaused) {
                     soundPlayer.loop();
-                    frame.remove(pauseArea);
                     frame.remove(pause);
                     //frame.add(mc);
                     timerBar.resumeTimer();
@@ -900,7 +914,6 @@ public class MazeGui implements ActionListener {
                     soundPlayer.stop();
                     timerBar.stopTimer();
                     //frame.remove(mc);
-                    frame.add(pauseArea);
                     frame.add(pause);
 
                     pause.repaint();
