@@ -184,7 +184,6 @@ public class MazeSettingsPanel extends JPanel {
         this.add(label);
         this.add(progDrawSpeedField);
 
-
         okButton = new JButton("OK");
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -201,6 +200,7 @@ public class MazeSettingsPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 JDialog parentDialog = (JDialog) (getRootPane().getParent());
                 parentDialog.setVisible(false);
+                gm.StartSong();
             }
         });
         this.add(cancelButton);
