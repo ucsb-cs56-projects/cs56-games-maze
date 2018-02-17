@@ -56,6 +56,8 @@ public class MazeGui implements ActionListener {
     private boolean isPaused = false;
     private JTextArea pauseArea;
 
+    private JPanel pause;
+
 
     private JFileChooser fc;
     private javax.swing.filechooser.FileFilter fileFilter;
@@ -310,8 +312,16 @@ public class MazeGui implements ActionListener {
         }
 
 
-
         pauseArea = new JTextArea("\n\n\n       GAME PAUSED:\n\n    Press 'P' to Resume");
+
+        pause = new JPanel(){
+            public void paintComponent(Graphics g){
+                super.paintComponent(g);
+
+                g.setColor(Color.red);
+                g.fillOval(0, 0, 100,100);
+            }
+        };
 
 
         frame.add(mc);
@@ -439,6 +449,8 @@ public class MazeGui implements ActionListener {
         timerBar.stopTimer();
 
         frame.remove(pauseArea);
+        frame.remove(pause);
+        isPaused = false;
         frame.remove(mc);
 
         this.gameSave = null;
@@ -809,6 +821,7 @@ public class MazeGui implements ActionListener {
         }
     }
 
+
     /**
      * Action object that responds to player move keyboard inputs
      */
@@ -829,8 +842,6 @@ public class MazeGui implements ActionListener {
 
         Font font = new Font("Verdana", Font.BOLD, 30);
 
-
-
         public void actionPerformed(ActionEvent e) {
             boolean inverse = settings.inverseMode;
             byte[] directions = {MazeGrid.DIR_UP, MazeGrid.DIR_DOWN, MazeGrid.DIR_LEFT, MazeGrid.DIR_RIGHT};
@@ -844,17 +855,22 @@ public class MazeGui implements ActionListener {
                 if (isPaused) {
                     soundPlayer.loop();
                     frame.remove(pauseArea);
+                    frame.remove(pause);
                     //frame.add(mc);
                     timerBar.resumeTimer();
+                    frame.repaint();
                 }
                 else {
                     soundPlayer.stop();
                     timerBar.stopTimer();
                     //frame.remove(mc);
                     frame.add(pauseArea);
+                    frame.add(pause);
+
+                    pause.repaint();
                 }
 
-                frame.repaint();
+
                 frame.setVisible(true);
                 isPaused = !isPaused;
                 return;
@@ -899,19 +915,19 @@ public class MazeGui implements ActionListener {
                             }
                             break;
                     }
-                }
 
-                if (settings.memoryMode) {
-                    if (player.getNumMoves() % 5 == 0) {
+                    if (settings.memoryMode) {
+                        if (player.getNumMoves() % 5 == 0) {
+                            mc.repaint();
+                        }
+                    } else {
                         mc.repaint();
                     }
-                } else {
-                    mc.repaint();
-                }
 
-                if (grid.isAtFinish(player.getPosition())) {
-                    mc.repaint();
-                    wonMaze();
+                    if (grid.isAtFinish(player.getPosition())) {
+                        mc.repaint();
+                        wonMaze();
+                    }
                 }
             } else {
                 System.err.println("NULL player!");
