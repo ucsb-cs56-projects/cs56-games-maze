@@ -10,6 +10,7 @@
 * Update Readme.md
 * Inverse mode + random control
     * Don't allow both to be on at the on at the same time.
+* Saved maze does not show up as .mzgs files.
 
  
  
