@@ -27,7 +27,7 @@ public class MazeSettingsPanel extends JPanel {
     private JTextField stepGenDistanceField;
     private JTextField rowsField;
     private JTextField colsField;
-    private JTextField cellWidthField;
+ //   private JTextField cellWidthField;
     private JTextField startRowField;
     private JTextField startColField;
     private JTextField endRowField;
@@ -152,14 +152,14 @@ public class MazeSettingsPanel extends JPanel {
         this.add(endColField);
 
         label = new JLabel("Cell Width");
-
+/*
         cellWidthField = new JTextField(5);
         label.setToolTipText("Width of a single cell in pixels");
         doc = (PlainDocument) cellWidthField.getDocument();
         doc.setDocumentFilter(intDocumentFilter);
         this.add(label);
         this.add(cellWidthField);
-
+*/
         label = new JLabel("Progressive Reveal Radius");
 
         progRevealRadiusField = new JTextField(5);
@@ -215,7 +215,7 @@ public class MazeSettingsPanel extends JPanel {
         this.settings.stepGenDistance = Integer.parseInt(stepGenDistanceField.getText());
         this.settings.rows = Integer.parseInt(rowsField.getText());
         this.settings.cols = Integer.parseInt(colsField.getText());
-        this.settings.cellWidth = Integer.parseInt(cellWidthField.getText());
+        //this.settings.cellWidth = Integer.parseInt(cellWidthField.getText());
         this.settings.startRow = Integer.parseInt(startRowField.getText());
         this.settings.startCol = Integer.parseInt(startColField.getText());
 
@@ -246,7 +246,7 @@ public class MazeSettingsPanel extends JPanel {
         stepGenDistanceField.setText(String.valueOf(settings.stepGenDistance));
         rowsField.setText(String.valueOf(settings.rows));
         colsField.setText(String.valueOf(settings.cols));
-        cellWidthField.setText(String.valueOf(settings.cellWidth));
+        //cellWidthField.setText(String.valueOf(settings.cellWidth));
         startRowField.setText(String.valueOf(settings.startRow));
         startColField.setText(String.valueOf(settings.startCol));
         endRowField.setText(String.valueOf(settings.endRow));
