@@ -55,7 +55,7 @@ public class MazeGui implements ActionListener {
 
 
     private boolean isPaused = false;
-
+    private boolean gameStart;
     private JPanel pause;
 
 
@@ -366,10 +366,6 @@ public class MazeGui implements ActionListener {
             }
         };
 
-        pause.setLayout(new BoxLayout(pause, BoxLayout.PAGE_AXIS));
-        //pause.add(fc);
-
-
         frame.add(mc);
         frame.pack();
 
@@ -409,6 +405,7 @@ public class MazeGui implements ActionListener {
                         //done drawing
                         ((Timer) e.getSource()).stop();
                         timerBar.startTimer();
+                        gameStart = true;
                         grid.markStartFinish(new Cell(settings.startRow, settings.startCol),
                                 new Cell(settings.endRow, settings.endCol));
                         if (settings.progReveal) { // if the user chooses to enable Progressive Reveal
@@ -493,6 +490,8 @@ public class MazeGui implements ActionListener {
      * Creates new maze with current options, then displays and restarts game
      */
     public void newMaze() {
+        gameStart = false;
+
         timerBar.stopTimer();
 
         frame.remove(pause);
@@ -896,36 +895,31 @@ public class MazeGui implements ActionListener {
             boolean inverse = settings.inverseMode;
             byte[] directions = {MazeGrid.DIR_UP, MazeGrid.DIR_DOWN, MazeGrid.DIR_LEFT, MazeGrid.DIR_RIGHT};
 
+            if (player != null && gameStart) {
+
+                if (this.cmd.equals("pause")) {
+                    if (isPaused) {
+                        soundPlayer.loop();
+                        frame.remove(pause);
+                        //frame.add(mc);
+                        timerBar.resumeTimer();
+                        frame.repaint();
+                    }
+                    else {
+                        soundPlayer.stop();
+                        timerBar.stopTimer();
+                        //frame.remove(mc);
+                        frame.add(pause);
+
+                        pause.repaint();
+                    }
 
 
-
-            if (this.cmd.equals("pause")) {
-
-
-
-                if (isPaused) {
-                    soundPlayer.loop();
-                    frame.remove(pause);
-                    //frame.add(mc);
-                    timerBar.resumeTimer();
-                    frame.repaint();
+                    frame.setVisible(true);
+                    isPaused = !isPaused;
+                    return;
                 }
-                else {
-                    soundPlayer.stop();
-                    timerBar.stopTimer();
-                    //frame.remove(mc);
-                    frame.add(pause);
 
-                    pause.repaint();
-                }
-
-
-                frame.setVisible(true);
-                isPaused = !isPaused;
-                return;
-            }
-
-            if (player != null) {
 
                 if (settings.randomControls) {
                     byte[] oldDirections = directions.clone();
@@ -933,6 +927,7 @@ public class MazeGui implements ActionListener {
                         directions[i] = oldDirections[(controlKey + i) % 4];
                     }
                 }
+
                 if (!isPaused) {
                     switch (this.cmd) {
                         case "up":
@@ -981,6 +976,7 @@ public class MazeGui implements ActionListener {
             } else {
                 System.err.println("NULL player!");
             }
+
         }
     }
 
