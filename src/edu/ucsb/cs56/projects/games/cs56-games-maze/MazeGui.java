@@ -287,6 +287,13 @@ public class MazeGui implements ActionListener {
         //init settings Dialog
         settingsDialog = new MazeSettingsDialog(settings, this);
         settingsDialog.setLocationRelativeTo(frame);
+        settingsDialog.addWindowListener(new WindowAdapter()
+        {
+            public void windowClosing(WindowEvent e)
+            {
+                StartSong();
+            }
+        });
 
         //init file chooser window
         fc = new JFileChooser();
@@ -381,6 +388,13 @@ public class MazeGui implements ActionListener {
     }
 
     public Sound soundPlayer = new Sound("casiobeat.wav");
+
+    public void StartSong(){
+        if(!isPaused){
+            soundPlayer.loop();
+            timerBar.resumeTimer();
+        }
+    }
 
     /**
      * Stepwise generates and displays maze
@@ -559,11 +573,20 @@ public class MazeGui implements ActionListener {
             newMaze();
         } else { // restore the settings of an old game, instead with a new player and
             // 0 elapsed time
+            gameStart = false;
+
+            frame.remove(pause);
+            isPaused = false;
             timerBar.stopTimer();
             frame.remove(mc);
             this.settings = game.getSettings();
             this.grid = game.getGrid();
-            this.mc = new MazeComponent(grid, settings.cellWidth, colorMode, rect);
+
+            if(settings.cols*settings.cellWidth >= MIN_WIDTH){
+                this.mc = new MazeComponent(grid, settings.cellWidth, colorMode, rect);
+            }else {
+                this.mc = new MazeComponent(grid, MIN_WIDTH / settings.cols, colorMode, rect);
+            }
             if (colorMode == 0)
                 frame.getContentPane().setBackground(Color.white);
             else if (colorMode == 1) {
@@ -617,6 +640,8 @@ public class MazeGui implements ActionListener {
         } else if ("new_step_gen".equals(e.getActionCommand())) {
             settings.genType = MazeGui.NEW_STEP_GEN;
         } else if ("settings".equals(e.getActionCommand())) {
+            soundPlayer.stop();
+            timerBar.stopTimer();
             settingsDialog.setVisible(true);
         } else if ("prog_reveal".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
@@ -656,6 +681,7 @@ public class MazeGui implements ActionListener {
             this.rect = false;
             shapeColorChange = true;
         } else if ("save".equals(e.getActionCommand())) { // user chooses to save mid-game
+            soundPlayer.stop();
             timerBar.stopTimer();
             realTime = timerBar.getTimeElapsed(); // records ACTUAL time when save button is pressed
             //prompt user and write to file
@@ -691,7 +717,15 @@ public class MazeGui implements ActionListener {
                 JOptionPane.showMessageDialog(frame, "To start new game press OK then New.",
                         "Maze Saved", JOptionPane.INFORMATION_MESSAGE);
             }
+
+            if(!isPaused){
+                timerBar.resumeTimer();
+                soundPlayer.loop();
+            }
         } else if ("load".equals(e.getActionCommand())) { // user selects to load a game
+            soundPlayer.stop();
+            timerBar.stopTimer();
+
             int returnVal = fc.showOpenDialog(this.frame);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
@@ -710,6 +744,11 @@ public class MazeGui implements ActionListener {
                     System.err.println("Invalid file specified.");
                     ex.printStackTrace();
                 }
+            }
+
+            if(!isPaused){
+                timerBar.resumeTimer();
+                soundPlayer.loop();
             }
         }
 
@@ -901,16 +940,13 @@ public class MazeGui implements ActionListener {
                     if (isPaused) {
                         soundPlayer.loop();
                         frame.remove(pause);
-                        //frame.add(mc);
                         timerBar.resumeTimer();
                         frame.repaint();
                     }
                     else {
                         soundPlayer.stop();
                         timerBar.stopTimer();
-                        //frame.remove(mc);
                         frame.add(pause);
-
                         pause.repaint();
                     }
 
