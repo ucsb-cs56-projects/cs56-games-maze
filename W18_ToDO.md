@@ -9,7 +9,7 @@
 * Update Readme.md
 * Inverse mode + random control
     * Don't allow both to be on at the on at the same time.
-* Saved maze does not show up as .mzgs files.
+* After loading a new maze game from file, the maze size cannot be changed anymore.
 
  
  
@@ -32,3 +32,4 @@
     * Music also doesn't stop while the game is paused.
 * Compare Settings
     * Currently, even when nothing is changed in the setting and "Ok" is pressed a new game will be made.
+* Saved maze does not show up as .mzgs files.
