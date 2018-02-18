@@ -441,6 +441,7 @@ public class MazeGui implements ActionListener {
         } else { //quick draw, the user chooses not to watch the drawing of the maze
             mg.generate();
             timerBar.startTimer();
+            gameStart = true;
             grid.markStartFinish(new Cell(settings.startRow, settings.startCol), new Cell(settings.endRow, settings.endCol));
             if (settings.progReveal) { // if the user chooses to enable Progressive Reveal
                 grid.setProgReveal(player, settings.progRevealRadius);
@@ -454,11 +455,12 @@ public class MazeGui implements ActionListener {
         }
     }
 
-    /**
+   /* /**
      * An alternative to the no-arg run() method that deals with
      * the case of using newGame(game) where game had progressive
      * reveal enabled.
      */
+    /*
     public void run(boolean progOn) {
         // generate the maze in steps if asked (rather than all at once using MazeGenerator.generate())
         // repaint() in between each step to watch it grow
@@ -476,9 +478,17 @@ public class MazeGui implements ActionListener {
                         //done drawing
                         ((Timer) e.getSource()).stop();
                         timerBar.startTimer();
+                        gameStart = true;
                         grid.markStartFinish(new Cell(settings.startRow, settings.startCol), new Cell(settings.endRow, settings.endCol));
+
                         if (settings.progReveal) {
-                            if (gameSave != null) gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
+                            grid.setProgReveal(player, settings.progRevealRadius);
+                            if (gameSave != null) {
+                                gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
+                            } else {
+                                grid.updatePlayerPosition();
+                                mc.repaint();
+                            }
                         } else {
                             grid.updatePlayerPosition();
                             mc.repaint();
@@ -490,16 +500,20 @@ public class MazeGui implements ActionListener {
         } else { //quick draw
             mg.generate();
             timerBar.startTimer();
+            gameStart = true;
             grid.markStartFinish(new Cell(settings.startRow, settings.startCol), new Cell(settings.endRow, settings.endCol));
             if (settings.progReveal) {
-                if (gameSave != null) gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
+                grid.setProgReveal(player, settings.progRevealRadius);
+                if (gameSave != null) {
+                    gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
+                }
             } else {
                 grid.updatePlayerPosition();
                 mc.repaint();
             }
         }
     }
-
+*/
     /**
      * Creates new maze with current options, then displays and restarts game
      */
@@ -579,6 +593,9 @@ public class MazeGui implements ActionListener {
             timerBar.stopTimer();
             frame.remove(mc);
             this.settings = game.getSettings();
+
+            this.settingsDialog.loadMazeSettings(this.settings);
+            this.oldSettings = new MazeSettings(settings);
             this.grid = game.getGrid();
 
             if(settings.cols*settings.cellWidth >= MIN_WIDTH){
@@ -596,7 +613,7 @@ public class MazeGui implements ActionListener {
                 frame.getContentPane().setBackground(c);
             } else if (colorMode == 3)
                 frame.getContentPane().setBackground(Color.black);
-            timerBar.setTimeElapsed(game.getTimeElapsed());
+            //timerBar.setTimeElapsed(game.getTimeElapsed());
             mc.setVisible(true);
             frame.add(mc);
             frame.pack();
@@ -605,8 +622,8 @@ public class MazeGui implements ActionListener {
             if (game.hasHighScores()) {
                 JOptionPane.showMessageDialog(this.frame, gameSave.getAllScoresString() + "Press OK to begin!");
             }
-            if (settings.progReveal) run(true);
-            else run();
+
+            run();
         }
     }
 
