@@ -4,8 +4,7 @@
 *  Musics Options
     * also allow user to change music with a new music tool bar.
     * pause and start music.
-* Compare Settings
-    * Currently, even when nothing is changed in the setting and "Ok" is pressed a new game will be made.
+
 * Update Instruction
 * Update Readme.md
 * Inverse mode + random control
@@ -31,3 +30,5 @@
 * New Pause Screen (Picture maybe)
 * Music never stops and overlaps with new game.
     * Music also doesn't stop while the game is paused.
+* Compare Settings
+    * Currently, even when nothing is changed in the setting and "Ok" is pressed a new game will be made.
