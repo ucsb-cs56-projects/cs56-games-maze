@@ -277,4 +277,10 @@ public class MazeSettingsPanel extends JPanel {
     public String getColumns() {
         return colsField.getText();
     }
+
+    public void loadMazeSetting(MazeSettings settings){
+        this.settings = settings;
+
+        updateFieldValues();
+    }
 }
