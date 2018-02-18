@@ -67,7 +67,7 @@ public class MazeSettings implements Serializable {
         this.stepGenDistance = other.stepGenDistance;
         this.rows = other.rows;
         this.cols = other.cols;
-        this.cellWidth = other.cellWidth;
+        //this.cellWidth = other.cellWidth;
         this.startRow = other.startRow;
         this.startCol = other.startCol;
         this.endRow = other.endRow;
@@ -80,5 +80,30 @@ public class MazeSettings implements Serializable {
         this.progRevealRadius = other.progRevealRadius;
         this.progDraw = other.progDraw;
         this.progDrawSpeed = other.progDrawSpeed;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        MazeSettings s = (MazeSettings) o;
+
+        if (this.genChainLength == s.genChainLength &&
+                this.genChainLengthFlux == s.genChainLengthFlux &&
+                this.stepGenDistance == s.stepGenDistance &&
+                this.rows == s.rows &&
+                this.cols == s.cols &&
+                this.startRow == s.startRow &&
+                this.startCol == s.startCol &&
+                this.endRow == s.endRow &&
+                this.endCol == s.endCol) {
+            return true;
+        }
+
+        return false;
+
     }
 }
