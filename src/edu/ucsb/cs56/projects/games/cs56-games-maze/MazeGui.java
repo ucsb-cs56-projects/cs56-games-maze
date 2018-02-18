@@ -574,7 +574,6 @@ public class MazeGui implements ActionListener {
         } else { // restore the settings of an old game, instead with a new player and
             // 0 elapsed time
             gameStart = false;
-
             frame.remove(pause);
             isPaused = false;
             timerBar.stopTimer();
@@ -803,7 +802,13 @@ public class MazeGui implements ActionListener {
             //prompt user and write to file
             int returnVal = fc.showSaveDialog(this.frame);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File file = fc.getSelectedFile();
+                File file;
+
+                if (fc.getSelectedFile().toString().length() >= 5 && fc.getSelectedFile().toString().substring(fc.getSelectedFile().toString().length() - 5).equals(".mzgs"))
+                    file = fc.getSelectedFile();
+                else
+                    file = new File(fc.getSelectedFile() + ".mzgs");
+
                 FileOutputStream fout;
                 ObjectOutputStream oout;
 
