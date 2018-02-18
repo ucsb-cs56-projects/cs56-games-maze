@@ -9,7 +9,6 @@
 * Update Readme.md
 * Inverse mode + random control
     * Don't allow both to be on at the on at the same time.
-* After loading a new maze game from file, the maze size cannot be changed anymore.
 
  
  
@@ -18,6 +17,8 @@
 * Hardcode start and finish location
     * Can make the end location of the maze in the setting optional.
 * The Maze overlap with the the first pause screen when a new game is created via setting changed.
+* The timer also doesn't stop when pause or in any of the setting screens after loading a maze game.
+    * The timer does stop internally. 
     
 ## Completed Issues
 *  Arrow Keys in Inverse Mode
@@ -33,3 +34,4 @@
 * Compare Settings
     * Currently, even when nothing is changed in the setting and "Ok" is pressed a new game will be made.
 * Saved maze does not show up as .mzgs files.
+* After loading a new maze game from file, the maze size cannot be changed anymore.
