@@ -20,6 +20,7 @@ public class MazeSettingsPanel extends JPanel {
 
     public GridLayout layout;
     public MazeSettings settings;
+    private MazeSettings oldSettings;
     public MazeGui gm;
 
     private JTextField genChainLengthField;
@@ -190,7 +191,12 @@ public class MazeSettingsPanel extends JPanel {
                 writeback();
                 JDialog parentDialog = (JDialog) (getRootPane().getParent());
                 parentDialog.setVisible(false);
-                gm.newMaze();
+
+                if(!settings.equals(oldSettings)){
+                    gm.newMaze();
+                }else{
+                    gm.StartSong();
+                }
             }
         });
         this.add(okButton);
@@ -206,10 +212,13 @@ public class MazeSettingsPanel extends JPanel {
         this.add(cancelButton);
     }
 
+
     /**
      * writes changes in UI elements back to settings file
      */
     public void writeback() {
+        oldSettings = new MazeSettings(settings);
+
         this.settings.genChainLength = Integer.parseInt(genChainLengthField.getText());
         this.settings.genChainLengthFlux = Integer.parseInt(genChainLengthFluxField.getText());
         this.settings.stepGenDistance = Integer.parseInt(stepGenDistanceField.getText());
