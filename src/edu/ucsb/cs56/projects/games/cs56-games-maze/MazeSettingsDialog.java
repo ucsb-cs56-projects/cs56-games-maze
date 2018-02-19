@@ -37,4 +37,8 @@ public class MazeSettingsDialog extends JDialog {
         return panel;
     }
 
+    public void loadMazeSettings(MazeSettings settings){
+        panel.loadMazeSetting(settings);
+    }
+
 }

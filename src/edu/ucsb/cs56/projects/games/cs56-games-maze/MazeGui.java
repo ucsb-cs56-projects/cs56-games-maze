@@ -6,9 +6,10 @@ import java.awt.event.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-import java.io.*;
+import javax.imageio.*;
+import java.awt.image.*;
 
-import java.io.File;
+import java.io.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import javax.sound.sampled.AudioInputStream;
@@ -54,12 +55,15 @@ public class MazeGui implements ActionListener {
 
 
     private boolean isPaused = false;
-    private JTextArea pauseArea;
+    private boolean gameStart;
+    private JPanel pause;
 
 
     private JFileChooser fc;
     private javax.swing.filechooser.FileFilter fileFilter;
     private MazeSettingsDialog settingsDialog;
+
+    public static final int MIN_WIDTH = 400;
 
     public static final int MULTI_CHAIN_GEN = 1;
     public static final int ALT_STEP_GEN = 2;
@@ -170,6 +174,7 @@ public class MazeGui implements ActionListener {
 
         // initialize the JFrame
         this.frame = new JFrame();
+        frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTitle("Maze Game");
 
@@ -282,6 +287,11 @@ public class MazeGui implements ActionListener {
         //init settings Dialog
         settingsDialog = new MazeSettingsDialog(settings, this);
         settingsDialog.setLocationRelativeTo(frame);
+        settingsDialog.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                resumeGame(false);
+            }
+        });
 
         //init file chooser window
         fc = new JFileChooser();
@@ -309,13 +319,59 @@ public class MazeGui implements ActionListener {
             frame.getContentPane().setBackground(Color.black);
         }
 
+        pause = new JPanel() {
+            public void paintComponent(Graphics g) {
+                int max = 0;
+                int min = 0;
+
+                super.paintComponent(g);
+
+                if (settings.cols * settings.cellWidth < MIN_WIDTH) {
+                    if (settings.cols > settings.rows) {
+                        max = MIN_WIDTH;
+                        min = settings.rows * (MIN_WIDTH / settings.cols);
+                    } else {
+                        max = settings.rows * (MIN_WIDTH / settings.cols);
+                        min = MIN_WIDTH;
+                    }
+                } else {
+                    if (settings.rows > settings.cols) {
+                        max = settings.cellWidth * settings.rows;
+                        min = settings.cellWidth * settings.cols;
+                    } else {
+                        max = settings.cellWidth * settings.cols;
+                        min = settings.cellWidth * settings.rows;
+                    }
+                }
 
 
-        pauseArea = new JTextArea("\n\n\n       GAME PAUSED:\n\n    Press 'P' to Resume");
+                g.setColor(new Color(3,7,6));
+                g.fillRect(0, 0, max, max);
+
+
+                BufferedImage img = null;
+                try {
+                    img = ImageIO.read(new File("PauseScreen.jpg"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                if (max == min) {
+                    g.drawImage(img, 0, 0, max, max, null);
+                } else {
+                    if (settings.rows > settings.cols) {
+                        g.drawImage(img, 0, (max - min) / 2, min, min, null);
+                    } else {
+                        g.drawImage(img, (max - min) / 2, 0, min, min, null);
+                    }
+                }
+            }
+        };
 
 
         frame.add(mc);
         frame.pack();
+
         frame.setVisible(true);
         this.mg = new MultipleChainGenerator(grid, settings.genChainLength, settings.genChainLengthFlux);
 
@@ -329,6 +385,19 @@ public class MazeGui implements ActionListener {
 
     public Sound soundPlayer = new Sound("casiobeat.wav");
 
+    public void resumeGame(boolean priority) {
+        gameStart = true;
+
+        if (!isPaused) {
+            soundPlayer.loop();
+            timerBar.resumeTimer();
+        } else if (priority) {
+            soundPlayer.loop();
+            frame.remove(pause);
+            timerBar.resumeTimer();
+            frame.repaint();
+        }
+    }
     /**
      * Stepwise generates and displays maze
      */
@@ -352,6 +421,7 @@ public class MazeGui implements ActionListener {
                         //done drawing
                         ((Timer) e.getSource()).stop();
                         timerBar.startTimer();
+                        gameStart = true;
                         grid.markStartFinish(new Cell(settings.startRow, settings.startCol),
                                 new Cell(settings.endRow, settings.endCol));
                         if (settings.progReveal) { // if the user chooses to enable Progressive Reveal
@@ -373,6 +443,7 @@ public class MazeGui implements ActionListener {
         } else { //quick draw, the user chooses not to watch the drawing of the maze
             mg.generate();
             timerBar.startTimer();
+            gameStart = true;
             grid.markStartFinish(new Cell(settings.startRow, settings.startCol), new Cell(settings.endRow, settings.endCol));
             if (settings.progReveal) { // if the user chooses to enable Progressive Reveal
                 grid.setProgReveal(player, settings.progRevealRadius);
@@ -386,11 +457,12 @@ public class MazeGui implements ActionListener {
         }
     }
 
-    /**
+    /* /**
      * An alternative to the no-arg run() method that deals with
      * the case of using newGame(game) where game had progressive
      * reveal enabled.
      */
+    /*
     public void run(boolean progOn) {
         // generate the maze in steps if asked (rather than all at once using MazeGenerator.generate())
         // repaint() in between each step to watch it grow
@@ -408,9 +480,17 @@ public class MazeGui implements ActionListener {
                         //done drawing
                         ((Timer) e.getSource()).stop();
                         timerBar.startTimer();
+                        gameStart = true;
                         grid.markStartFinish(new Cell(settings.startRow, settings.startCol), new Cell(settings.endRow, settings.endCol));
+
                         if (settings.progReveal) {
-                            if (gameSave != null) gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
+                            grid.setProgReveal(player, settings.progRevealRadius);
+                            if (gameSave != null) {
+                                gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
+                            } else {
+                                grid.updatePlayerPosition();
+                                mc.repaint();
+                            }
                         } else {
                             grid.updatePlayerPosition();
                             mc.repaint();
@@ -422,30 +502,44 @@ public class MazeGui implements ActionListener {
         } else { //quick draw
             mg.generate();
             timerBar.startTimer();
+            gameStart = true;
             grid.markStartFinish(new Cell(settings.startRow, settings.startCol), new Cell(settings.endRow, settings.endCol));
             if (settings.progReveal) {
-                if (gameSave != null) gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
+                grid.setProgReveal(player, settings.progRevealRadius);
+                if (gameSave != null) {
+                    gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
+                }
             } else {
                 grid.updatePlayerPosition();
                 mc.repaint();
             }
         }
     }
+*/
 
     /**
      * Creates new maze with current options, then displays and restarts game
      */
     public void newMaze() {
+        gameStart = false;
+
         timerBar.stopTimer();
 
-        frame.remove(pauseArea);
+        frame.remove(pause);
+        isPaused = false;
         frame.remove(mc);
 
         this.gameSave = null;
         this.oldSettings = new MazeSettings(settings);
         //settingsDialog.getPanel().writeback();//
         this.grid = new MazeGrid(settings.rows, settings.cols);
-        this.mc = new MazeComponent(grid, settings.cellWidth, colorMode, rect);
+
+        if (settings.cols * settings.cellWidth >= MIN_WIDTH) {
+            this.mc = new MazeComponent(grid, settings.cellWidth, colorMode, rect);
+        } else {
+            this.mc = new MazeComponent(grid, MIN_WIDTH / settings.cols, colorMode, rect);
+        }
+
         mc.setVisible(true);
 
         if (colorMode == 0)
@@ -496,11 +590,22 @@ public class MazeGui implements ActionListener {
             newMaze();
         } else { // restore the settings of an old game, instead with a new player and
             // 0 elapsed time
+            gameStart = false;
+            frame.remove(pause);
+            isPaused = false;
             timerBar.stopTimer();
             frame.remove(mc);
             this.settings = game.getSettings();
+
+            this.settingsDialog.loadMazeSettings(this.settings);
+            this.oldSettings = new MazeSettings(settings);
             this.grid = game.getGrid();
-            this.mc = new MazeComponent(grid, settings.cellWidth, colorMode, rect);
+
+            if (settings.cols * settings.cellWidth >= MIN_WIDTH) {
+                this.mc = new MazeComponent(grid, settings.cellWidth, colorMode, rect);
+            } else {
+                this.mc = new MazeComponent(grid, MIN_WIDTH / settings.cols, colorMode, rect);
+            }
             if (colorMode == 0)
                 frame.getContentPane().setBackground(Color.white);
             else if (colorMode == 1) {
@@ -511,7 +616,7 @@ public class MazeGui implements ActionListener {
                 frame.getContentPane().setBackground(c);
             } else if (colorMode == 3)
                 frame.getContentPane().setBackground(Color.black);
-            timerBar.setTimeElapsed(game.getTimeElapsed());
+            //timerBar.setTimeElapsed(game.getTimeElapsed());
             mc.setVisible(true);
             frame.add(mc);
             frame.pack();
@@ -520,9 +625,10 @@ public class MazeGui implements ActionListener {
             if (game.hasHighScores()) {
                 JOptionPane.showMessageDialog(this.frame, gameSave.getAllScoresString() + "Press OK to begin!");
             }
-            if (settings.progReveal) run(true);
-            else run();
+
+            run();
         }
+
     }
 
 
@@ -531,7 +637,9 @@ public class MazeGui implements ActionListener {
      */
     public void solveMaze() {
         Cell currentLocation = player.getPosition();
+        resumeGame(true);
         timerBar.stopTimer();
+        soundPlayer.stop();
         //reveal maze if hidden
         grid.unmarkCellsInRadius(new Cell(0, 0), grid.getCols() + grid.getRows(), MazeGrid.MARKER5);
         // display the solution to the maze
@@ -554,6 +662,9 @@ public class MazeGui implements ActionListener {
         } else if ("new_step_gen".equals(e.getActionCommand())) {
             settings.genType = MazeGui.NEW_STEP_GEN;
         } else if ("settings".equals(e.getActionCommand())) {
+            soundPlayer.stop();
+            gameStart = false;
+            timerBar.stopTimer();
             settingsDialog.setVisible(true);
         } else if ("prog_reveal".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
@@ -571,6 +682,7 @@ public class MazeGui implements ActionListener {
         } else if ("default_color".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
             colorMode = 0;
+            shapeColorChange = true;
         } else if ("cool_color".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
             colorMode = 1;
@@ -592,6 +704,7 @@ public class MazeGui implements ActionListener {
             this.rect = false;
             shapeColorChange = true;
         } else if ("save".equals(e.getActionCommand())) { // user chooses to save mid-game
+            soundPlayer.stop();
             timerBar.stopTimer();
             realTime = timerBar.getTimeElapsed(); // records ACTUAL time when save button is pressed
             //prompt user and write to file
@@ -626,8 +739,14 @@ public class MazeGui implements ActionListener {
                 // previous Maze is saved.
                 JOptionPane.showMessageDialog(frame, "To start new game press OK then New.",
                         "Maze Saved", JOptionPane.INFORMATION_MESSAGE);
+            } else if (!isPaused) {
+                timerBar.resumeTimer();
+                soundPlayer.loop();
             }
         } else if ("load".equals(e.getActionCommand())) { // user selects to load a game
+            soundPlayer.stop();
+            timerBar.stopTimer();
+
             int returnVal = fc.showOpenDialog(this.frame);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
@@ -646,12 +765,12 @@ public class MazeGui implements ActionListener {
                     System.err.println("Invalid file specified.");
                     ex.printStackTrace();
                 }
+            } else if (!isPaused) {
+                timerBar.resumeTimer();
+                soundPlayer.loop();
             }
         }
 
-        /*
-            Auto update for the background colors.
-         */
         if (shapeColorChange) {
             this.mc.setColorMode(colorMode);
             this.mc.setShape(rect);
@@ -667,8 +786,8 @@ public class MazeGui implements ActionListener {
             } else if (colorMode == 3) {
                 frame.getContentPane().setBackground(Color.black);
             }
-
             this.mc.repaint();
+
         }
 
     }
@@ -700,7 +819,13 @@ public class MazeGui implements ActionListener {
             //prompt user and write to file
             int returnVal = fc.showSaveDialog(this.frame);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File file = fc.getSelectedFile();
+                File file;
+
+                if (fc.getSelectedFile().toString().length() >= 5 && fc.getSelectedFile().toString().substring(fc.getSelectedFile().toString().length() - 5).equals(".mzgs"))
+                    file = fc.getSelectedFile();
+                else
+                    file = new File(fc.getSelectedFile() + ".mzgs");
+
                 FileOutputStream fout;
                 ObjectOutputStream oout;
 
@@ -808,6 +933,7 @@ public class MazeGui implements ActionListener {
         }
     }
 
+
     /**
      * Action object that responds to player move keyboard inputs
      */
@@ -826,40 +952,33 @@ public class MazeGui implements ActionListener {
             cmd = c;
         }
 
-        Font font = new Font("Verdana", Font.BOLD, 30);
-
-
-
         public void actionPerformed(ActionEvent e) {
             boolean inverse = settings.inverseMode;
             byte[] directions = {MazeGrid.DIR_UP, MazeGrid.DIR_DOWN, MazeGrid.DIR_LEFT, MazeGrid.DIR_RIGHT};
 
+            if (player != null && gameStart) {
 
-            if (this.cmd.equals("pause")) {
+                if (this.cmd.equals("pause")) {
+                    if (isPaused) {
+                        soundPlayer.loop();
+                        frame.remove(pause);
+                        timerBar.resumeTimer();
+                        frame.repaint();
+                        mc.setPaused(false);
+                    } else {
+                        soundPlayer.stop();
+                        timerBar.stopTimer();
+                        frame.add(pause);
+                        pause.repaint();
+                        mc.setPaused(true);
+                    }
 
-                pauseArea.setEditable(false);
-                pauseArea.setFont(font);
 
-                if (isPaused) {
-                    soundPlayer.loop();
-                    frame.remove(pauseArea);
-                    //frame.add(mc);
-                    timerBar.resumeTimer();
+                    frame.setVisible(true);
+                    isPaused = !isPaused;
+                    return;
                 }
-                else {
-                    soundPlayer.stop();
-                    timerBar.stopTimer();
-                    //frame.remove(mc);
-                    frame.add(pauseArea);
-                }
 
-                frame.repaint();
-                frame.setVisible(true);
-                isPaused = !isPaused;
-                return;
-            }
-
-            if (player != null) {
 
                 if (settings.randomControls) {
                     byte[] oldDirections = directions.clone();
@@ -867,6 +986,7 @@ public class MazeGui implements ActionListener {
                         directions[i] = oldDirections[(controlKey + i) % 4];
                     }
                 }
+
                 if (!isPaused) {
                     switch (this.cmd) {
                         case "up":
@@ -898,23 +1018,24 @@ public class MazeGui implements ActionListener {
                             }
                             break;
                     }
-                }
 
-                if (settings.memoryMode) {
-                    if (player.getNumMoves() % 5 == 0) {
+                    if (settings.memoryMode) {
+                        if (player.getNumMoves() % 5 == 0) {
+                            mc.repaint();
+                        }
+                    } else {
                         mc.repaint();
                     }
-                } else {
-                    mc.repaint();
-                }
 
-                if (grid.isAtFinish(player.getPosition())) {
-                    mc.repaint();
-                    wonMaze();
+                    if (grid.isAtFinish(player.getPosition())) {
+                        mc.repaint();
+                        wonMaze();
+                    }
                 }
             } else {
                 System.err.println("NULL player!");
             }
+
         }
     }
 
