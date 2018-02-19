@@ -11,6 +11,7 @@
 * Update Readme.md
 * Inverse mode + random control
     * Don't allow both to be on at the on at the same time.
+* Solve feature doesn't work after loading a new game.
 
 ## Current Issues
 
@@ -38,3 +39,7 @@
     * Also happens when the pausing the game while the menu, color, and shape options are up.
 * Hardcode start and finish location
     * Can make the end location of the maze in the setting optional.
+    
+## Completed Issue #:
+* 
+* 

@@ -345,7 +345,7 @@ public class MazeGui implements ActionListener {
                 }
 
 
-                g.setColor(new Color(3,7,6));
+                g.setColor(new Color(3, 7, 6));
                 g.fillRect(0, 0, max, max);
 
 
@@ -396,8 +396,11 @@ public class MazeGui implements ActionListener {
             frame.remove(pause);
             timerBar.resumeTimer();
             frame.repaint();
+            isPaused = false;
+            mc.setPaused(false);
         }
     }
+
     /**
      * Stepwise generates and displays maze
      */
@@ -614,8 +617,9 @@ public class MazeGui implements ActionListener {
             } else if (colorMode == 2) {
                 Color c = new Color(238, 201, 0);
                 frame.getContentPane().setBackground(c);
-            } else if (colorMode == 3)
+            } else if (colorMode == 3) {
                 frame.getContentPane().setBackground(Color.black);
+            }
             //timerBar.setTimeElapsed(game.getTimeElapsed());
             mc.setVisible(true);
             frame.add(mc);
@@ -643,10 +647,13 @@ public class MazeGui implements ActionListener {
         //reveal maze if hidden
         grid.unmarkCellsInRadius(new Cell(0, 0), grid.getCols() + grid.getRows(), MazeGrid.MARKER5);
         // display the solution to the maze
-        mg.solve(new Cell(currentLocation.row, currentLocation.col), (short) 0x0,
+        mg.solve(currentLocation, (short) 0x0,
                 new Cell(settings.endRow, settings.endCol));
         this.player = null;
+        gameStart = false;
         mc.repaint();
+
+
     }
 
     /**
@@ -655,6 +662,8 @@ public class MazeGui implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         boolean shapeColorChange = false;
 
+
+
         if ("multi_chain_gen".equals(e.getActionCommand())) {
             settings.genType = MazeGui.MULTI_CHAIN_GEN;
         } else if ("alt_step_gen".equals(e.getActionCommand())) {
@@ -662,10 +671,12 @@ public class MazeGui implements ActionListener {
         } else if ("new_step_gen".equals(e.getActionCommand())) {
             settings.genType = MazeGui.NEW_STEP_GEN;
         } else if ("settings".equals(e.getActionCommand())) {
-            soundPlayer.stop();
-            gameStart = false;
-            timerBar.stopTimer();
-            settingsDialog.setVisible(true);
+            if(gameStart){
+                soundPlayer.stop();
+                gameStart = false;
+                timerBar.stopTimer();
+                settingsDialog.setVisible(true);
+            }
         } else if ("prog_reveal".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
             settings.progReveal = button.getModel().isSelected();
@@ -739,7 +750,7 @@ public class MazeGui implements ActionListener {
                 // previous Maze is saved.
                 JOptionPane.showMessageDialog(frame, "To start new game press OK then New.",
                         "Maze Saved", JOptionPane.INFORMATION_MESSAGE);
-            } else if (!isPaused) {
+            } else if (!isPaused && gameStart) {
                 timerBar.resumeTimer();
                 soundPlayer.loop();
             }
@@ -765,13 +776,13 @@ public class MazeGui implements ActionListener {
                     System.err.println("Invalid file specified.");
                     ex.printStackTrace();
                 }
-            } else if (!isPaused) {
+            } else if (!isPaused && gameStart) {
                 timerBar.resumeTimer();
                 soundPlayer.loop();
             }
         }
 
-        if (shapeColorChange) {
+        if (gameStart && shapeColorChange) {
             this.mc.setColorMode(colorMode);
             this.mc.setShape(rect);
 
@@ -882,6 +893,7 @@ public class MazeGui implements ActionListener {
             this.player = null;
         }
     }
+
 
     /**
      * Maps current player movement keys to an action
