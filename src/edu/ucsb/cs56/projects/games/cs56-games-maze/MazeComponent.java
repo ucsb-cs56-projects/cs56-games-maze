@@ -21,13 +21,13 @@ public class MazeComponent extends JComponent implements MouseListener {
     private int cellWidth;
     private int colorMode;
     private boolean rect;
+    private boolean isPaused;
 
     /**
      * Construct a MazeComponent to draw this MazeGrid grid, with the width of each
      * Cell being drawn at cellWidth pixels wide and tall
      *
-     * @param grid      the MazeGrid this MazeComponent will be drawing
-     * @param cellWidth the width and height to draw each Cell
+     * @param grid the MazeGrid this MazeComponent will be drawing
      */
     public MazeComponent(MazeGrid grid, int cellWidth, int inputColor, boolean r) {
         this.colorMode = inputColor;
@@ -36,7 +36,9 @@ public class MazeComponent extends JComponent implements MouseListener {
         addMouseListener(this);
         this.setFocusable(true);
         this.rect = r;
+        this.isPaused = false;
     }
+
 
     /**
      * Method in JComponent overrided to draw this MazeGrid
@@ -44,13 +46,17 @@ public class MazeComponent extends JComponent implements MouseListener {
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         // draw each cell in the grid using drawCell()
-        Cell a = new Cell(0, 0);
-        for (; a.row < grid.getRows(); a.row++) {
-            for (; a.col < grid.getCols(); a.col++) {
-                drawCell(g2, a);
+
+        if (!isPaused) {
+            Cell a = new Cell(0, 0);
+            for (; a.row < grid.getRows(); a.row++) {
+                for (; a.col < grid.getCols(); a.col++) {
+                    drawCell(g2, a);
+                }
+                a.col = 0;
             }
-            a.col = 0;
         }
+
     }
 
     /**
@@ -213,6 +219,14 @@ public class MazeComponent extends JComponent implements MouseListener {
 
     public void setColorMode(int colorMode) {
         this.colorMode = colorMode;
+    }
+
+    public void setShape(boolean rect) {
+        this.rect = rect;
+    }
+
+    public void setPaused(boolean isPaused) {
+        this.isPaused = isPaused;
     }
 
     /**
