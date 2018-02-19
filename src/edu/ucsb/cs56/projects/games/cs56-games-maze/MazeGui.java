@@ -345,7 +345,7 @@ public class MazeGui implements ActionListener {
                 }
 
 
-                g.setColor(Color.BLACK);
+                g.setColor(new Color(3,7,6));
                 g.fillRect(0, 0, max, max);
 
 
