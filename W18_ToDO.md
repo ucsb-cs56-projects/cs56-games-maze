@@ -1,5 +1,7 @@
 ## Issue
 *  Color Options
+    * RGB
+    * contrast colors for background and player
 *  Replay option
 *  Allow start a new game after finishing one without clicking new game.
 *  Musics Options
@@ -11,8 +13,7 @@
     * Don't allow both to be on at the on at the same time.
 
 ## Current Issues
-* Hardcode start and finish location
-    * Can make the end location of the maze in the setting optional.
+
 
 ## Completed Issues
 *  Arrow Keys in Inverse Mode
@@ -35,3 +36,5 @@
 * Changing color or shape currently drawn over the paused screen.
 * The Maze overlap with the the first pause screen when a new game is created via setting changed.
     * Also happens when the pausing the game while the menu, color, and shape options are up.
+* Hardcode start and finish location
+    * Can make the end location of the maze in the setting optional.

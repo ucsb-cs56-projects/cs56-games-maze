@@ -19,8 +19,10 @@ public class MazeSettings implements Serializable {
     public int rows;
     public int cols;
     public int cellWidth;
+    public boolean customStart;
     public int startRow;
     public int startCol;
+    public boolean customEnd;
     public int endRow;
     public int endCol;
     public int genType;
@@ -42,8 +44,10 @@ public class MazeSettings implements Serializable {
         this.rows = 20;
         this.cols = 20;
         this.cellWidth = 20; // increase size of maze
+        customStart = false;
         this.startRow = 0;
         this.startCol = 0;
+        customEnd = false;
         this.endRow = rows - 1;
         this.endCol = cols - 1;
         this.genType = 1;

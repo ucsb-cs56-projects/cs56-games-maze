@@ -7,7 +7,6 @@ import javax.swing.border.*;
 import java.awt.event.*;
 import java.beans.*;
 
-
 /**
  * A JPanel that has labels and fields for all settings, as well as funcitonality to writeback as necessary.
  *
@@ -29,8 +28,10 @@ public class MazeSettingsPanel extends JPanel {
     private JTextField rowsField;
     private JTextField colsField;
     //   private JTextField cellWidthField;
+    private JCheckBox customStart;
     private JTextField startRowField;
     private JTextField startColField;
+    private JCheckBox customEnd;
     private JTextField endRowField;
     private JTextField endColField;
     private JTextField progRevealRadiusField;
@@ -116,6 +117,14 @@ public class MazeSettingsPanel extends JPanel {
         this.add(label);
         this.add(colsField);
 
+
+        label = new JLabel("Custom Start Location");
+        label.setToolTipText("Edit the start location of the maze");
+        customStart = new JCheckBox();
+        this.add(label);
+        this.add(customStart);
+
+
         label = new JLabel("Start Row");
 
         startRowField = new JTextField(5);
@@ -133,6 +142,13 @@ public class MazeSettingsPanel extends JPanel {
         doc.setDocumentFilter(intDocumentFilter);
         this.add(label);
         this.add(startColField);
+
+
+        label = new JLabel("Custom End Location");
+        label.setToolTipText("Edit the end location of the maze");
+        customEnd = new JCheckBox();
+        this.add(label);
+        this.add(customEnd);
 
         label = new JLabel("End Row");
 
@@ -227,18 +243,42 @@ public class MazeSettingsPanel extends JPanel {
         this.settings.startRow = Integer.parseInt(startRowField.getText());
         this.settings.startCol = Integer.parseInt(startColField.getText());
 
-        // check to ensure the final maze location is within the bounds of the maze
-        //if (Integer.parseInt(endRowField.getText()) > this.settings.rows) {
-        this.settings.endRow = (this.settings.rows - 1);
-        //} else {
-        //    this.settings.endRow = Integer.parseInt(endRowField.getText());
-        //}
 
-        //if (Integer.parseInt(endColField.getText()) > this.settings.cols) {
-        this.settings.endCol = (this.settings.cols - 1);
-        //} else {
-        //    this.settings.endCol = Integer.parseInt(endColField.getText());
-        //}
+        int sRow = Integer.parseInt(startRowField.getText());
+        int sCol = Integer.parseInt(startColField.getText());
+
+        if(customStart.isSelected()){
+            if(sRow >= 0 && sRow < this.settings.rows){
+                this.settings.customStart = true;
+                this.settings.startRow = sRow;
+            }
+            if(sCol >= 0 && sCol < this.settings.cols){
+                this.settings.customStart = true;
+                this.settings.startCol = sCol;
+            }
+        }else{
+            this.settings.customStart = false;
+            this.settings.startRow = 0;
+            this.settings.startCol = 0;
+        }
+
+        int eRow = Integer.parseInt(endRowField.getText());
+        int eCol = Integer.parseInt(endColField.getText());
+
+        if(customEnd.isSelected()){
+            if(eRow >= 0 && eRow < this.settings.rows){
+                this.settings.customEnd = true;
+                this.settings.endRow = eRow;
+            }
+            if(eCol >= 0 && eCol < this.settings.cols){
+                this.settings.customEnd = true;
+                this.settings.endCol = eCol;
+            }
+        }else{
+            this.settings.customEnd = false;
+            this.settings.endRow = (this.settings.rows - 1);
+            this.settings.endCol = (this.settings.cols - 1);
+        }
 
         this.settings.progRevealRadius = Integer.parseInt(progRevealRadiusField.getText());
         this.settings.progDraw = progDrawCB.isSelected();
@@ -255,8 +295,10 @@ public class MazeSettingsPanel extends JPanel {
         rowsField.setText(String.valueOf(settings.rows));
         colsField.setText(String.valueOf(settings.cols));
         //cellWidthField.setText(String.valueOf(settings.cellWidth));
+        customStart.setSelected(settings.customStart);
         startRowField.setText(String.valueOf(settings.startRow));
         startColField.setText(String.valueOf(settings.startCol));
+        customEnd.setSelected(settings.customEnd);
         endRowField.setText(String.valueOf(settings.endRow));
         endColField.setText(String.valueOf(settings.endCol));
         progRevealRadiusField.setText(String.valueOf(settings.progRevealRadius));
