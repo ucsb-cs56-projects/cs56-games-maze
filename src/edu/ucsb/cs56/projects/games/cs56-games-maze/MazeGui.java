@@ -622,6 +622,7 @@ public class MazeGui implements ActionListener {
             } else {
                 this.mc = new MazeComponent(grid, MIN_WIDTH / settings.cols, colorMode, rect);
             }
+
             if (colorMode == 0)
                 frame.getContentPane().setBackground(Color.white);
             else if (colorMode == 1) {
@@ -638,6 +639,9 @@ public class MazeGui implements ActionListener {
             frame.add(mc);
             frame.pack();
             frame.setVisible(true);
+
+            this.mg = new MultipleChainGenerator(this.grid, this.settings.genChainLength, this.settings.genChainLengthFlux);
+
             this.player = game.getPlayer();
             if (game.hasHighScores()) {
                 JOptionPane.showMessageDialog(this.frame, gameSave.getAllScoresString() + "Press OK to begin!");
@@ -663,9 +667,9 @@ public class MazeGui implements ActionListener {
         mg.solve(currentLocation, (short) 0x0,
                 new Cell(settings.endRow, settings.endCol));
         this.player = null;
-        gameStart = false;
-        mc.repaint();
 
+        mc.repaint();
+        gameStart = false;
 
     }
 
