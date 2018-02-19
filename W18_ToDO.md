@@ -7,14 +7,12 @@
 *  Musics Options
     * also allow user to change music with a new music tool bar.
     * pause and start music.
-* Update Instruction
 * Update Readme.md
-* Inverse mode + random control
-    * Don't allow both to be on at the on at the same time.
-* Solve feature doesn't work after loading a new game.
 
 ## Current Issues
-
+* Inverse mode + random control
+    * Don't allow both to be on at the on at the same time.
+* Update Instruction
 
 ## Completed Issues
 *  Arrow Keys in Inverse Mode
@@ -39,7 +37,25 @@
     * Also happens when the pausing the game while the menu, color, and shape options are up.
 * Hardcode start and finish location
     * Can make the end location of the maze in the setting optional.
+* Solve feature doesn't work after loading a new game.    
+
     
 ## Completed Issue #:
-* 
-* 
+* 20 (250 Points)
+* 25? not sure if it was a bug to begin with. (70 Points)
+* 62 (100 Points)
+* 65 (50 Points)
+* 66 (50 Points)
+    * With extra feature.
+* 68 (50 points)
+* 69 (100 Points?)
+    * down to 50 points, I think.
+* 70 (30 points)
+* 71 (100 points)
+* 72 (50 points)
+* 73 (75 points)
+    * More issues with pause than anticipated.
+* 74 (100 points)  
+ 
+ 
+# Total Points: 975
