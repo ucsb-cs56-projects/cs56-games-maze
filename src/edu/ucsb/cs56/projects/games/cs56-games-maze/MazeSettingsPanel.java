@@ -28,7 +28,7 @@ public class MazeSettingsPanel extends JPanel {
     private JTextField stepGenDistanceField;
     private JTextField rowsField;
     private JTextField colsField;
- //   private JTextField cellWidthField;
+    //   private JTextField cellWidthField;
     private JTextField startRowField;
     private JTextField startColField;
     private JTextField endRowField;
@@ -192,10 +192,10 @@ public class MazeSettingsPanel extends JPanel {
                 JDialog parentDialog = (JDialog) (getRootPane().getParent());
                 parentDialog.setVisible(false);
 
-                if(!settings.equals(oldSettings)){
+                if (!settings.equals(oldSettings)) {
                     gm.newMaze();
-                }else{
-                    gm.StartSong();
+                } else {
+                    gm.resumeGame(false);
                 }
             }
         });
@@ -206,12 +206,11 @@ public class MazeSettingsPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 JDialog parentDialog = (JDialog) (getRootPane().getParent());
                 parentDialog.setVisible(false);
-                gm.StartSong();
+                gm.resumeGame(false);
             }
         });
         this.add(cancelButton);
     }
-
 
     /**
      * writes changes in UI elements back to settings file
@@ -230,13 +229,13 @@ public class MazeSettingsPanel extends JPanel {
 
         // check to ensure the final maze location is within the bounds of the maze
         //if (Integer.parseInt(endRowField.getText()) > this.settings.rows) {
-            this.settings.endRow = (this.settings.rows - 1);
+        this.settings.endRow = (this.settings.rows - 1);
         //} else {
         //    this.settings.endRow = Integer.parseInt(endRowField.getText());
         //}
 
         //if (Integer.parseInt(endColField.getText()) > this.settings.cols) {
-            this.settings.endCol = (this.settings.cols - 1);
+        this.settings.endCol = (this.settings.cols - 1);
         //} else {
         //    this.settings.endCol = Integer.parseInt(endColField.getText());
         //}
@@ -278,7 +277,7 @@ public class MazeSettingsPanel extends JPanel {
         return colsField.getText();
     }
 
-    public void loadMazeSetting(MazeSettings settings){
+    public void loadMazeSetting(MazeSettings settings) {
         this.settings = settings;
 
         updateFieldValues();
