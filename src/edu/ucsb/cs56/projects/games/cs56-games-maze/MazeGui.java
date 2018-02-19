@@ -208,7 +208,20 @@ public class MazeGui implements ActionListener {
         cbMenuItem.addActionListener(this);
         menu.add(cbMenuItem);
         menu.addSeparator();
-        JCheckBoxMenuItem cbMenuItem2 = new JCheckBoxMenuItem("Inverse Mode");
+
+        //Changes for inverse and random (checkbox -> radio button)
+        ButtonGroup controlsGroup = new ButtonGroup();
+        rbMenuItem = new JRadioButtonMenuItem("Inverse Mode");
+        rbMenuItem.setActionCommand("inverse_mode");
+        rbMenuItem.addActionListener(this);
+        controlsGroup.add(rbMenuItem);
+        menu.add(rbMenuItem);
+        rbMenuItem = new JRadioButtonMenuItem("Random Controls");
+        rbMenuItem.setActionCommand("random_controls");
+        rbMenuItem.addActionListener(this);
+        controlsGroup.add(rbMenuItem);
+        menu.add(rbMenuItem);
+       /* JCheckBoxMenuItem cbMenuItem2 = new JCheckBoxMenuItem("Inverse Mode");
         cbMenuItem2.setActionCommand("inverse_mode");
         cbMenuItem2.addActionListener(this);
         menu.add(cbMenuItem2);
@@ -216,7 +229,7 @@ public class MazeGui implements ActionListener {
         JCheckBoxMenuItem rcMenuItem = new JCheckBoxMenuItem("Random Controls");
         rcMenuItem.setActionCommand("random_controls");
         rcMenuItem.addActionListener(this);
-        menu.add(rcMenuItem);
+        menu.add(rcMenuItem);*/
 
         menu.addSeparator();
         JCheckBoxMenuItem cbMenuItem3 = new JCheckBoxMenuItem("Memory Mode");
