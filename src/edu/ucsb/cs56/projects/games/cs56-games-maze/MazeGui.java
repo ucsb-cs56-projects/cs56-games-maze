@@ -211,6 +211,12 @@ public class MazeGui implements ActionListener {
 
         //Changes for inverse and random (checkbox -> radio button)
         ButtonGroup controlsGroup = new ButtonGroup();
+        rbMenuItem = new JRadioButtonMenuItem("Normal Mode");
+        rbMenuItem.setSelected(true);
+        rbMenuItem.setActionCommand("normal_mode");
+        rbMenuItem.addActionListener(this);
+        controlsGroup.add(rbMenuItem);
+        menu.add(rbMenuItem);
         rbMenuItem = new JRadioButtonMenuItem("Inverse Mode");
         rbMenuItem.setActionCommand("inverse_mode");
         rbMenuItem.addActionListener(this);
@@ -680,7 +686,6 @@ public class MazeGui implements ActionListener {
         boolean shapeColorChange = false;
 
 
-
         if ("multi_chain_gen".equals(e.getActionCommand())) {
             settings.genType = MazeGui.MULTI_CHAIN_GEN;
         } else if ("alt_step_gen".equals(e.getActionCommand())) {
@@ -688,7 +693,7 @@ public class MazeGui implements ActionListener {
         } else if ("new_step_gen".equals(e.getActionCommand())) {
             settings.genType = MazeGui.NEW_STEP_GEN;
         } else if ("settings".equals(e.getActionCommand())) {
-            if(gameStart){
+            if (gameStart) {
                 soundPlayer.stop();
                 gameStart = false;
                 timerBar.stopTimer();
@@ -697,6 +702,10 @@ public class MazeGui implements ActionListener {
         } else if ("prog_reveal".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
             settings.progReveal = button.getModel().isSelected();
+        } else if ("normal_mode".equals(e.getActionCommand())){
+            AbstractButton button = (AbstractButton) e.getSource();
+            settings.inverseMode = false;
+            settings.randomControls = false;
         } else if ("inverse_mode".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
             settings.inverseMode = button.getModel().isSelected();
