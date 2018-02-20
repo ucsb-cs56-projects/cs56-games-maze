@@ -10,8 +10,6 @@
 * Update Readme.md
 
 ## Current Issues
-* Inverse mode + random control
-    * Don't allow both to be on at the on at the same time.
 * Update Instruction
 
 ## Completed Issues
@@ -38,6 +36,8 @@
 * Hardcode start and finish location
     * Can make the end location of the maze in the setting optional.
 * Solve feature doesn't work after loading a new game.    
+* Inverse mode + random control
+    * Don't allow both to be on at the on at the same time.
 
     
 ## Completed Issue #:
