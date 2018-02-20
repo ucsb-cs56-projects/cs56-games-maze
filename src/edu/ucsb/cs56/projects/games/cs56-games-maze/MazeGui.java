@@ -709,10 +709,12 @@ public class MazeGui implements ActionListener {
         } else if ("inverse_mode".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
             settings.inverseMode = button.getModel().isSelected();
+            settings.randomControls = false;
         } else if ("random_controls".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
             controlKey = ((int) (Math.random() * 4)) + 1;
             settings.randomControls = button.getModel().isSelected();
+            settings.inverseMode = false;
         } else if ("memory_mode".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
             settings.memoryMode = button.getModel().isSelected();
