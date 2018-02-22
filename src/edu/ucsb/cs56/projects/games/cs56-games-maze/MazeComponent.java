@@ -86,13 +86,13 @@ public class MazeComponent extends JComponent implements MouseListener {
         if (this.grid.hasMarker(a, MazeGrid.MARKER5)) //do not draw
             return;
         if (this.grid.hasMarker(a, MazeGrid.MARKER3)) //solution
-            this.paintMarker3(g2, a);
+            this.paintSolve(g2, a);
         else if (this.grid.hasMarker(a, MazeGrid.MARKER1)) //finish
-            this.paintMarker1(g2, a);
+            this.paintEnd(g2, a);
         else if (this.grid.hasMarker(a, MazeGrid.MARKER2)) //start
-            this.paintMarker2(g2, a);
+            this.paintStart(g2, a);
         if (this.grid.hasMarker(a, MazeGrid.MARKER4)) { //player
-            this.paintMarker4(g2, a);
+            this.paintShape(g2, a);
         }
 
         // paint the walls of the Cell
@@ -100,13 +100,15 @@ public class MazeComponent extends JComponent implements MouseListener {
         if (colorMode == 0)
             g2.setColor(Color.BLACK);
         else if (colorMode == 1) {
-            Color c = new Color(46, 139, 87);
+            Color c = new Color(255 - 0, 255 - 191, 255 - 255);
+            //Color c = new Color(46, 139, 87);
             g2.setColor(c);
         } else if (colorMode == 2) {
-            Color c = new Color(176, 23, 31);
+            Color c = new Color(255 - 238, 255 - 201, 255 - 0);
+            //Color c = new Color(176, 23, 31);
             g2.setColor(c);
         } else if (colorMode == 3) {
-            g2.setColor(Color.white);
+            g2.setColor(Color.WHITE);
         }
 
         if ((directions & MazeGrid.DIR_RIGHT) == 0) {
@@ -142,7 +144,7 @@ public class MazeComponent extends JComponent implements MouseListener {
     /**
      * How MazeGrid.MARKER1 should be painted. Change this if you want marker1 to be painted differently.
      */
-    private void paintMarker1(Graphics2D g2, Cell a) {
+    private void paintEnd(Graphics2D g2, Cell a) {
 
         if (colorMode == 0)
             g2.setColor(Color.RED);
@@ -163,7 +165,7 @@ public class MazeComponent extends JComponent implements MouseListener {
     /**
      * How MazeGrid.MARKER2 should be painted. Change this if you want marker2 to be painted differently.
      */
-    private void paintMarker2(Graphics2D g2, Cell a) {
+    private void paintStart(Graphics2D g2, Cell a) {
         if (colorMode == 0)
             g2.setColor(Color.CYAN);
         else if (colorMode == 1) {
@@ -182,7 +184,7 @@ public class MazeComponent extends JComponent implements MouseListener {
     /**
      * How MazeGrid.MARKER3 should be painted. Change this if you want marker3 to be painted differently.
      */
-    private void paintMarker3(Graphics2D g2, Cell a) {
+    private void paintSolve(Graphics2D g2, Cell a) {
         if (colorMode == 0)
             g2.setColor(Color.YELLOW);
         else if (colorMode == 1) {
@@ -199,7 +201,7 @@ public class MazeComponent extends JComponent implements MouseListener {
     /**
      * How MazeGrid.MARKER4 should be painted. Change this if you want marker4 to be painted differently.
      */
-    private void paintMarker4(Graphics2D g2, Cell a) {
+    private void paintShape(Graphics2D g2, Cell a) {
         if (colorMode == 0)
             g2.setColor(Color.BLACK);
         else if (colorMode == 1) {
