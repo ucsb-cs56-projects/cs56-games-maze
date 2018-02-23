@@ -1,15 +1,6 @@
 ## Issue
-*  Color Options
-    * RGB
-    * contrast colors for background and player
 *  Replay option
 *  Allow start a new game after finishing one without clicking new game.
-*  Musics Options
-    * also allow user to change music with a new music tool bar.
-    * pause and start music.
-    * Add Music option on toolbar.
-    * stop/start keyboard action.
-    * Select music from music folder.
 * Update Readme.md
 * Auto update when select progressive reveal.
 * Line of sight 
@@ -19,6 +10,17 @@
 
 ## Current Issues
 * Update Instruction
+*  Musics Options (Benson)
+    * also allow user to change music with a new music tool bar.
+    * pause and start music.
+    * Add Music option on toolbar.
+    * stop/start keyboard action.
+    * Select music from music folder.
+* Color Options (Willy)
+  * RGB
+  * contrast colors for background and player
+  * Have a few default colors and custom option with all RGB values.
+  * start and end location coloring.
 
 ## Completed Issues
 *  Arrow Keys in Inverse Mode
