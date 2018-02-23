@@ -19,7 +19,13 @@ import java.lang.Math;
 public class MazeComponent extends JComponent implements MouseListener {
     private MazeGrid grid;
     private int cellWidth;
-    private int colorMode;
+    private int red;
+    private int green;
+    private int blue;
+    private Color SolutionColor;
+    private Color EndColor;
+    private Color StartColor;
+    private Color SideColor;
     private boolean rect;
     private boolean isPaused;
 
@@ -29,9 +35,24 @@ public class MazeComponent extends JComponent implements MouseListener {
      *
      * @param grid the MazeGrid this MazeComponent will be drawing
      */
-    public MazeComponent(MazeGrid grid, int cellWidth, int inputColor, boolean r) {
-        this.colorMode = inputColor;
+    public MazeComponent(MazeGrid grid, int cellWidth, Color backgroundColor, boolean r) {
+        this.red = backgroundColor.getRed();
+        this.green = backgroundColor.getGreen();
+        this.blue = backgroundColor.getBlue();
+
+        Color c;
+
+        SolutionColor = Color.YELLOW;
+
+        c = Color.RED;
+        EndColor = new Color(Math.abs(c.getRed() - red),Math.abs(c.getGreen() - green),Math.abs(c.getBlue() - blue));
+
+        c = Color.CYAN;
         this.grid = grid;
+        StartColor = new Color(Math.abs(c.getRed() - red),Math.abs(c.getGreen() - green),Math.abs(c.getBlue() - blue));
+
+        SideColor = new Color(Math.abs(red - 255), Math.abs(green - 255), Math.abs(blue - 255));
+
         this.cellWidth = cellWidth;
         addMouseListener(this);
         this.setFocusable(true);
@@ -83,33 +104,22 @@ public class MazeComponent extends JComponent implements MouseListener {
      */
     public void drawCell(Graphics2D g2, Cell a) {
         // paint the proper markers for the Cell in the proper order
-        if (this.grid.hasMarker(a, MazeGrid.MARKER5)) //do not draw
+        if (this.grid.hasMarker(a, MazeGrid.NULL_MARKER)) //do not draw
             return;
-        if (this.grid.hasMarker(a, MazeGrid.MARKER3)) //solution
+        if (this.grid.hasMarker(a, MazeGrid.SOLUTION_MARKER)) //solution
             this.paintSolve(g2, a);
-        else if (this.grid.hasMarker(a, MazeGrid.MARKER1)) //finish
+        else if (this.grid.hasMarker(a, MazeGrid.END_MARKER)) //finish
             this.paintEnd(g2, a);
-        else if (this.grid.hasMarker(a, MazeGrid.MARKER2)) //start
+        else if (this.grid.hasMarker(a, MazeGrid.START_MARKER)) //start
             this.paintStart(g2, a);
-        if (this.grid.hasMarker(a, MazeGrid.MARKER4)) { //player
+        if (this.grid.hasMarker(a, MazeGrid.PLAYER_MARKER)) { //player
             this.paintShape(g2, a);
         }
 
         // paint the walls of the Cell
         short directions = this.grid.getCellDirections(a);
-        if (colorMode == 0)
-            g2.setColor(Color.BLACK);
-        else if (colorMode == 1) {
-            Color c = new Color(255 - 0, 255 - 191, 255 - 255);
-            //Color c = new Color(46, 139, 87);
-            g2.setColor(c);
-        } else if (colorMode == 2) {
-            Color c = new Color(255 - 238, 255 - 201, 255 - 0);
-            //Color c = new Color(176, 23, 31);
-            g2.setColor(c);
-        } else if (colorMode == 3) {
-            g2.setColor(Color.WHITE);
-        }
+
+        g2.setColor(SideColor);
 
         if ((directions & MazeGrid.DIR_RIGHT) == 0) {
             Line2D.Float wall = new Line2D.Float(this.cellWidth * a.col + this.cellWidth - 1,
@@ -142,75 +152,42 @@ public class MazeComponent extends JComponent implements MouseListener {
     }
 
     /**
-     * How MazeGrid.MARKER1 should be painted. Change this if you want marker1 to be painted differently.
+     * How MazeGrid.END_MARKER should be painted. Change this if you want endMarker to be painted differently.
      */
     private void paintEnd(Graphics2D g2, Cell a) {
 
-        if (colorMode == 0)
-            g2.setColor(Color.RED);
-        else if (colorMode == 1) {
-            Color c = new Color(255, 182, 193);
-            g2.setColor(c);
-        } else if (colorMode == 2) {
-            Color c = new Color(255, 153, 255);
-            g2.setColor(c);
-        } else if (colorMode == 3)
-            g2.setColor(Color.CYAN);
-
+        g2.setColor(EndColor);
         g2.fill(new Rectangle2D.Float(this.cellWidth * a.col, this.cellWidth * a.row, this.cellWidth, this.cellWidth));
 
         //g2.fill(new Rectangle2D.Double(this.cellWidth*a.col + (0.4*this.cellWidth)-1,this.cellWidth*a.row + (0.4*this.cellWidth)-1,0.4*this.cellWidth,0.4*this.cellWidth));
     }
 
     /**
-     * How MazeGrid.MARKER2 should be painted. Change this if you want marker2 to be painted differently.
+     * How MazeGrid.START_MARKER should be painted. Change this if you want start marker to be painted differently.
      */
     private void paintStart(Graphics2D g2, Cell a) {
-        if (colorMode == 0)
-            g2.setColor(Color.CYAN);
-        else if (colorMode == 1) {
-            Color c = new Color(173, 255, 46);
-            g2.setColor(c);
-        } else if (colorMode == 2) {
-            Color c = new Color(58, 213, 254);
-            g2.setColor(c);
-        } else if (colorMode == 3)
-            g2.setColor(Color.RED);
+        g2.setColor(StartColor);
 
         g2.fill(new Rectangle2D.Float(this.cellWidth * a.col, this.cellWidth * a.row, this.cellWidth, this.cellWidth));
         //g2.fill(new Rectangle2D.Double(this.cellWidth*a.col + (0.4*this.cellWidth)-1, this.cellWidth*a.row + (0.4*this.cellWidth)-1, 0.4*this.cellWidth,0.4*this.cellWidth));
     }
 
     /**
-     * How MazeGrid.MARKER3 should be painted. Change this if you want marker3 to be painted differently.
+     * How MazeGrid.SOLUTION_MARKER should be painted. Change this if you want solutioin marker to be painted differently.
      */
     private void paintSolve(Graphics2D g2, Cell a) {
-        if (colorMode == 0)
-            g2.setColor(Color.YELLOW);
-        else if (colorMode == 1) {
-            g2.setColor(Color.YELLOW);
-        } else if (colorMode == 2) {
-            g2.setColor(Color.YELLOW);
-        } else if (colorMode == 3) {
-            Color c = new Color(128, 0, 128);
-            g2.setColor(c);
-        }
+        g2.setColor(SolutionColor);
+
         g2.fill(new Rectangle2D.Float(this.cellWidth * a.col, this.cellWidth * a.row, this.cellWidth, this.cellWidth));
     }
 
     /**
-     * How MazeGrid.MARKER4 should be painted. Change this if you want marker4 to be painted differently.
+     * How MazeGrid.PLAYER_MARKER should be painted. Change this if you want player marker to be painted differently.
      */
     private void paintShape(Graphics2D g2, Cell a) {
-        if (colorMode == 0)
-            g2.setColor(Color.BLACK);
-        else if (colorMode == 1) {
-            Color c = new Color(238, 154, 0);
-            g2.setColor(c);
-        } else if (colorMode == 2) {
-            g2.setColor(Color.red);
-        } else if (colorMode == 3)
-            g2.setColor(Color.white);
+
+        g2.setColor(SideColor);
+
         //g2.fill(new Rectangle2D.Float(this.cellWidth*a.col, this.cellWidth*a.row, this.cellWidth, this.cellWidth));
         if (rect == true)
             g2.fill(new Rectangle2D.Double(this.cellWidth * a.col + (0.4 * this.cellWidth) - 1, this.cellWidth * a.row + (0.4 * this.cellWidth) - 1, 0.4 * this.cellWidth, 0.4 * this.cellWidth));
@@ -219,8 +196,23 @@ public class MazeComponent extends JComponent implements MouseListener {
     }
 
 
-    public void setColorMode(int colorMode) {
-        this.colorMode = colorMode;
+    public void setbackgroundColor(Color backgroundColor) {
+        this.red = backgroundColor.getRed();
+        this.green = backgroundColor.getGreen();
+        this.blue = backgroundColor.getBlue();
+
+        Color c;
+
+        SolutionColor = Color.YELLOW;
+
+        c = Color.RED;
+        EndColor = new Color(Math.abs(c.getRed() - red),Math.abs(c.getGreen() - green),Math.abs(c.getBlue() - blue));
+
+        c = Color.CYAN;
+        this.grid = grid;
+        StartColor = new Color(Math.abs(c.getRed() - red),Math.abs(c.getGreen() - green),Math.abs(c.getBlue() - blue));
+
+        SideColor = new Color(Math.abs(red - 255), Math.abs(green - 255), Math.abs(blue - 255));
     }
 
     public void setShape(boolean rect) {

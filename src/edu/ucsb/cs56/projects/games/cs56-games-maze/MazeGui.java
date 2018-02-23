@@ -50,7 +50,7 @@ public class MazeGui implements ActionListener {
     private long realTime;
     private JMenu shapeMenu;
     private boolean rect = true;
-    private int colorMode = 0;
+    private Color backgroundColor;
     private int controlKey;
 
 
@@ -321,22 +321,15 @@ public class MazeGui implements ActionListener {
 
         remapPlayerKeys();
 
+        backgroundColor = Color.WHITE;
+
         // initialize the MazeGrid, MazeComponent, and MazeGenerator
         this.grid = new MazeGrid(settings.rows, settings.cols);
-        this.mc = new MazeComponent(grid, settings.cellWidth, colorMode, rect);
-        mc.setVisible(true);
+        this.mc = new MazeComponent(grid, settings.cellWidth, backgroundColor, rect);
 
-        if (colorMode == 0)
-            frame.getContentPane().setBackground(Color.white);
-        else if (colorMode == 1) {
-            Color c = new Color(0, 191, 255);
-            frame.getContentPane().setBackground(c);
-        } else if (colorMode == 2) {
-            Color c = new Color(238, 201, 0);
-            frame.getContentPane().setBackground(c);
-        } else if (colorMode == 3) {
-            frame.getContentPane().setBackground(Color.black);
-        }
+        frame.getContentPane().setBackground(backgroundColor);
+
+        mc.setVisible(true);
 
         pause = new JPanel() {
             public void paintComponent(Graphics g) {
@@ -557,24 +550,15 @@ public class MazeGui implements ActionListener {
         this.grid = new MazeGrid(settings.rows, settings.cols);
 
         if (settings.cols * settings.cellWidth >= MIN_WIDTH) {
-            this.mc = new MazeComponent(grid, settings.cellWidth, colorMode, rect);
+            this.mc = new MazeComponent(grid, settings.cellWidth, backgroundColor, rect);
         } else {
-            this.mc = new MazeComponent(grid, MIN_WIDTH / settings.cols, colorMode, rect);
+            this.mc = new MazeComponent(grid, MIN_WIDTH / settings.cols, backgroundColor, rect);
         }
+
+
+        frame.getContentPane().setBackground(backgroundColor);
 
         mc.setVisible(true);
-
-        if (colorMode == 0)
-            frame.getContentPane().setBackground(Color.white);
-        else if (colorMode == 1) {
-            Color c = new Color(0, 191, 255);
-            frame.getContentPane().setBackground(c);
-        } else if (colorMode == 2) {
-            Color c = new Color(238, 201, 0);
-            frame.getContentPane().setBackground(c);
-        } else if (colorMode == 3) {
-            frame.getContentPane().setBackground(Color.black);
-        }
 
         frame.add(mc);
         frame.pack();
@@ -624,22 +608,13 @@ public class MazeGui implements ActionListener {
             this.grid = game.getGrid();
 
             if (settings.cols * settings.cellWidth >= MIN_WIDTH) {
-                this.mc = new MazeComponent(grid, settings.cellWidth, colorMode, rect);
+                this.mc = new MazeComponent(grid, settings.cellWidth, backgroundColor, rect);
             } else {
-                this.mc = new MazeComponent(grid, MIN_WIDTH / settings.cols, colorMode, rect);
+                this.mc = new MazeComponent(grid, MIN_WIDTH / settings.cols, backgroundColor, rect);
             }
 
-            if (colorMode == 0)
-                frame.getContentPane().setBackground(Color.white);
-            else if (colorMode == 1) {
-                Color c = new Color(0, 191, 255);
-                frame.getContentPane().setBackground(c);
-            } else if (colorMode == 2) {
-                Color c = new Color(238, 201, 0);
-                frame.getContentPane().setBackground(c);
-            } else if (colorMode == 3) {
-                frame.getContentPane().setBackground(Color.black);
-            }
+            frame.getContentPane().setBackground(backgroundColor);
+
             //timerBar.setTimeElapsed(game.getTimeElapsed());
             mc.setVisible(true);
             frame.add(mc);
@@ -668,7 +643,7 @@ public class MazeGui implements ActionListener {
         timerBar.stopTimer();
         soundPlayer.stop();
         //reveal maze if hidden
-        grid.unmarkCellsInRadius(new Cell(0, 0), grid.getCols() + grid.getRows(), MazeGrid.MARKER5);
+        grid.unmarkCellsInRadius(new Cell(0, 0), grid.getCols() + grid.getRows(), MazeGrid.NULL_MARKER);
         // display the solution to the maze
         mg.solve(currentLocation, (short) 0x0,
                 new Cell(settings.endRow, settings.endCol));
@@ -720,19 +695,19 @@ public class MazeGui implements ActionListener {
             settings.memoryMode = button.getModel().isSelected();
         } else if ("default_color".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
-            colorMode = 0;
+            backgroundColor = Color.WHITE;
             shapeColorChange = true;
         } else if ("cool_color".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
-            colorMode = 1;
+            backgroundColor = new Color(7, 190, 240);
             shapeColorChange = true;
         } else if ("warm_color".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
-            colorMode = 2;
+            backgroundColor = new Color(254, 165, 0);
             shapeColorChange = true;
         } else if ("dark_color".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
-            colorMode = 3;
+            backgroundColor = Color.BLACK;
             shapeColorChange = true;
         } else if ("rect_shape".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
@@ -811,22 +786,12 @@ public class MazeGui implements ActionListener {
         }
 
         if (gameStart && shapeColorChange) {
-            this.mc.setColorMode(colorMode);
+            this.mc.setbackgroundColor(backgroundColor);
             this.mc.setShape(rect);
 
-            if (colorMode == 0)
-                frame.getContentPane().setBackground(Color.white);
-            else if (colorMode == 1) {
-                Color c = new Color(0, 191, 255);
-                frame.getContentPane().setBackground(c);
-            } else if (colorMode == 2) {
-                Color c = new Color(238, 201, 0);
-                frame.getContentPane().setBackground(c);
-            } else if (colorMode == 3) {
-                frame.getContentPane().setBackground(Color.black);
-            }
-            this.mc.repaint();
 
+            frame.getContentPane().setBackground(backgroundColor);
+            this.mc.repaint();
         }
 
     }
