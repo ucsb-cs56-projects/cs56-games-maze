@@ -166,33 +166,33 @@ public class MazeGridTest {
     // create a grid, then mark a cell using markCell
     // test to see that hasMarker() works properly
     @Test
-    public void test_hasMarker1() {
+    public void test_hasEND_MARKER() {
         int rows = 60;
         int cols = 60;
         grid = new MazeGrid(rows, cols);
         Cell a = new Cell(0, 0);
-        grid.markCell(a, MazeGrid.MARKER1);
-        assertEquals(true, grid.hasMarker(a, MazeGrid.MARKER1));
+        grid.markCell(a, MazeGrid.END_MARKER);
+        assertEquals(true, grid.hasMarker(a, MazeGrid.END_MARKER));
     }
 
     @Test
-    public void test_hasMarker2() {
+    public void test_hasSTART_MARKER() {
         int rows = 60;
         int cols = 60;
         grid = new MazeGrid(rows, cols);
         Cell a = new Cell(0, 0);
-        grid.markCell(a, MazeGrid.MARKER2);
-        assertEquals(true, grid.hasMarker(a, MazeGrid.MARKER2));
+        grid.markCell(a, MazeGrid.START_MARKER);
+        assertEquals(true, grid.hasMarker(a, MazeGrid.START_MARKER));
     }
 
     @Test
-    public void test_hasMarker3() {
+    public void test_hasSOLUTION_MARKER() {
         int rows = 60;
         int cols = 60;
         grid = new MazeGrid(rows, cols);
         Cell a = new Cell(0, 0);
-        grid.markCell(a, MazeGrid.MARKER3);
-        assertEquals(true, grid.hasMarker(a, MazeGrid.MARKER3));
+        grid.markCell(a, MazeGrid.SOLUTION_MARKER);
+        assertEquals(true, grid.hasMarker(a, MazeGrid.SOLUTION_MARKER));
     }
 
     // create a grid, then carve a path between two cells

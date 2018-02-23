@@ -45,25 +45,25 @@ public class MazeGrid implements Serializable {
     public static final short DIR_DOWN = 0x8;
 
     /**
-     * The bit representing marker1 - FINISH POINT
+     * The bit representing end marker - FINISH POINT
      */
-    public static final short MARKER1 = 0x10;
+    public static final short END_MARKER = 0x10;
     /**
-     * The bit representing marker2 - START POINT
+     * The bit representing start marker - START POINT
      */
-    public static final short MARKER2 = 0x20;
+    public static final short START_MARKER = 0x20;
     /**
-     * The bit representing marker3 - YELLOW SOLUTION PATH
+     * The bit representing solution marker - YELLOW SOLUTION PATH
      */
-    public static final short MARKER3 = 0x40;
+    public static final short SOLUTION_MARKER = 0x40;
     /**
-     * The bit representing marker4 - PLAYER SQUARE
+     * The bit representing player marker- PLAYER SQUARE
      */
-    public static final short MARKER4 = (short) 0x80;
+    public static final short PLAYER_MARKER = (short) 0x80;
     /**
-     * the bit representing marker5 - DO NOT DRAW
+     * the bit representing null marker - DO NOT DRAW
      */
-    public static final short MARKER5 = 0x100;
+    public static final short NULL_MARKER = 0x100;
 
     private short[][] grid;
     private int rows;
@@ -267,16 +267,16 @@ public class MazeGrid implements Serializable {
      * remove the PLAYER marker from a grid, when the player is at the finish
      */
     public void unmarkFinish() {
-        unmarkCell(finish, MazeGrid.MARKER4);
+        unmarkCell(finish, MazeGrid.PLAYER_MARKER);
     }
 
 
     public void unmarkPlayerSquare() {
-        unmarkCell(player.getPosition(), MARKER4);
+        unmarkCell(player.getPosition(), PLAYER_MARKER);
     }
 
     public void markPlayerSquare() {
-        markCell(player.getPosition(), MARKER4);
+        markCell(player.getPosition(), PLAYER_MARKER);
     }
 
 
@@ -307,9 +307,9 @@ public class MazeGrid implements Serializable {
      * Consider moving to controller
      */
     public void markStartFinish(Cell start, Cell finish) {
-        markCell(start, MazeGrid.MARKER2);
+        markCell(start, MazeGrid.START_MARKER);
         this.start = start;
-        markCell(finish, MazeGrid.MARKER1);
+        markCell(finish, MazeGrid.END_MARKER);
         this.finish = finish;
     }
 
@@ -353,7 +353,7 @@ public class MazeGrid implements Serializable {
         for (int i = 0; i < cols; ++i) {
             for (int j = 0; j < rows; ++j) {
                 if (Math.sqrt(Math.pow(a.col - i, 2) + Math.pow(a.row - j, 2)) < radius) {
-                    //if (!hasMarker(new Cell(j,i),MazeGrid.MARKER5)) {;}
+                    //if (!hasMarker(new Cell(j,i),MazeGrid.NULL_MARKER)) {;}
                     //else unmarkCell(new Cell(j,i),marker);
                     unmarkCell(new Cell(j, i), marker);
                 }
@@ -362,7 +362,7 @@ public class MazeGrid implements Serializable {
     }
 
     /**
-     * Remove hidden marker (MARKER5) from cells alread visited,
+     * Remove hidden marker (NULL_MARKER) from cells alread visited,
      * including cells within the progRevealRadius
      *
      * @param gameSave the MazeGameSave object used to reference the grid of interest
@@ -370,13 +370,13 @@ public class MazeGrid implements Serializable {
     public void unmarkVisitedCoordinates(MazeGameSave gameSave) {
         ArrayList<Cell> visibleCoordinates = gameSave.getGrid().getRevealedCoordinates();
         for (int i = 0; i < visibleCoordinates.size(); i++) {
-            unmarkCellsInRadius(visibleCoordinates.get(i), progRevealRadius, MazeGrid.MARKER5);
+            unmarkCellsInRadius(visibleCoordinates.get(i), progRevealRadius, MazeGrid.NULL_MARKER);
         }
     }
 
 
     /**
-     * Save the coordinates of MARKER4 (visible) cells.
+     * Save the coordinates of PLAYER_MARKER (visible) cells.
      *
      * @param a the Cell coordinate that is to be saved for load
      *          with progressive reveal enabled
@@ -394,30 +394,30 @@ public class MazeGrid implements Serializable {
      * Enable progressiveReveal mode, progressively removes doNotDraw markers in proximity to player as player moves
      *
      * @param p MazePlayer around which to reveal the grid
-     *          markCellsInRadius(new Cell(0,0),this.rows+this.cols,MazeGrid.MARKER5);	@param progRevealRadius the radius around the player to reveal
+     *          markCellsInRadius(new Cell(0,0),this.rows+this.cols,MazeGrid.NULL_MARKER);	@param progRevealRadius the radius around the player to reveal
      */
     public void setProgReveal(MazePlayer p, int progRevealRadius) {
         this.progReveal = true;
         this.progRevealRadius = progRevealRadius;
         this.player = p;
-        markCellsInRadius(new Cell(0, 0), this.rows + this.cols, MazeGrid.MARKER5);
+        markCellsInRadius(new Cell(0, 0), this.rows + this.cols, MazeGrid.NULL_MARKER);
     }
 
     /**
      * Marks player position on grid, then reveals cells if necessary as per progressiveReveal settings
      */
     public void updatePlayerPosition() {
-        this.markCell(player.getPosition(), MazeGrid.MARKER4);
+        this.markCell(player.getPosition(), MazeGrid.PLAYER_MARKER);
         if (this.progReveal) {
             //somehow clean the board  here
             //@@@
             this.removeAllCells();
-            markCellsInRadius(this.player.getPosition(), this.rows + this.cols, MazeGrid.MARKER5);
+            markCellsInRadius(this.player.getPosition(), this.rows + this.cols, MazeGrid.NULL_MARKER);
             this.unmarkCellsInRadius(this.player.getPosition(),
-                    this.progRevealRadius, MazeGrid.MARKER5);
+                    this.progRevealRadius, MazeGrid.NULL_MARKER);
 
-            //markCellsInRadius(this.player.getPosition(),this.progRevealRadius,MazeGrid.MARKER5);
-            //unmarkCellsInRadius(this.player.getPosition(), progRevealRadius, MazeGrid.MARKER5);
+            //markCellsInRadius(this.player.getPosition(),this.progRevealRadius,MazeGrid.NULL_MARKER);
+            //unmarkCellsInRadius(this.player.getPosition(), progRevealRadius, MazeGrid.NULL_MARKER);
 
             if (gameSave != null) unmarkVisitedCoordinates(gameSave);
         }
