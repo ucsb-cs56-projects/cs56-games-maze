@@ -46,7 +46,7 @@ public class MazePlayer implements Serializable {
     public void move(short direction) {
         if (this.grid.canMove(this.position, direction)) {
             this.numMoves++;
-            grid.unmarkCell(position, MazeGrid.MARKER4);
+            grid.unmarkCell(position, MazeGrid.PLAYER_MARKER);
             switch (direction) {
                 case MazeGrid.DIR_RIGHT:
                     position.col += 1;
@@ -61,7 +61,7 @@ public class MazePlayer implements Serializable {
                     position.row += 1;
                     break;
             }
-            //if(this.visible) grid.markCell(position, MazeGrid.MARKER4);
+            //if(this.visible) grid.markCell(position, MazeGrid.PLAYER_MARKER);
             this.grid.updatePlayerPosition();
         }
         //else return, cannot move
@@ -81,7 +81,7 @@ public class MazePlayer implements Serializable {
      * Re-marks position of player on grid
      */
     public void remark() {
-        if (this.visible) grid.markCell(position, MazeGrid.MARKER4);
+        if (this.visible) grid.markCell(position, MazeGrid.PLAYER_MARKER);
     }
 
     /**
