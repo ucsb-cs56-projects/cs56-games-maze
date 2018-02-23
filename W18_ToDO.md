@@ -7,7 +7,15 @@
 *  Musics Options
     * also allow user to change music with a new music tool bar.
     * pause and start music.
+    * Add Music option on toolbar.
+    * stop/start keyboard action.
+    * Select music from music folder.
 * Update Readme.md
+* Auto update when select progressive reveal.
+* Line of sight 
+* 2 Play Mode
+   * Only in line of sight mode. Neither players know the ending.
+* 
 
 ## Current Issues
 * Update Instruction
