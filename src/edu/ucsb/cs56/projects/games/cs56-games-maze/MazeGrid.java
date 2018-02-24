@@ -333,9 +333,7 @@ public class MazeGrid implements Serializable {
     public void markCellsInRadius(Cell a, int radius, short marker) {
         for (int i = 0; i < cols; ++i) {
             for (int j = 0; j < rows; ++j) {
-                if (Math.sqrt(
-                        Math.pow(a.col - i, 2) + Math.pow(a.row - j, 2)
-                ) < radius) {
+                if (Math.sqrt(Math.pow(a.col - i, 2) + Math.pow(a.row - j, 2)) < radius) {
                     markCell(new Cell(j, i), marker);
                 }
             }
@@ -396,11 +394,17 @@ public class MazeGrid implements Serializable {
      * @param p MazePlayer around which to reveal the grid
      *          markCellsInRadius(new Cell(0,0),this.rows+this.cols,MazeGrid.NULL_MARKER);	@param progRevealRadius the radius around the player to reveal
      */
-    public void setProgReveal(MazePlayer p, int progRevealRadius) {
-        this.progReveal = true;
+    public void setProgReveal(MazePlayer p, boolean progReveal, int progRevealRadius) {
+        this.progReveal = progReveal;
         this.progRevealRadius = progRevealRadius;
         this.player = p;
-        markCellsInRadius(new Cell(0, 0), this.rows + this.cols, MazeGrid.NULL_MARKER);
+
+        if(progReveal){
+            markCellsInRadius(new Cell(0, 0), this.rows + this.cols, MazeGrid.NULL_MARKER);
+        }else{
+            unmarkCellsInRadius(new Cell(0, 0), this.rows + this.cols, MazeGrid.NULL_MARKER);
+        }
+
     }
 
     /**
