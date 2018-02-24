@@ -2,7 +2,6 @@
 *  Replay option
 *  Allow start a new game after finishing one without clicking new game.
 * Update Readme.md
-* Auto update when select progressive reveal.
 * Line of sight 
 * 2 Play Mode
    * Only in line of sight mode. Neither players know the ending.
@@ -49,6 +48,7 @@
 * Solve feature doesn't work after loading a new game.    
 * Inverse mode + random control
     * Don't allow both to be on at the on at the same time.
+* Auto update when select progressive reveal.
 
     
 ## Completed Issue #:
