@@ -17,6 +17,7 @@
     * stop/start keyboard action.
     * Select music from music folder.
 * Color Options (Willy)
+    * Mostly done but still need to refine the coloring and the custom color option.
   * RGB
   * contrast colors for background and player
   * Have a few default colors and custom option with all RGB values.
