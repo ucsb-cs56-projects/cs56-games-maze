@@ -167,9 +167,9 @@ public class MazeSettingsPanel extends JPanel {
         doc.setDocumentFilter(intDocumentFilter);
         this.add(label);
         this.add(endColField);
-
-        label = new JLabel("Cell Width");
 /*
+        label = new JLabel("Cell Width");
+
         cellWidthField = new JTextField(5);
         label.setToolTipText("Width of a single cell in pixels");
         doc = (PlainDocument) cellWidthField.getDocument();

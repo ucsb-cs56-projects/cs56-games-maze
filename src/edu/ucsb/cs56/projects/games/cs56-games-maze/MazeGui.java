@@ -63,6 +63,8 @@ public class MazeGui implements ActionListener {
     private javax.swing.filechooser.FileFilter fileFilter;
     private MazeSettingsDialog settingsDialog;
 
+    private ColorChooser cChooser;
+
     public static final int MIN_WIDTH = 400;
 
     public static final int MULTI_CHAIN_GEN = 1;
@@ -283,6 +285,11 @@ public class MazeGui implements ActionListener {
         colorItem.addActionListener(this);
         cGroup.add(colorItem);
         colorMenu.add(colorItem);
+        colorItem = new JRadioButtonMenuItem("Custom Color");
+        colorItem.setActionCommand("custom_color");
+        colorItem.addActionListener(this);
+        cGroup.add(colorItem);
+        colorMenu.add(colorItem);
         this.menuBar.add(this.colorMenu);
 
         this.shapeMenu = new JMenu("Shapes");
@@ -302,6 +309,17 @@ public class MazeGui implements ActionListener {
         this.menuBar.add(this.shapeMenu);
 
         frame.setJMenuBar(this.menuBar);
+
+
+        cChooser = new ColorChooser(this);
+
+        cChooser.setLocationRelativeTo(frame);
+        cChooser.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                resumeGame(false);
+            }
+        });
+
 
         //init settings Dialog
         settingsDialog = new MazeSettingsDialog(settings, this);
@@ -677,7 +695,7 @@ public class MazeGui implements ActionListener {
         } else if ("prog_reveal".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
             settings.progReveal = button.getModel().isSelected();
-        } else if ("normal_mode".equals(e.getActionCommand())){
+        } else if ("normal_mode".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
             settings.inverseMode = false;
             settings.randomControls = false;
@@ -709,7 +727,14 @@ public class MazeGui implements ActionListener {
             AbstractButton button = (AbstractButton) e.getSource();
             backgroundColor = Color.BLACK;
             shapeColorChange = true;
-        } else if ("rect_shape".equals(e.getActionCommand())) {
+        } else if ("custom_color".equals(e.getActionCommand())){
+            if (gameStart) {
+                soundPlayer.stop();
+                gameStart = false;
+                timerBar.stopTimer();
+                cChooser.setVisible(true);
+            }
+        }else if ("rect_shape".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
             this.rect = true;
             shapeColorChange = true;
@@ -789,12 +814,21 @@ public class MazeGui implements ActionListener {
             this.mc.setbackgroundColor(backgroundColor);
             this.mc.setShape(rect);
 
-
             frame.getContentPane().setBackground(backgroundColor);
             this.mc.repaint();
         }
 
     }
+
+    public void setColor(Color backgroundColor){
+        this.backgroundColor = backgroundColor;
+        this.mc.setbackgroundColor(backgroundColor);
+        this.mc.setShape(rect);
+
+        frame.getContentPane().setBackground(backgroundColor);
+        this.mc.repaint();
+    }
+
 
     /**
      * Call when user has successfully navigated the maze.

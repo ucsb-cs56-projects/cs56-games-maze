@@ -42,8 +42,6 @@ public class MazeComponent extends JComponent implements MouseListener {
 
         Color c;
 
-        SolutionColor = Color.YELLOW;
-
         c = Color.RED;
         EndColor = new Color(Math.abs(c.getRed() - red),Math.abs(c.getGreen() - green),Math.abs(c.getBlue() - blue));
 
@@ -52,6 +50,8 @@ public class MazeComponent extends JComponent implements MouseListener {
         StartColor = new Color(Math.abs(c.getRed() - red),Math.abs(c.getGreen() - green),Math.abs(c.getBlue() - blue));
 
         SideColor = new Color(Math.abs(red - 255), Math.abs(green - 255), Math.abs(blue - 255));
+
+        SolutionColor = new Color((2*SideColor.getRed() + red) / 3, (2*SideColor.getGreen() + green) / 3, (2*SideColor.getBlue() + blue) / 3);
 
         this.cellWidth = cellWidth;
         addMouseListener(this);
@@ -203,8 +203,6 @@ public class MazeComponent extends JComponent implements MouseListener {
 
         Color c;
 
-        SolutionColor = Color.YELLOW;
-
         c = Color.RED;
         EndColor = new Color(Math.abs(c.getRed() - red),Math.abs(c.getGreen() - green),Math.abs(c.getBlue() - blue));
 
@@ -213,6 +211,8 @@ public class MazeComponent extends JComponent implements MouseListener {
         StartColor = new Color(Math.abs(c.getRed() - red),Math.abs(c.getGreen() - green),Math.abs(c.getBlue() - blue));
 
         SideColor = new Color(Math.abs(red - 255), Math.abs(green - 255), Math.abs(blue - 255));
+
+        SolutionColor = new Color((2*SideColor.getRed() + red) / 3, (2*SideColor.getGreen() + green) / 3, (2*SideColor.getBlue() + blue) / 3);
     }
 
     public void setShape(boolean rect) {
