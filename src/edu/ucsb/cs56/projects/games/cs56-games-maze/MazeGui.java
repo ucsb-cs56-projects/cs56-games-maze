@@ -58,12 +58,14 @@ public class MazeGui implements ActionListener {
     private boolean gameStart;
     private JPanel pause;
 
-
     private JFileChooser fc;
     private javax.swing.filechooser.FileFilter fileFilter;
     private MazeSettingsDialog settingsDialog;
 
     private ColorChooser cChooser;
+    private AbstractButton currentColorButton;
+    private ButtonGroup cGroup;
+    private AbstractButton customColorButton;
 
     public static final int MIN_WIDTH = 400;
 
@@ -263,7 +265,7 @@ public class MazeGui implements ActionListener {
         this.menuBar.add(this.menu);
 
         this.colorMenu = new JMenu("Colors");
-        ButtonGroup cGroup = new ButtonGroup();
+        cGroup = new ButtonGroup();
         JRadioButtonMenuItem colorItem = new JRadioButtonMenuItem("Default");
         colorItem.setSelected(true);
         colorItem.setActionCommand("default_color");
@@ -458,7 +460,7 @@ public class MazeGui implements ActionListener {
                         grid.markStartFinish(new Cell(settings.startRow, settings.startCol),
                                 new Cell(settings.endRow, settings.endCol));
                         if (settings.progReveal) { // if the user chooses to enable Progressive Reveal
-                            grid.setProgReveal(player, settings.progRevealRadius);
+                            grid.setProgReveal(player, settings.progReveal, settings.progRevealRadius);
                             if (gameSave != null) { // if the game is new and has no saved game attributed to it
                                 gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
                             } else {
@@ -479,7 +481,7 @@ public class MazeGui implements ActionListener {
             gameStart = true;
             grid.markStartFinish(new Cell(settings.startRow, settings.startCol), new Cell(settings.endRow, settings.endCol));
             if (settings.progReveal) { // if the user chooses to enable Progressive Reveal
-                grid.setProgReveal(player, settings.progRevealRadius);
+                grid.setProgReveal(player, settings.progReveal, settings.progRevealRadius);
                 if (gameSave != null) { // if the game is new and has no saved game attributed to it
                     gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
                 }
@@ -517,7 +519,7 @@ public class MazeGui implements ActionListener {
                         grid.markStartFinish(new Cell(settings.startRow, settings.startCol), new Cell(settings.endRow, settings.endCol));
 
                         if (settings.progReveal) {
-                            grid.setProgReveal(player, settings.progRevealRadius);
+                            grid.setProgReveal(player, settings.progReveal, settings.progRevealRadius);
                             if (gameSave != null) {
                                 gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
                             } else {
@@ -538,7 +540,7 @@ public class MazeGui implements ActionListener {
             gameStart = true;
             grid.markStartFinish(new Cell(settings.startRow, settings.startCol), new Cell(settings.endRow, settings.endCol));
             if (settings.progReveal) {
-                grid.setProgReveal(player, settings.progRevealRadius);
+                grid.setProgReveal(player, settings.progReveal, settings.progRevealRadius);
                 if (gameSave != null) {
                     gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
                 }
@@ -663,8 +665,7 @@ public class MazeGui implements ActionListener {
         //reveal maze if hidden
         grid.unmarkCellsInRadius(new Cell(0, 0), grid.getCols() + grid.getRows(), MazeGrid.NULL_MARKER);
         // display the solution to the maze
-        mg.solve(currentLocation, (short) 0x0,
-                new Cell(settings.endRow, settings.endCol));
+        mg.solve(currentLocation, (short) 0x0, new Cell(settings.endRow, settings.endCol));
         this.player = null;
 
         mc.repaint();
@@ -693,41 +694,45 @@ public class MazeGui implements ActionListener {
                 settingsDialog.setVisible(true);
             }
         } else if ("prog_reveal".equals(e.getActionCommand())) {
-            AbstractButton button = (AbstractButton) e.getSource();
-            settings.progReveal = button.getModel().isSelected();
+            //AbstractButton button = (AbstractButton) e.getSource();
+            settings.progReveal = !settings.progReveal;
+            grid.setProgReveal(player, settings.progReveal, settings.progRevealRadius);
+            grid.updatePlayerPosition();
+            mc.repaint();
         } else if ("normal_mode".equals(e.getActionCommand())) {
-            AbstractButton button = (AbstractButton) e.getSource();
+            //AbstractButton button = (AbstractButton) e.getSource();
             settings.inverseMode = false;
             settings.randomControls = false;
         } else if ("inverse_mode".equals(e.getActionCommand())) {
-            AbstractButton button = (AbstractButton) e.getSource();
-            settings.inverseMode = button.getModel().isSelected();
+            //AbstractButton button = (AbstractButton) e.getSource();
+            settings.inverseMode = true;
             settings.randomControls = false;
         } else if ("random_controls".equals(e.getActionCommand())) {
-            AbstractButton button = (AbstractButton) e.getSource();
+            //AbstractButton button = (AbstractButton) e.getSource();
             controlKey = ((int) (Math.random() * 4)) + 1;
-            settings.randomControls = button.getModel().isSelected();
+            settings.randomControls = true;
             settings.inverseMode = false;
         } else if ("memory_mode".equals(e.getActionCommand())) {
-            AbstractButton button = (AbstractButton) e.getSource();
-            settings.memoryMode = button.getModel().isSelected();
+            //AbstractButton button = (AbstractButton) e.getSource();
+            settings.memoryMode = !settings.memoryMode;
         } else if ("default_color".equals(e.getActionCommand())) {
-            AbstractButton button = (AbstractButton) e.getSource();
+            currentColorButton = (AbstractButton) e.getSource();
             backgroundColor = Color.WHITE;
             shapeColorChange = true;
         } else if ("cool_color".equals(e.getActionCommand())) {
-            AbstractButton button = (AbstractButton) e.getSource();
+            currentColorButton  = (AbstractButton) e.getSource();
             backgroundColor = new Color(7, 190, 240);
             shapeColorChange = true;
         } else if ("warm_color".equals(e.getActionCommand())) {
-            AbstractButton button = (AbstractButton) e.getSource();
+            currentColorButton = (AbstractButton) e.getSource();
             backgroundColor = new Color(254, 165, 0);
             shapeColorChange = true;
         } else if ("dark_color".equals(e.getActionCommand())) {
-            AbstractButton button = (AbstractButton) e.getSource();
+            currentColorButton = (AbstractButton) e.getSource();
             backgroundColor = Color.BLACK;
             shapeColorChange = true;
         } else if ("custom_color".equals(e.getActionCommand())){
+            customColorButton = (AbstractButton) e.getSource();
             if (gameStart) {
                 soundPlayer.stop();
                 gameStart = false;
@@ -820,15 +825,19 @@ public class MazeGui implements ActionListener {
 
     }
 
-    public void setColor(Color backgroundColor){
-        this.backgroundColor = backgroundColor;
-        this.mc.setbackgroundColor(backgroundColor);
-        this.mc.setShape(rect);
+    public void setColor(Color backgroundColor, boolean isChanged){
+        if(!isChanged){
+            cGroup.setSelected(currentColorButton.getModel(), true);
+        }else{
+            this.backgroundColor = backgroundColor;
+            this.mc.setbackgroundColor(backgroundColor);
+            this.mc.setShape(rect);
 
-        frame.getContentPane().setBackground(backgroundColor);
-        this.mc.repaint();
+            frame.getContentPane().setBackground(backgroundColor);
+            this.mc.repaint();
+            currentColorButton = customColorButton;
+        }
     }
-
 
     /**
      * Call when user has successfully navigated the maze.

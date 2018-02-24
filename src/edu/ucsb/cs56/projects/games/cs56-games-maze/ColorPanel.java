@@ -32,7 +32,7 @@ public class ColorPanel extends JPanel {
         okButton = new JButton("OK");
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                gm.setColor(colorChooser.getColor());
+                gm.setColor(colorChooser.getColor(), true);
 
                 JDialog parentDialog = (JDialog) (getRootPane().getParent());
                 parentDialog.setVisible(false);
@@ -47,6 +47,7 @@ public class ColorPanel extends JPanel {
 
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                gm.setColor(colorChooser.getColor(), false);
                 JDialog parentDialog = (JDialog) (getRootPane().getParent());
                 parentDialog.setVisible(false);
                 gm.resumeGame(false);
