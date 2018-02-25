@@ -8,13 +8,7 @@
 * 
 
 ## Current Issues
-* Update Instruction
-*  Musics Options (Benson)
-    * also allow user to change music with a new music tool bar.
-    * pause and start music.
-    * Add Music option on toolbar.
-    * stop/start keyboard action.
-    * Select music from music folder.
+*  Update Instruction
 * Color Options (Willy)
     * Mostly done but still need to refine the coloring and the custom color option.
   * RGB
@@ -49,7 +43,12 @@
 * Inverse mode + random control
     * Don't allow both to be on at the on at the same time.
 * Auto update when select progressive reveal.
-
+*  Musics Options (Benson)
+    * also allow user to change music with a new music tool bar.
+    * pause and start music.
+    * Add Music option on toolbar.
+    * stop/start keyboard action.
+    * Select music from music folder.
     
 ## Completed Issue #:
 * 20 (250 Points)
