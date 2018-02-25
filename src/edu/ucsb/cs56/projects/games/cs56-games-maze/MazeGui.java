@@ -18,6 +18,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+
 /**
  * Class where the MazeGui is constructed.  This is also the main class and contains the main method
  *
@@ -49,6 +50,7 @@ public class MazeGui implements ActionListener {
     private MazeGameSave gameSave;
     private long realTime;
     private JMenu shapeMenu;
+    private JMenu musicMenu;
     private boolean rect = true;
     private Color backgroundColor;
     private int controlKey;
@@ -56,7 +58,9 @@ public class MazeGui implements ActionListener {
 
     private boolean isPaused = false;
     private boolean gameStart;
+    private boolean musicStopped = false;
     private JPanel pause;
+
 
     private JFileChooser fc;
     private javax.swing.filechooser.FileFilter fileFilter;
@@ -66,6 +70,8 @@ public class MazeGui implements ActionListener {
     private AbstractButton currentColorButton;
     private ButtonGroup cGroup;
     private AbstractButton customColorButton;
+
+    private JFileChooser mChooser;
 
     public static final int MIN_WIDTH = 400;
 
@@ -99,7 +105,7 @@ public class MazeGui implements ActionListener {
             // (assuming the sound can be played by the audio system)
             // from a wave File
             try {
-                File file = new File(fileName);
+                File file = new File("Music/" + fileName);
                 if (file.exists()) {
                     System.out.println(file.getAbsolutePath());
                     AudioInputStream sound = AudioSystem.getAudioInputStream(file);
@@ -310,6 +316,21 @@ public class MazeGui implements ActionListener {
         shapeMenu.add(sItem);
         this.menuBar.add(this.shapeMenu);
 
+        this.musicMenu = new JMenu("Music");
+        ButtonGroup mGroup = new ButtonGroup();
+        JRadioButtonMenuItem musicItem = new JRadioButtonMenuItem("Select Music");
+        musicItem.setActionCommand("select_music");
+        musicItem.addActionListener(this);
+        mGroup.add(musicItem);
+        musicMenu.add(musicItem);
+
+        musicItem = new JRadioButtonMenuItem("Toggle Music");
+        musicItem.setActionCommand("toggle_music");
+        musicItem.addActionListener(this);
+        mGroup.add(musicItem);
+        musicMenu.add(musicItem);
+        this.menuBar.add(this.musicMenu);
+
         frame.setJMenuBar(this.menuBar);
 
 
@@ -323,6 +344,8 @@ public class MazeGui implements ActionListener {
         });
 
 
+
+
         //init settings Dialog
         settingsDialog = new MazeSettingsDialog(settings, this);
         settingsDialog.setLocationRelativeTo(frame);
@@ -333,7 +356,7 @@ public class MazeGui implements ActionListener {
         });
 
         //init file chooser window
-        fc = new JFileChooser();
+        fc = new JFileChooser(System.getProperty("user.dir") + "/SavedMaze");
         fileFilter = new FileNameExtensionFilter("MazeGame saves (*.mzgs)", "mzgs");
         fc.addChoosableFileFilter(fileFilter);
         fc.setFileFilter(fileFilter);
@@ -460,7 +483,7 @@ public class MazeGui implements ActionListener {
                         grid.markStartFinish(new Cell(settings.startRow, settings.startCol),
                                 new Cell(settings.endRow, settings.endCol));
                         if (settings.progReveal) { // if the user chooses to enable Progressive Reveal
-                            grid.setProgReveal(player, settings.progReveal, settings.progRevealRadius);
+                            grid.setProgReveal(player,settings.progReveal, settings.progRevealRadius);
                             if (gameSave != null) { // if the game is new and has no saved game attributed to it
                                 gameSave.getGrid().unmarkVisitedCoordinates(gameSave);
                             } else {
@@ -665,7 +688,8 @@ public class MazeGui implements ActionListener {
         //reveal maze if hidden
         grid.unmarkCellsInRadius(new Cell(0, 0), grid.getCols() + grid.getRows(), MazeGrid.NULL_MARKER);
         // display the solution to the maze
-        mg.solve(currentLocation, (short) 0x0, new Cell(settings.endRow, settings.endCol));
+        mg.solve(currentLocation, (short) 0x0,
+                new Cell(settings.endRow, settings.endCol));
         this.player = null;
 
         mc.repaint();
@@ -747,7 +771,34 @@ public class MazeGui implements ActionListener {
             AbstractButton button = (AbstractButton) e.getSource();
             this.rect = false;
             shapeColorChange = true;
-        } else if ("save".equals(e.getActionCommand())) { // user chooses to save mid-game
+        } else if("select_music".equals(e.getActionCommand())){
+            soundPlayer.stop();
+            timerBar.stopTimer();
+
+            mChooser = new JFileChooser(System.getProperty("user.dir") + "/Music");
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Music file (*.wav)", "wav");
+            mChooser.setFileFilter(filter);
+            int returnVal = mChooser.showOpenDialog(this.frame);
+
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+               File file = mChooser.getSelectedFile();
+               soundPlayer = new Sound(file.getName());
+            }
+
+            if (!isPaused && gameStart) {
+                timerBar.resumeTimer();
+                soundPlayer.loop();
+            }
+        } else if("toggle_music".equals(e.getActionCommand())){
+            if(musicStopped == true) {
+                soundPlayer.loop();
+                musicStopped = false;
+            }
+            else{
+                soundPlayer.stop();
+                musicStopped = true;
+            }
+        }else if ("save".equals(e.getActionCommand())) { // user chooses to save mid-game
             soundPlayer.stop();
             timerBar.stopTimer();
             realTime = timerBar.getTimeElapsed(); // records ACTUAL time when save button is pressed
@@ -838,6 +889,7 @@ public class MazeGui implements ActionListener {
             currentColorButton = customColorButton;
         }
     }
+
 
     /**
      * Call when user has successfully navigated the maze.
