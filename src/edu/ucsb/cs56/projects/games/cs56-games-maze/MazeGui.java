@@ -318,13 +318,13 @@ public class MazeGui implements ActionListener {
 
         this.musicMenu = new JMenu("Music");
         ButtonGroup mGroup = new ButtonGroup();
-        JRadioButtonMenuItem musicItem = new JRadioButtonMenuItem("Select Music");
+        JMenuItem musicItem = new JMenuItem("Select Music");
         musicItem.setActionCommand("select_music");
         musicItem.addActionListener(this);
         mGroup.add(musicItem);
         musicMenu.add(musicItem);
 
-        musicItem = new JRadioButtonMenuItem("Toggle Music");
+        musicItem = new JMenuItem("Toggle Music");
         musicItem.setActionCommand("toggle_music");
         musicItem.addActionListener(this);
         mGroup.add(musicItem);
