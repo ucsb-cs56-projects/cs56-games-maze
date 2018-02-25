@@ -18,6 +18,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+
 /**
  * Class where the MazeGui is constructed.  This is also the main class and contains the main method
  *
@@ -49,6 +50,7 @@ public class MazeGui implements ActionListener {
     private MazeGameSave gameSave;
     private long realTime;
     private JMenu shapeMenu;
+    private JMenu musicMenu;
     private boolean rect = true;
     private Color backgroundColor;
     private int controlKey;
@@ -56,6 +58,7 @@ public class MazeGui implements ActionListener {
 
     private boolean isPaused = false;
     private boolean gameStart;
+    private boolean musicStopped = false;
     private JPanel pause;
 
 
@@ -64,6 +67,7 @@ public class MazeGui implements ActionListener {
     private MazeSettingsDialog settingsDialog;
 
     private ColorChooser cChooser;
+    private JFileChooser mChooser;
 
     public static final int MIN_WIDTH = 400;
 
@@ -308,6 +312,21 @@ public class MazeGui implements ActionListener {
         shapeMenu.add(sItem);
         this.menuBar.add(this.shapeMenu);
 
+        this.musicMenu = new JMenu("Music");
+        ButtonGroup mGroup = new ButtonGroup();
+        JRadioButtonMenuItem musicItem = new JRadioButtonMenuItem("Select Music");
+        musicItem.setActionCommand("select_music");
+        musicItem.addActionListener(this);
+        mGroup.add(musicItem);
+        musicMenu.add(musicItem);
+
+        musicItem = new JRadioButtonMenuItem("Toggle Music");
+        musicItem.setActionCommand("toggle_music");
+        musicItem.addActionListener(this);
+        mGroup.add(musicItem);
+        musicMenu.add(musicItem);
+        this.menuBar.add(this.musicMenu);
+
         frame.setJMenuBar(this.menuBar);
 
 
@@ -319,6 +338,8 @@ public class MazeGui implements ActionListener {
                 resumeGame(false);
             }
         });
+
+
 
 
         //init settings Dialog
@@ -727,14 +748,14 @@ public class MazeGui implements ActionListener {
             AbstractButton button = (AbstractButton) e.getSource();
             backgroundColor = Color.BLACK;
             shapeColorChange = true;
-        } else if ("custom_color".equals(e.getActionCommand())){
+        } else if ("custom_color".equals(e.getActionCommand())) {
             if (gameStart) {
                 soundPlayer.stop();
                 gameStart = false;
                 timerBar.stopTimer();
                 cChooser.setVisible(true);
             }
-        }else if ("rect_shape".equals(e.getActionCommand())) {
+        } else if ("rect_shape".equals(e.getActionCommand())) {
             AbstractButton button = (AbstractButton) e.getSource();
             this.rect = true;
             shapeColorChange = true;
@@ -742,7 +763,40 @@ public class MazeGui implements ActionListener {
             AbstractButton button = (AbstractButton) e.getSource();
             this.rect = false;
             shapeColorChange = true;
-        } else if ("save".equals(e.getActionCommand())) { // user chooses to save mid-game
+        } else if("select_music".equals(e.getActionCommand())){
+            soundPlayer.stop();
+            timerBar.stopTimer();
+            mChooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Music file", "wav");
+            mChooser.setFileFilter(filter);
+            int returnVal = mChooser.showOpenDialog(this.frame);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+               File file = mChooser.getSelectedFile();
+               Media hit = new Media(f.toURI().toString());
+               MediaPlayer mediaPlayer = new MediaPlayer(hit);
+               mediaPlayer.play();
+                    //soundPlayer = new Sound(filePath);
+                    //soundPlayer.loop();
+                   // oin.close();
+                   // fin.close();
+               // } catch (IOException ex) {
+                 //   System.err.println("Invalid file specified.");
+                   // ex.printStackTrace();
+                //}
+            } else if (!isPaused && gameStart) {
+                timerBar.resumeTimer();
+                soundPlayer.loop();
+            }
+        } else if("toggle_music".equals(e.getActionCommand())){
+            if(musicStopped == true) {
+                soundPlayer.loop();
+                musicStopped = false;
+            }
+            else{
+                soundPlayer.stop();
+                musicStopped = true;
+            }
+        }else if ("save".equals(e.getActionCommand())) { // user chooses to save mid-game
             soundPlayer.stop();
             timerBar.stopTimer();
             realTime = timerBar.getTimeElapsed(); // records ACTUAL time when save button is pressed
