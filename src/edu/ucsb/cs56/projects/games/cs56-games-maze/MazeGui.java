@@ -51,6 +51,7 @@ public class MazeGui implements ActionListener {
     private long realTime;
     private JMenu shapeMenu;
     private JMenu musicMenu;
+    private JMenuItem musicItem;
     private boolean rect = true;
     private Color backgroundColor;
     private int controlKey;
@@ -318,13 +319,13 @@ public class MazeGui implements ActionListener {
 
         this.musicMenu = new JMenu("Music");
         ButtonGroup mGroup = new ButtonGroup();
-        JMenuItem musicItem = new JMenuItem("Select Music");
+        musicItem = new JMenuItem("Select Music");
         musicItem.setActionCommand("select_music");
         musicItem.addActionListener(this);
         mGroup.add(musicItem);
         musicMenu.add(musicItem);
 
-        musicItem = new JMenuItem("Toggle Music");
+        musicItem = new JMenuItem("Stop");
         musicItem.setActionCommand("toggle_music");
         musicItem.addActionListener(this);
         mGroup.add(musicItem);
@@ -339,6 +340,7 @@ public class MazeGui implements ActionListener {
         cChooser.setLocationRelativeTo(frame);
         cChooser.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
+                setColor(Color.WHITE, false);
                 resumeGame(false);
             }
         });
@@ -443,11 +445,13 @@ public class MazeGui implements ActionListener {
     public void resumeGame(boolean priority) {
         gameStart = true;
 
-        if (!isPaused) {
+        if (!isPaused && !musicStopped) {
             soundPlayer.loop();
             timerBar.resumeTimer();
         } else if (priority) {
-            soundPlayer.loop();
+            if(!musicStopped){
+                soundPlayer.loop();
+            }
             frame.remove(pause);
             timerBar.resumeTimer();
             frame.repaint();
@@ -781,23 +785,39 @@ public class MazeGui implements ActionListener {
             int returnVal = mChooser.showOpenDialog(this.frame);
 
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-               File file = mChooser.getSelectedFile();
-               soundPlayer = new Sound(file.getName());
+                File file = mChooser.getSelectedFile();
+                soundPlayer = new Sound(file.getName());
+
+                if(gameStart){
+                    musicItem.setText("Stop");
+                    musicStopped = false;
+                }
             }
 
-            if (!isPaused && gameStart) {
+            if(gameStart && !isPaused){
                 timerBar.resumeTimer();
-                soundPlayer.loop();
+                if(!musicStopped) {
+                    soundPlayer.loop();
+                }
             }
+
+
         } else if("toggle_music".equals(e.getActionCommand())){
-            if(musicStopped == true) {
-                soundPlayer.loop();
+
+            if(musicStopped) {
+                if(!isPaused){
+                    soundPlayer.loop();
+                }
+
+                musicItem.setText("Stop");
                 musicStopped = false;
             }
             else{
                 soundPlayer.stop();
+                musicItem.setText("Start");
                 musicStopped = true;
             }
+
         }else if ("save".equals(e.getActionCommand())) { // user chooses to save mid-game
             soundPlayer.stop();
             timerBar.stopTimer();
@@ -836,7 +856,9 @@ public class MazeGui implements ActionListener {
                         "Maze Saved", JOptionPane.INFORMATION_MESSAGE);
             } else if (!isPaused && gameStart) {
                 timerBar.resumeTimer();
-                soundPlayer.loop();
+                if(!musicStopped){
+                    soundPlayer.loop();
+                }
             }
         } else if ("load".equals(e.getActionCommand())) { // user selects to load a game
             soundPlayer.stop();
@@ -862,7 +884,9 @@ public class MazeGui implements ActionListener {
                 }
             } else if (!isPaused && gameStart) {
                 timerBar.resumeTimer();
-                soundPlayer.loop();
+                if(!musicStopped) {
+                    soundPlayer.loop();
+                }
             }
         }
 
@@ -994,9 +1018,16 @@ public class MazeGui implements ActionListener {
         KeyBoardAction leftKBA = new KeyBoardAction("left");
         KeyBoardAction rightKBA = new KeyBoardAction("right");
         KeyBoardAction pauseKBA = new KeyBoardAction("pause");
+        KeyBoardAction musicKBA = new KeyBoardAction("music");
 
         InputMap inputMap = ((JPanel) this.frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap actionmap = ((JPanel) this.frame.getContentPane()).getActionMap();
+
+        inputMap.put(KeyStroke.getKeyStroke("M"), "toggle_music");
+        inputMap.put(KeyStroke.getKeyStroke("P"), "pause_game");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "pause_game");
+        actionmap.put("toggle_music", musicKBA);
+        actionmap.put("pause_game", pauseKBA);
 
         if (settings.inverseMode) {
             inputMap.put(KeyStroke.getKeyStroke("S"), "player_up");
@@ -1007,13 +1038,10 @@ public class MazeGui implements ActionListener {
             inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "player_left");
             inputMap.put(KeyStroke.getKeyStroke("A"), "player_right");
             inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "player_right");
-            inputMap.put(KeyStroke.getKeyStroke("P"), "pause_game");
-            inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "pause_game");
             actionmap.put("player_up", downKBA);
             actionmap.put("player_down", upKBA);
             actionmap.put("player_left", rightKBA);
             actionmap.put("player_right", leftKBA);
-            actionmap.put("pause_game", pauseKBA);
         } else {
             inputMap.put(KeyStroke.getKeyStroke("W"), "player_up");
             inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "player_up");
@@ -1023,13 +1051,10 @@ public class MazeGui implements ActionListener {
             inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "player_left");
             inputMap.put(KeyStroke.getKeyStroke("D"), "player_right");
             inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "player_right");
-            inputMap.put(KeyStroke.getKeyStroke("P"), "pause_game");
-            inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "pause_game");
             actionmap.put("player_up", upKBA);
             actionmap.put("player_down", downKBA);
             actionmap.put("player_left", leftKBA);
             actionmap.put("player_right", rightKBA);
-            actionmap.put("pause_game", pauseKBA);
         }
     }
 
@@ -1058,9 +1083,24 @@ public class MazeGui implements ActionListener {
 
             if (player != null && gameStart) {
 
+                if(this.cmd.equals("music")){
+                    if(!isPaused){
+                        if(!musicStopped){
+                            musicItem.setText("Start");
+                            soundPlayer.stop();
+                        }else{
+                            musicItem.setText("Stop");
+                            soundPlayer.loop();
+                        }
+                    }
+                    musicStopped = !musicStopped;
+                }
+
                 if (this.cmd.equals("pause")) {
                     if (isPaused) {
-                        soundPlayer.loop();
+                        if(!musicStopped){
+                            soundPlayer.loop();
+                        }
                         frame.remove(pause);
                         timerBar.resumeTimer();
                         frame.repaint();
