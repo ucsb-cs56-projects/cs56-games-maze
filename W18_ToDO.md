@@ -1,15 +1,12 @@
 ## Issue
-*  Replay option
-*  Allow start a new game after finishing one without clicking new game.
 * Update Readme.md
 * Line of sight 
 * 2 Play Mode
    * Only in line of sight mode. Neither players know the ending.
-* 
 
 ## Current Issues
 *  Update Instruction
-* Color Options (Willy)
+* Color Options
     * Mostly done but still need to refine the coloring and the custom color option.
   * RGB
   * contrast colors for background and player
@@ -49,23 +46,26 @@
     * Add Music option on toolbar.
     * stop/start keyboard action.
     * Select music from music folder.
+*  Allow start a new game after finishing one without clicking new game.
+*  Replay option
     
 ## Completed Issue #:
-* 20 (250 Points)
+* 20 (175 Points)
 * 25? not sure if it was a bug to begin with. (70 Points)
+* 33 (150 Points)
+* 43 (50 Points)
 * 62 (100 Points)
+* 64 (150 Points)
 * 65 (50 Points)
 * 66 (50 Points)
     * With extra feature.
 * 68 (50 points)
-* 69 (100 Points?)
-    * down to 50 points, I think.
+* 69 (150 Points)
 * 70 (30 points)
 * 71 (100 points)
-* 72 (50 points)
 * 73 (75 points)
     * More issues with pause than anticipated.
 * 74 (100 points)  
  
  
-# Total Points: 975
+# Total Points: 1300
