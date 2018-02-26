@@ -62,6 +62,12 @@ public class MazeGui implements ActionListener {
     private boolean musicStopped = false;
     private JPanel pause;
 
+    private ButtonGroup controlsGroup = new ButtonGroup();
+    private JRadioButtonMenuItem normalButton;
+    private JRadioButtonMenuItem inverseButton;
+    private JRadioButtonMenuItem randomButton;
+
+    private JCheckBoxMenuItem memoryCheckbox;
 
     private JFileChooser fc;
     private javax.swing.filechooser.FileFilter fileFilter;
@@ -221,38 +227,29 @@ public class MazeGui implements ActionListener {
         menu.addSeparator();
 
         //Changes for inverse and random (checkbox -> radio button)
-        ButtonGroup controlsGroup = new ButtonGroup();
-        rbMenuItem = new JRadioButtonMenuItem("Normal Mode");
-        rbMenuItem.setSelected(true);
-        rbMenuItem.setActionCommand("normal_mode");
-        rbMenuItem.addActionListener(this);
-        controlsGroup.add(rbMenuItem);
-        menu.add(rbMenuItem);
-        rbMenuItem = new JRadioButtonMenuItem("Inverse Mode");
-        rbMenuItem.setActionCommand("inverse_mode");
-        rbMenuItem.addActionListener(this);
-        controlsGroup.add(rbMenuItem);
-        menu.add(rbMenuItem);
-        rbMenuItem = new JRadioButtonMenuItem("Random Controls");
-        rbMenuItem.setActionCommand("random_controls");
-        rbMenuItem.addActionListener(this);
-        controlsGroup.add(rbMenuItem);
-        menu.add(rbMenuItem);
-       /* JCheckBoxMenuItem cbMenuItem2 = new JCheckBoxMenuItem("Inverse Mode");
-        cbMenuItem2.setActionCommand("inverse_mode");
-        cbMenuItem2.addActionListener(this);
-        menu.add(cbMenuItem2);
-
-        JCheckBoxMenuItem rcMenuItem = new JCheckBoxMenuItem("Random Controls");
-        rcMenuItem.setActionCommand("random_controls");
-        rcMenuItem.addActionListener(this);
-        menu.add(rcMenuItem);*/
+        controlsGroup = new ButtonGroup();
+        normalButton = new JRadioButtonMenuItem("Normal Mode");
+        normalButton.setSelected(true);
+        normalButton.setActionCommand("normal_mode");
+        normalButton.addActionListener(this);
+        controlsGroup.add(normalButton);
+        menu.add(normalButton);
+        inverseButton = new JRadioButtonMenuItem("Inverse Mode");
+        inverseButton.setActionCommand("inverse_mode");
+        inverseButton.addActionListener(this);
+        controlsGroup.add(inverseButton);
+        menu.add(inverseButton);
+        randomButton = new JRadioButtonMenuItem("Random Controls");
+        randomButton.setActionCommand("random_controls");
+        randomButton.addActionListener(this);
+        controlsGroup.add(randomButton);
+        menu.add(randomButton);
 
         menu.addSeparator();
-        JCheckBoxMenuItem cbMenuItem3 = new JCheckBoxMenuItem("Memory Mode");
-        cbMenuItem3.setActionCommand("memory_mode");
-        cbMenuItem3.addActionListener(this);
-        menu.add(cbMenuItem3);
+        memoryCheckbox = new JCheckBoxMenuItem("Memory Mode");
+        memoryCheckbox.setActionCommand("memory_mode");
+        memoryCheckbox.addActionListener(this);
+        menu.add(memoryCheckbox);
         menu.addSeparator();
         JMenuItem menuItem = new JMenuItem("Settings");
         menuItem.setActionCommand("settings");
@@ -654,6 +651,7 @@ public class MazeGui implements ActionListener {
             this.settingsDialog.loadMazeSettings(this.settings);
             this.oldSettings = new MazeSettings(settings);
             this.grid = game.getGrid();
+            UpdateSettingMenu();
 
             if (settings.cols * settings.cellWidth >= MIN_WIDTH) {
                 this.mc = new MazeComponent(grid, settings.cellWidth, backgroundColor, rect);
@@ -699,6 +697,19 @@ public class MazeGui implements ActionListener {
 
         mc.repaint();
         gameStart = false;
+
+    }
+
+    public void UpdateSettingMenu(){
+
+        if(settings.inverseMode){
+            controlsGroup.setSelected(inverseButton.getModel(), true);
+        }else if(settings.randomControls){
+            controlsGroup.setSelected(randomButton.getModel(), true);
+        }else{
+            soundPlayer.stop();
+            controlsGroup.setSelected(normalButton.getModel(), true);
+        }
 
     }
 
@@ -851,10 +862,7 @@ public class MazeGui implements ActionListener {
                 player = null;
                 this.mc.setVisible(false);
 
-                // Set an onscreen message to guide user after
-                // previous Maze is saved.
-                JOptionPane.showMessageDialog(frame, "To start new game press OK then New.",
-                        "Maze Saved", JOptionPane.INFORMATION_MESSAGE);
+                newMaze();
             } else if (!isPaused && gameStart) {
                 timerBar.resumeTimer();
                 if(!musicStopped){
@@ -921,6 +929,7 @@ public class MazeGui implements ActionListener {
      * Eventually want to show win dialog.
      */
     private void wonMaze() {
+        int choice;
         timerBar.stopTimer();
         soundPlayer.stop();
         realTime = timerBar.getTimeElapsed();
@@ -940,7 +949,7 @@ public class MazeGui implements ActionListener {
         }
 
         message += "Would you like to save this score to this maze?\n";
-        int choice = JOptionPane.showConfirmDialog(frame, message, "Victory", JOptionPane.YES_NO_OPTION);
+        choice = JOptionPane.showConfirmDialog(frame, message, "Victory", JOptionPane.YES_NO_OPTION);
 
         this.gameSave = new MazeGameSave(this.grid, this.oldSettings);
 
@@ -994,15 +1003,13 @@ public class MazeGui implements ActionListener {
             }
         }
 
-        int choice2 = JOptionPane.showConfirmDialog(frame, replayMessage, "Replay Option", JOptionPane.YES_NO_OPTION);
-        if (choice2 == JOptionPane.YES_OPTION) {
+        choice = JOptionPane.showConfirmDialog(frame, replayMessage, "Replay Option", JOptionPane.YES_NO_OPTION);
+        if (choice == JOptionPane.YES_OPTION) {
             gameSave.getGrid().unmarkFinish();
             if (gameSave != null) {
                 newMaze(gameSave); // reload them to the beginning of the maze
             }
-        } else { // user chooses not to play again
-            //JOptionPane.showMessageDialog(this.frame, "Press 'New' to start a new maze!");
-            //this.player = null;
+        } else {
             newMaze();
         }
 
