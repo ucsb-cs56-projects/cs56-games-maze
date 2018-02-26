@@ -246,8 +246,10 @@ public class MazeSettingsPanel extends JPanel {
 
         int sRow = Integer.parseInt(startRowField.getText());
         int sCol = Integer.parseInt(startColField.getText());
+	int eRow = Integer.parseInt(endRowField.getText());
+        int eCol = Integer.parseInt(endColField.getText());
 
-        if(customStart.isSelected()){
+        if(customStart.isSelected() && (sRow != eRow || sCol != eCol)){
             if(sRow >= 0 && sRow < this.settings.rows){
                 this.settings.customStart = true;
                 this.settings.startRow = sRow;
@@ -262,10 +264,9 @@ public class MazeSettingsPanel extends JPanel {
             this.settings.startCol = 0;
         }
 
-        int eRow = Integer.parseInt(endRowField.getText());
-        int eCol = Integer.parseInt(endColField.getText());
+        
 
-        if(customEnd.isSelected()){
+        if(customEnd.isSelected() && (sRow != eRow || sCol != eCol)){
             if(eRow >= 0 && eRow < this.settings.rows){
                 this.settings.customEnd = true;
                 this.settings.endRow = eRow;
