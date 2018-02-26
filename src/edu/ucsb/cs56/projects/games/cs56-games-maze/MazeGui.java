@@ -464,8 +464,9 @@ public class MazeGui implements ActionListener {
      * Stepwise generates and displays maze
      */
     public void run() {
-        soundPlayer.loop();
-
+        if(!musicStopped){
+            soundPlayer.loop();
+        }
         // generate the maze in steps if asked (rather than all at once using MazeGenerator.generate())
         // repaint() in between each step to watch it grow
         if (settings.progDraw) { // if the user chooses to watch the drawing of the maze
@@ -921,8 +922,12 @@ public class MazeGui implements ActionListener {
      */
     private void wonMaze() {
         timerBar.stopTimer();
+        soundPlayer.stop();
         realTime = timerBar.getTimeElapsed();
         String message = "Congratulations, you won!\nIt took you " + player.getNumMoves() + " moves and " + realTime / 1000.0 + " seconds.\n";
+
+        String replayMessage = "Try this maze again?";
+        replayMessage += "\n(No to make a new maze)";
 
         // check if the user loaded a maze or if it was new
         if (this.gameSave != null && this.gameSave.hasHighScores()) {
@@ -936,6 +941,9 @@ public class MazeGui implements ActionListener {
 
         message += "Would you like to save this score to this maze?\n";
         int choice = JOptionPane.showConfirmDialog(frame, message, "Victory", JOptionPane.YES_NO_OPTION);
+
+        this.gameSave = new MazeGameSave(this.grid, this.oldSettings);
+
 
         if (choice == JOptionPane.YES_OPTION) {
             String name = JOptionPane.showInputDialog(this.frame, "Enter Name", "Enter your name:");
@@ -956,9 +964,7 @@ public class MazeGui implements ActionListener {
                     fout = new FileOutputStream(file);
                     oout = new ObjectOutputStream(fout);
                     this.timerBar.setTimeElapsed(realTime);
-                    if (this.gameSave == null) {
-                        this.gameSave = new MazeGameSave(this.grid, this.oldSettings);
-                    }
+
 
                     gameSave.addHighScore(new MazeHighScore(name, realTime, settings.rows, settings.cols, player.getNumMoves()));
                     gameSave.setTimeElapsed(0);
@@ -986,24 +992,20 @@ public class MazeGui implements ActionListener {
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
-
-            // prompt user to try again
-            String message2 = "Try this maze again?";
-            int choice2 = JOptionPane.showConfirmDialog(frame, message2, "Victory", JOptionPane.YES_NO_OPTION);
-            if (choice2 == JOptionPane.YES_OPTION) {
-                gameSave.getGrid().unmarkFinish();
-                if (gameSave != null) {
-                    newMaze(gameSave); // reload them to the beginning of the maze
-                }
-            } else { // user chooses not to play again
-                JOptionPane.showMessageDialog(this.frame, "Press 'New' to start a new maze!");
-                this.player = null;
-            }
-        } // end of block (user chooses to save)
-        else { // The user does not choose to save the game
-            JOptionPane.showMessageDialog(this.frame, "Press 'New' to start a new maze!");
-            this.player = null;
         }
+
+        int choice2 = JOptionPane.showConfirmDialog(frame, replayMessage, "Replay Option", JOptionPane.YES_NO_OPTION);
+        if (choice2 == JOptionPane.YES_OPTION) {
+            gameSave.getGrid().unmarkFinish();
+            if (gameSave != null) {
+                newMaze(gameSave); // reload them to the beginning of the maze
+            }
+        } else { // user chooses not to play again
+            //JOptionPane.showMessageDialog(this.frame, "Press 'New' to start a new maze!");
+            //this.player = null;
+            newMaze();
+        }
+
     }
 
 
