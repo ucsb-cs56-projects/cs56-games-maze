@@ -246,36 +246,42 @@ public class MazeSettingsPanel extends JPanel {
 
         int sRow = Integer.parseInt(startRowField.getText());
         int sCol = Integer.parseInt(startColField.getText());
-	int eRow = Integer.parseInt(endRowField.getText());
+        int eRow = Integer.parseInt(endRowField.getText());
         int eCol = Integer.parseInt(endColField.getText());
 
-        if(customStart.isSelected() && (sRow != eRow || sCol != eCol)){
-            if(sRow >= 0 && sRow < this.settings.rows){
+        if (customStart.isSelected() && (sRow != eRow || sCol != eCol)) {
+
+            if(sRow >= 0 && sRow < this.settings.rows && sCol >= 0 && sCol < this.settings.cols){
                 this.settings.customStart = true;
                 this.settings.startRow = sRow;
-            }
-            if(sCol >= 0 && sCol < this.settings.cols){
-                this.settings.customStart = true;
                 this.settings.startCol = sCol;
+            }else{
+                this.settings.customStart = oldSettings.customStart;
+                this.settings.startRow = oldSettings.startRow;
+                this.settings.startCol = oldSettings.startCol;
             }
-        }else{
+
+
+        } else {
             this.settings.customStart = false;
             this.settings.startRow = 0;
             this.settings.startCol = 0;
         }
 
-        
 
-        if(customEnd.isSelected() && (sRow != eRow || sCol != eCol)){
-            if(eRow >= 0 && eRow < this.settings.rows){
+        if (customEnd.isSelected() && (sRow != eRow || sCol != eCol)) {
+            if (eRow >= 0 && eRow < this.settings.rows && eCol >= 0 && eCol < this.settings.cols) {
                 this.settings.customEnd = true;
                 this.settings.endRow = eRow;
-            }
-            if(eCol >= 0 && eCol < this.settings.cols){
-                this.settings.customEnd = true;
                 this.settings.endCol = eCol;
+            }else{
+
+                this.settings.customEnd = oldSettings.customEnd;
+                this.settings.endRow = oldSettings.endRow;
+                this.settings.endCol = oldSettings.endCol;
+
             }
-        }else{
+        } else {
             this.settings.customEnd = false;
             this.settings.endRow = (this.settings.rows - 1);
             this.settings.endCol = (this.settings.cols - 1);
