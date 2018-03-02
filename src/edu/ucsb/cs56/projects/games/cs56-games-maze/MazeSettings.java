@@ -18,6 +18,7 @@ public class MazeSettings implements Serializable {
     public int stepGenDistance;
     public int rows;
     public int cols;
+    public boolean customCellWidth;
     public int cellWidth;
     public boolean customStart;
     public int startRow;
@@ -43,11 +44,12 @@ public class MazeSettings implements Serializable {
         this.stepGenDistance = 2;
         this.rows = 20;
         this.cols = 20;
+        this.customCellWidth = false;
         this.cellWidth = 20; // increase size of maze
-        customStart = false;
+        this.customStart = false;
         this.startRow = 0;
         this.startCol = 0;
-        customEnd = false;
+        this.customEnd = false;
         this.endRow = rows - 1;
         this.endCol = cols - 1;
         this.genType = 1;
@@ -71,9 +73,12 @@ public class MazeSettings implements Serializable {
         this.stepGenDistance = other.stepGenDistance;
         this.rows = other.rows;
         this.cols = other.cols;
-        //this.cellWidth = other.cellWidth;
+        this.customCellWidth = other.customCellWidth;
+        this.cellWidth = other.cellWidth;
+        this.customStart = other.customStart;
         this.startRow = other.startRow;
         this.startCol = other.startCol;
+        this.customEnd = other.customEnd;
         this.endRow = other.endRow;
         this.endCol = other.endCol;
         this.genType = other.genType;

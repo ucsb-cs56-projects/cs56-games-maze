@@ -80,8 +80,6 @@ public class MazeGui implements ActionListener {
 
     private JFileChooser mChooser;
 
-    public static final int MIN_WIDTH = 400;
-
     public static final int MULTI_CHAIN_GEN = 1;
     public static final int ALT_STEP_GEN = 2;
     public static final int NEW_STEP_GEN = 3;
@@ -380,24 +378,14 @@ public class MazeGui implements ActionListener {
 
                 super.paintComponent(g);
 
-                if (settings.cols * settings.cellWidth < MIN_WIDTH) {
-                    if (settings.cols > settings.rows) {
-                        max = MIN_WIDTH;
-                        min = settings.rows * (MIN_WIDTH / settings.cols);
-                    } else {
-                        max = settings.rows * (MIN_WIDTH / settings.cols);
-                        min = MIN_WIDTH;
-                    }
-                } else {
-                    if (settings.rows > settings.cols) {
-                        max = settings.cellWidth * settings.rows;
-                        min = settings.cellWidth * settings.cols;
-                    } else {
-                        max = settings.cellWidth * settings.cols;
-                        min = settings.cellWidth * settings.rows;
-                    }
-                }
 
+                if (settings.rows > settings.cols) {
+                    max = settings.cellWidth * settings.rows;
+                    min = settings.cellWidth * settings.cols;
+                } else {
+                    max = settings.cellWidth * settings.cols;
+                    min = settings.cellWidth * settings.rows;
+                }
 
                 g.setColor(new Color(3, 7, 6));
                 g.fillRect(0, 0, max, max);
@@ -594,11 +582,9 @@ public class MazeGui implements ActionListener {
         //settingsDialog.getPanel().writeback();//
         this.grid = new MazeGrid(settings.rows, settings.cols);
 
-        if (settings.cols * settings.cellWidth >= MIN_WIDTH) {
-            this.mc = new MazeComponent(grid, settings.cellWidth, backgroundColor, rect);
-        } else {
-            this.mc = new MazeComponent(grid, MIN_WIDTH / settings.cols, backgroundColor, rect);
-        }
+
+        this.mc = new MazeComponent(grid, settings.cellWidth, backgroundColor, rect);
+
 
 
         frame.getContentPane().setBackground(backgroundColor);
@@ -653,15 +639,11 @@ public class MazeGui implements ActionListener {
             this.grid = game.getGrid();
             UpdateSettingMenu();
 
-            if (settings.cols * settings.cellWidth >= MIN_WIDTH) {
-                this.mc = new MazeComponent(grid, settings.cellWidth, backgroundColor, rect);
-            } else {
-                this.mc = new MazeComponent(grid, MIN_WIDTH / settings.cols, backgroundColor, rect);
-            }
+            this.mc = new MazeComponent(grid, settings.cellWidth, backgroundColor, rect);
 
             frame.getContentPane().setBackground(backgroundColor);
 
-            //timerBar.setTimeElapsed(game.getTimeElapsed());
+
             mc.setVisible(true);
             frame.add(mc);
             frame.pack();
@@ -952,8 +934,6 @@ public class MazeGui implements ActionListener {
         choice = JOptionPane.showConfirmDialog(frame, message, "Victory", JOptionPane.YES_NO_OPTION);
 
         this.gameSave = new MazeGameSave(this.grid, this.oldSettings);
-
-
         if (choice == JOptionPane.YES_OPTION) {
             String name = JOptionPane.showInputDialog(this.frame, "Enter Name", "Enter your name:");
             //prompt user and write to file
@@ -975,10 +955,10 @@ public class MazeGui implements ActionListener {
                     this.timerBar.setTimeElapsed(realTime);
 
 
-                    gameSave.addHighScore(new MazeHighScore(name, realTime, settings.rows, settings.cols, player.getNumMoves()));
-                    gameSave.setTimeElapsed(0);
-                    gameSave.resetPlayer();
-                    oout.writeObject(gameSave);
+                    this.gameSave.addHighScore(new MazeHighScore(name, realTime, settings.rows, settings.cols, player.getNumMoves()));
+                    //this.gameSave.setTimeElapsed(0);
+                    //this.gameSave.resetPlayer();
+                    oout.writeObject(this.gameSave);
                     oout.close();
                     fout.close();
 
