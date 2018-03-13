@@ -1,31 +1,37 @@
 Instructions:
 -------------------------------------------------------------
-1)Starting from the top left corner
-2)Move towards the finish using the WASD keys OR Arrow keys
+1) Starting from the top left corner by default.
+2) Move towards the finish using the WASD keys OR Arrow keys.
        W : up
        A : left
        S : down
        D : right
-3)Pause the game by pressing the 'P' key
+3) Pause the game by pressing the 'P' key or space bar.
+4) Pause the music by pressing the 'M' key or change it in the
+    music setting.
 -------------------------------------------------------------
 Features:
-    1) Menu - allows for various options to be selected,
-    ranging from random controls to progressive reveal
-    2) Colors - changes the color of background and player
-    3) Shapes - changes the shape of player avatar
+1) Menu - allows for various options to be selected,
+    ranging from random controls to progressive reveal.
+    The starting and ending location of the maze can be
+    changed here.
+2) Colors - Changes the color of background and player.
+3) Shapes - Changes the shape of player avatar.
+4) Music - Changes the background music.
 
 If stuck:
-   1) click on 'Solve' for the correct path to the maze
+1) click on 'Solve' for the correct path to the maze.
 
 When you reach the goal:
-     1) You will be prompted to save your score (yes/no)
-     2) You can play again by selecting 'New'
+1) You will be prompted to save your score (yes/no).
+2) You will be prompted to replay the maze (yes/no).
+    Yes to play the same maze. No to play a new maze.
 
 Select 'Save' from the menu to save progress through a maze
-    1) Select location of where you want the maze to be saved
+1) Select location of where you want the maze to be saved
 
 Select 'Load' from the menu:
-  1) return to an incomplete maze to finish it
-  2) return to a completed maze to beat the high score
+1) return to an incomplete maze to finish it
+2) return to a completed maze to beat the high score
 
 -------------------------------------------------------------
