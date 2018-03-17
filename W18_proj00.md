@@ -79,4 +79,5 @@ other classes are clean and easy to understand.
 ### Test Coverage
 There exists a minimum amount of test coverage only for the basic functionality of the maze such as the grids, 
 player directions, and player movements. However, all the newer features do not have any test coverage at all.
+master
 

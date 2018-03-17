@@ -1,21 +1,28 @@
 Instructions:
 -------------------------------------------------------------
 1)Starting from the top left corner
-2)Move towards the finish using the WASD keys
+2)Move towards the finish using the WASD keys OR Arrow keys
        W : up
        A : left
        S : down
        D : right
 3)Pause the game by pressing the 'P' key
 -------------------------------------------------------------
+Features:
+    1) Menu - allows for various options to be selected,
+    ranging from random controls to progressive reveal
+    2) Colors - changes the color of background and player
+    3) Shapes - changes the shape of player avatar
+
 If stuck:
    1) click on 'Solve' for the correct path to the maze
 
-When complete:
-     1) You can play again by selecting 'New'
-     2) Or close out of the window to quit
+When you reach the goal:
+     1) You will be prompted to save your score (yes/no)
+     2) You can play again by selecting 'New'
 
 Select 'Save' from the menu to save progress through a maze
+    1) Select location of where you want the maze to be saved
 
 Select 'Load' from the menu:
   1) return to an incomplete maze to finish it
