@@ -27,7 +27,8 @@ public class MazeSettingsPanel extends JPanel {
     private JTextField stepGenDistanceField;
     private JTextField rowsField;
     private JTextField colsField;
-    //   private JTextField cellWidthField;
+    private JCheckBox customCellWidth;
+    private JTextField cellWidthField;
     private JCheckBox customStart;
     private JTextField startRowField;
     private JTextField startColField;
@@ -45,6 +46,13 @@ public class MazeSettingsPanel extends JPanel {
     private PlainDocument doc;
     private IntegerDocumentFilter intDocumentFilter;
     private Border padding;
+
+
+    private static final int MIN_SIDE = 3;
+    private static final int MAX_SIDE = 100;
+    private static final int MIN_WIDTH = 400;
+    private static final int DEFAULT_CELL_WIDTH = 20;
+
 
     /**
      * Constructor for the JPanel
@@ -98,6 +106,22 @@ public class MazeSettingsPanel extends JPanel {
         doc.setDocumentFilter(intDocumentFilter);
         this.add(label);
         this.add(stepGenDistanceField);
+
+        label = new JLabel("Custom Cell Width");
+        customCellWidth = new JCheckBox();
+        label.setToolTipText("Change the width of each cell");
+        this.add(label);
+        this.add(customCellWidth);
+
+
+        label = new JLabel("Cell Width");
+
+        cellWidthField = new JTextField(5);
+        label.setToolTipText("Width of a single cell in pixels");
+        doc = (PlainDocument) cellWidthField.getDocument();
+        doc.setDocumentFilter(intDocumentFilter);
+        this.add(label);
+        this.add(cellWidthField);
 
         label = new JLabel("Rows");
 
@@ -167,16 +191,7 @@ public class MazeSettingsPanel extends JPanel {
         doc.setDocumentFilter(intDocumentFilter);
         this.add(label);
         this.add(endColField);
-/*
-        label = new JLabel("Cell Width");
 
-        cellWidthField = new JTextField(5);
-        label.setToolTipText("Width of a single cell in pixels");
-        doc = (PlainDocument) cellWidthField.getDocument();
-        doc.setDocumentFilter(intDocumentFilter);
-        this.add(label);
-        this.add(cellWidthField);
-*/
         label = new JLabel("Progressive Reveal Radius");
 
         progRevealRadiusField = new JTextField(5);
@@ -239,7 +254,36 @@ public class MazeSettingsPanel extends JPanel {
         this.settings.stepGenDistance = Integer.parseInt(stepGenDistanceField.getText());
         this.settings.rows = Integer.parseInt(rowsField.getText());
         this.settings.cols = Integer.parseInt(colsField.getText());
-        //this.settings.cellWidth = Integer.parseInt(cellWidthField.getText());
+
+
+
+        if(this.settings.cols > MAX_SIDE){
+            this.settings.cols = MAX_SIDE;
+        }else if(this.settings.cols < MIN_SIDE){
+            this.settings.cols = MIN_SIDE;
+        }
+
+        if(this.settings.rows > MAX_SIDE){
+            this.settings.rows = MAX_SIDE;
+        }else if(settings.rows < MIN_SIDE){
+            this.settings.rows = MIN_SIDE;
+        }
+
+        if (this.settings.cols * DEFAULT_CELL_WIDTH >= MIN_WIDTH) {
+            int area = this.settings.cols*DEFAULT_CELL_WIDTH * this.settings.rows*DEFAULT_CELL_WIDTH;
+
+
+            if(area / MIN_WIDTH*MIN_WIDTH > 1){
+                this.settings.cellWidth = (int)(DEFAULT_CELL_WIDTH - 0.5*(area / (MIN_WIDTH*MIN_WIDTH)) + 0.5);
+            }
+        } else {
+            this.settings.cellWidth = MIN_WIDTH / settings.cols;
+        }
+
+        if(customCellWidth.isSelected()){
+            this.settings.cellWidth = Integer.parseInt(cellWidthField.getText());
+        }
+
         this.settings.startRow = Integer.parseInt(startRowField.getText());
         this.settings.startCol = Integer.parseInt(startColField.getText());
 
@@ -288,7 +332,13 @@ public class MazeSettingsPanel extends JPanel {
         }
 
         this.settings.progRevealRadius = Integer.parseInt(progRevealRadiusField.getText());
-        this.settings.progDraw = progDrawCB.isSelected();
+
+        if(this.settings.cols* this.settings.rows <= 2500){
+            this.settings.progDraw = progDrawCB.isSelected();
+        }else{
+            this.settings.progDraw = false;
+        }
+
         this.settings.progDrawSpeed = Integer.parseInt(progDrawSpeedField.getText());
     }
 
@@ -301,7 +351,8 @@ public class MazeSettingsPanel extends JPanel {
         stepGenDistanceField.setText(String.valueOf(settings.stepGenDistance));
         rowsField.setText(String.valueOf(settings.rows));
         colsField.setText(String.valueOf(settings.cols));
-        //cellWidthField.setText(String.valueOf(settings.cellWidth));
+        customCellWidth.setSelected(settings.customCellWidth);
+        cellWidthField.setText(String.valueOf(settings.cellWidth));
         customStart.setSelected(settings.customStart);
         startRowField.setText(String.valueOf(settings.startRow));
         startColField.setText(String.valueOf(settings.startCol));
